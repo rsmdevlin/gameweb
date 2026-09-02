@@ -1,0 +1,65 @@
+Ты работаешь с НОВЫМ ПУСТЫМ GitHub-репозиторием `rsmdevlin/gameweb`. Всё создаём с нуля.
+
+Сделай полноценную браузерную **3D multiplayer Prop Hunt игру**, а не демо.
+
+Стек:
+
+* Frontend: TypeScript + Three.js + Vite
+* Backend: Node.js + TypeScript + WebSocket
+* Database: MySQL через существующий `DATABASE_URL`
+* Deployment: Render
+* GitHub: `rsmdevlin/gameweb`
+
+Что нужно реализовать:
+
+1. Регистрация / вход / профиль.
+2. Красивое главное игровое меню: Play, Profile, Settings, Logout.
+3. Server Browser: список серверов, создание сервера, пароль, max players, карта, режим.
+4. Lobby с игроками и запуском игры.
+5. Настоящий realtime multiplayer через WebSocket, server-authoritative.
+6. 3D third-person персонажи с движением, камерой и анимациями.
+7. Полноценный Prop Hunt:
+
+   * Hunters;
+   * Props;
+   * превращение в объекты карты;
+   * поиск и атака;
+   * HP/damage;
+   * способности;
+   * таймер раунда;
+   * победа/поражение;
+   * spectator после смерти;
+   * score и статистика.
+8. Сделай минимум одну красивую полноценную 3D карту с большим количеством интерактивных/декоративных объектов.
+9. Используй реальные качественные `.glb/.gltf` ассеты с разрешёнными лицензиями. Не используй случайные модели без лицензии. Создай `ASSETS.md` с источниками и лицензиями.
+10. Realtime игровой чат.
+11. Desktop управление WASD + mouse и нормальное mobile управление.
+12. На мобильных игра работает в landscape; в portrait показывать экран `ROTATE YOUR DEVICE`.
+13. Loading screen, connection status, reconnect, sound, basic VFX, красивый HUD и меню.
+14. Оптимизация WebGL и mobile performance.
+15. Backend должен нормально работать на Render и слушать `0.0.0.0:$PORT`.
+16. Все секреты только через environment variables. Не коммить `.env`.
+17. Добавь README с локальным запуском и Render deployment.
+
+Работай самостоятельно. Не спрашивай меня разрешение на каждую мелочь — принимай нормальные технические решения сам.
+
+Главное: это должна быть РЕАЛЬНАЯ multiplayer игра, где два разных браузера подключаются к одному серверу и видят друг друга в 3D в реальном времени.
+
+Работай поэтапно: сначала backend/foundation, затем frontend/gameplay, затем multiplayer integration, затем polish/performance.
+
+После каждого крупного рабочего этапа:
+`git status` → тесты/build → `git add` → `git commit` → `git push`.
+
+Не используй `git push --force` и не коммить секреты.
+
+Не останавливайся после создания backend или простого Three.js прототипа. Продолжай до рабочего игрового MVP.
+
+В конце покажи:
+
+* что реализовано;
+* как запустить;
+* Render Build/Start commands;
+* какие env нужны;
+* какие commits сделаны;
+* результат тестов;
+* что реально проверено.
