@@ -1,8 +1,8 @@
 import { AuthManager } from './auth/AuthManager';
 import { GameClient } from './game/GameClient';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:3000/ws';
+const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+const WS_URL = (import.meta as any).env?.VITE_WS_URL || 'ws://localhost:3000/ws';
 
 class App {
   private authManager: AuthManager;

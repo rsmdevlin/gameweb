@@ -67,7 +67,7 @@ export class GameClient {
 
       case MessageType.GAME_STATE:
         this.gameState = message.data;
-        if (this.renderer) {
+        if (this.renderer && this.gameState) {
           this.renderer.updateGameState(this.gameState);
         }
         break;

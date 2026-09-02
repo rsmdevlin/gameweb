@@ -12,6 +12,7 @@ export class GameHUD {
   private playerList: HTMLElement;
 
   private onChatSend?: (message: string) => void;
+  private hideTimeout: any;
 
   constructor() {
     this.hudElement = this.createHUD();
@@ -300,9 +301,8 @@ export class GameHUD {
     });
 
     // Auto-hide chat after 5 seconds of inactivity
-    let hideTimeout: NodeJS.Timeout;
     this.chatInput.addEventListener('blur', () => {
-      hideTimeout = setTimeout(() => {
+      this.hideTimeout = setTimeout(() => {
         if (document.activeElement !== this.chatInput) {
           this.chatMessages.classList.remove('active');
         }
