@@ -5,10 +5,15 @@ import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { initDatabase } from './database/init.js';
 import { handleWebSocket } from './websocket/handler.js';
 import { authRouter } from './routes/auth.js';
 import type { IncomingMessage } from 'http';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
@@ -21,11 +26,22 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Serve static files from client/dist
+const clientPath = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientPath));
+
 // Routes
 app.use('/api/auth', authRouter);
 
 app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: Date.now() });
+});
+
+// Serve index.html for all other routes (SPA)
+app.get('*', (req: Request, res: Response) => {
+  if (!req.path.startsWith('/api') && !req.path.startsWith('/ws')) {
+    res.sendFile(path.join(clientPath, 'index.html'));
+  }
 });
 
 // WebSocket server
