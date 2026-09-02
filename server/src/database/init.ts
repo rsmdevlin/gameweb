@@ -35,10 +35,10 @@ export async function initDatabase() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       INDEX idx_username (username),
       INDEX idx_email (email)
-    )
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
 
-  // Create player_stats table
+  // Create player_stats table with proper foreign key
   await db.execute(`
     CREATE TABLE IF NOT EXISTS player_stats (
       user_id VARCHAR(36) PRIMARY KEY,
@@ -48,8 +48,9 @@ export async function initDatabase() {
       kills INT DEFAULT 0,
       deaths INT DEFAULT 0,
       time_played INT DEFAULT 0,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    )
+      CONSTRAINT fk_player_stats_user FOREIGN KEY (user_id)
+        REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
 
   console.log('Database tables initialized');
