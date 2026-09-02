@@ -1,8 +1,9 @@
 import { AuthManager } from './auth/AuthManager';
 import { GameClient } from './game/GameClient';
 
-const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
-const WS_URL = (import.meta as any).env?.VITE_WS_URL || 'ws://localhost:3000/ws';
+// Use relative URLs in production, localhost in development
+const API_URL = (import.meta as any).env?.VITE_API_URL || window.location.origin;
+const WS_URL = (import.meta as any).env?.VITE_WS_URL || `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
 
 class App {
   private authManager: AuthManager;
