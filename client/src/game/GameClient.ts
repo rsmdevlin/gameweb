@@ -8,6 +8,7 @@ export class GameClient {
   private renderer: GameRenderer | null = null;
   private events: Map<string, EventCallback[]> = new Map();
   private gameState: GameState | null = null;
+  private localPlayerId: string | null = null;
 
   constructor(
     private wsUrl: string,
@@ -54,6 +55,7 @@ export class GameClient {
     switch (message.type) {
       case MessageType.AUTH_SUCCESS:
         console.log('Authenticated:', message.data);
+        this.localPlayerId = message.data.userId;
         this.initRenderer();
         this.emit('connected');
         break;
@@ -83,6 +85,9 @@ export class GameClient {
         break;
 
       case MessageType.CHAT_MESSAGE:
+        if (this.renderer) {
+          this.renderer.addChatMessage(message.data.username, message.data.message);
+        }
         this.emit('chat', message.data);
         break;
 
@@ -101,6 +106,11 @@ export class GameClient {
     this.renderer = new GameRenderer(canvas);
     this.renderer.init();
 
+    // Set local player ID
+    if (this.localPlayerId) {
+      this.renderer.setLocalPlayerId(this.localPlayerId);
+    }
+
     // Send movement updates
     this.renderer.on('playerMove', (moveData) => {
       this.send({
@@ -108,6 +118,11 @@ export class GameClient {
         data: moveData,
         timestamp: Date.now()
       });
+    });
+
+    // Handle chat messages
+    this.renderer.on('chat', (message) => {
+      this.sendChat(message);
     });
 
     // Handle attacks

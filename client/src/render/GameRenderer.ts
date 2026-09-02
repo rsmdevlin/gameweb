@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import type { GameState, Player, Vector3 } from 'shared';
+import { MobileControls } from '../controls/MobileControls';
+import { GameHUD } from '../ui/GameHUD';
 
 type EventCallback = (data?: any) => void;
 
@@ -10,6 +12,8 @@ export class GameRenderer {
   private players: Map<string, THREE.Mesh> = new Map();
   private events: Map<string, EventCallback[]> = new Map();
   private gameState: GameState | null = null;
+  private mobileControls: MobileControls;
+  private hud: GameHUD;
 
   // Player control
   private localPlayerId: string | null = null;
@@ -19,6 +23,7 @@ export class GameRenderer {
   private moveRight = false;
   private velocity = new THREE.Vector3();
   private direction = new THREE.Vector3();
+  private mobileMove = { x: 0, y: 0 };
 
   // Camera
   private cameraOffset = new THREE.Vector3(0, 5, 10);
@@ -38,6 +43,12 @@ export class GameRenderer {
       canvas,
       antialias: true
     });
+
+    this.mobileControls = new MobileControls();
+    this.hud = new GameHUD();
+
+    this.setupMobileControls();
+    this.setupHUDHandlers();
   }
 
   init() {
@@ -145,6 +156,27 @@ export class GameRenderer {
     }
   }
 
+  private setupMobileControls() {
+    this.mobileControls.onMove((x, y) => {
+      this.mobileMove.x = x;
+      this.mobileMove.y = -y; // Invert Y for forward/backward
+    });
+
+    this.mobileControls.onAttack(() => {
+      this.emit('attack', null);
+    });
+
+    this.mobileControls.onTransform(() => {
+      this.emit('transform', 'box');
+    });
+  }
+
+  private setupHUDHandlers() {
+    this.hud.onChat((message) => {
+      this.emit('chat', message);
+    });
+  }
+
   private setupControls() {
     // Keyboard controls
     document.addEventListener('keydown', (e) => {
@@ -194,6 +226,15 @@ export class GameRenderer {
   updateGameState(gameState: GameState) {
     this.gameState = gameState;
 
+    // Update HUD
+    this.hud.updateGameState(gameState);
+
+    // Update local player health
+    if (this.localPlayerId && gameState.players[this.localPlayerId]) {
+      const localPlayer = gameState.players[this.localPlayerId];
+      this.hud.updateHealth(localPlayer.health);
+    }
+
     // Update or create player meshes
     Object.entries(gameState.players).forEach(([playerId, player]) => {
       if (!this.players.has(playerId)) {
@@ -213,6 +254,14 @@ export class GameRenderer {
         }
       }
     }
+  }
+
+  setLocalPlayerId(playerId: string) {
+    this.localPlayerId = playerId;
+  }
+
+  addChatMessage(username: string, message: string) {
+    this.hud.addChatMessage(username, message);
   }
 
   private createPlayerMesh(playerId: string, player: Player) {
@@ -247,10 +296,17 @@ export class GameRenderer {
 
       this.direction.set(0, 0, 0);
 
+      // Desktop controls
       if (this.moveForward) this.direction.z -= 1;
       if (this.moveBackward) this.direction.z += 1;
       if (this.moveLeft) this.direction.x -= 1;
       if (this.moveRight) this.direction.x += 1;
+
+      // Mobile controls
+      if (this.mobileMove.x !== 0 || this.mobileMove.y !== 0) {
+        this.direction.x += this.mobileMove.x;
+        this.direction.z += this.mobileMove.y;
+      }
 
       if (this.direction.length() > 0) {
         this.direction.normalize();
