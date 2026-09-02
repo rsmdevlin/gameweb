@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import type { GameState, Player, Vector3 } from 'shared';
 import { MobileControls } from '../controls/MobileControls';
 import { GameHUD } from '../ui/GameHUD';
+import { PropManager } from '../game/PropManager';
+import { MapManager } from '../game/MapManager';
 
 type EventCallback = (data?: any) => void;
 
@@ -14,6 +16,8 @@ export class GameRenderer {
   private gameState: GameState | null = null;
   private mobileControls: MobileControls;
   private hud: GameHUD;
+  private propManager: PropManager;
+  private mapManager: MapManager;
 
   // Player control
   private localPlayerId: string | null = null;
@@ -46,6 +50,8 @@ export class GameRenderer {
 
     this.mobileControls = new MobileControls();
     this.hud = new GameHUD();
+    this.propManager = new PropManager();
+    this.mapManager = new MapManager(this.propManager);
 
     this.setupMobileControls();
     this.setupHUDHandlers();
@@ -77,19 +83,8 @@ export class GameRenderer {
     directionalLight.shadow.mapSize.height = 2048;
     this.scene.add(directionalLight);
 
-    // Ground
-    const groundGeometry = new THREE.PlaneGeometry(100, 100);
-    const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x3a8c3a,
-      roughness: 0.8
-    });
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    this.scene.add(ground);
-
-    // Add some basic props for testing
-    this.createTestProps();
+    // Ground and props loaded by MapManager
+    this.mapManager.loadMap('arena', this.scene);
 
     // Camera position
     this.camera.position.set(0, 5, 10);
@@ -103,57 +98,6 @@ export class GameRenderer {
 
     // Start render loop
     this.animate();
-  }
-
-  private createTestProps() {
-    // Create some basic 3D objects as props
-    const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const sphereGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-    const coneGeometry = new THREE.ConeGeometry(0.5, 1, 16);
-
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x8B4513,
-      roughness: 0.7
-    });
-
-    // Add boxes
-    for (let i = 0; i < 10; i++) {
-      const box = new THREE.Mesh(boxGeometry, material.clone());
-      box.position.set(
-        Math.random() * 40 - 20,
-        0.5,
-        Math.random() * 40 - 20
-      );
-      box.castShadow = true;
-      box.receiveShadow = true;
-      this.scene.add(box);
-    }
-
-    // Add spheres
-    for (let i = 0; i < 10; i++) {
-      const sphere = new THREE.Mesh(sphereGeometry, material.clone());
-      sphere.position.set(
-        Math.random() * 40 - 20,
-        0.5,
-        Math.random() * 40 - 20
-      );
-      sphere.castShadow = true;
-      sphere.receiveShadow = true;
-      this.scene.add(sphere);
-    }
-
-    // Add cones
-    for (let i = 0; i < 5; i++) {
-      const cone = new THREE.Mesh(coneGeometry, material.clone());
-      cone.position.set(
-        Math.random() * 40 - 20,
-        0.5,
-        Math.random() * 40 - 20
-      );
-      cone.castShadow = true;
-      cone.receiveShadow = true;
-      this.scene.add(cone);
-    }
   }
 
   private setupMobileControls() {
