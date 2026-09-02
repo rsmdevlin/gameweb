@@ -1,16 +1,17 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import cors from 'cors';
 import { initDatabase } from './database/init.js';
 import { handleWebSocket } from './websocket/handler.js';
 import { authRouter } from './routes/auth.js';
+import type { IncomingMessage } from 'http';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '3000', 10);
 const server = createServer(app);
 
 // Middleware
@@ -23,14 +24,14 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRouter);
 
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: Date.now() });
 });
 
 // WebSocket server
 const wss = new WebSocketServer({ server, path: '/ws' });
 
-wss.on('connection', (ws, req) => {
+wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
   handleWebSocket(ws, req);
 });
 

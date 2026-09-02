@@ -1,4 +1,4 @@
-import type { WebSocket } from 'ws';
+import { WebSocket } from 'ws';
 import type { IncomingMessage } from 'http';
 import jwt from 'jsonwebtoken';
 import { MessageType, type WSMessage } from 'shared';
@@ -95,7 +95,7 @@ export function handleWebSocket(ws: AuthenticatedWebSocket, req: IncomingMessage
     }
   });
 
-  ws.on('error', (error) => {
+  ws.on('error', (error: Error) => {
     console.error('WebSocket error:', error);
   });
 }

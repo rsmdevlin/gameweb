@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
@@ -20,7 +20,7 @@ interface LoginRequest {
 }
 
 // Register
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body as RegisterRequest;
 
@@ -64,7 +64,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body as LoginRequest;
 
@@ -111,7 +111,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Verify token
-router.get('/verify', async (req, res) => {
+router.get('/verify', async (req: Request, res: Response) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
 
