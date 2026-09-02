@@ -1,40 +1,70 @@
 ==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit e05eb426cfb3f449d644cb20faa14cf5cf197203 in branch master
+==> Checking out commit 7a8e278a90f8b3d49d913976233ad83cb153ac8c in branch master
 ==> Using Node.js version 24.14.1 (default)
 ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
 ==> Running build command 'npm install && npm run build'...
-added 165 packages, and audited 169 packages in 15s
-23 packages are looking for funding
+added 196 packages, and audited 200 packages in 15s
+26 packages are looking for funding
   run `npm fund` for details
-5 vulnerabilities (3 moderate, 1 high, 1 critical)
-To address all issues, run:
+7 vulnerabilities (4 moderate, 2 high, 1 critical)
+To address issues that do not require attention, run:
   npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
 Run `npm audit` for details.
 > gameweb@1.0.0 build
 > npm run build --workspaces --if-present
 > client@1.0.0 build
-> tsc && vite build
-src/game/GameClient.ts(71,41): error TS2345: Argument of type 'GameState | null' is not assignable to parameter of type 'GameState'.
-  Type 'null' is not assignable to type 'GameState'.
-src/main.ts(4,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
-src/main.ts(5,28): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
-src/ui/GameHUD.ts(303,22): error TS2503: Cannot find namespace 'NodeJS'.
-npm error Lifecycle script `build` failed with error:
-npm error code 1
-npm error path /opt/render/project/src/client
-npm error workspace client@1.0.0
-npm error location /opt/render/project/src/client
-npm error command failed
-npm error command sh -c tsc && vite build
+> vite build
+vite v5.4.21 building for production...
+transforming...
+✓ 16 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  6.19 kB │ gzip:   1.78 kB
+dist/assets/index-Ds6KkA7z.js   75.67 kB │ gzip:  21.92 kB │ map:   296.00 kB
+dist/assets/three-DoD-hQDL.js  534.97 kB │ gzip: 135.18 kB │ map: 1,998.62 kB
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.29s
 > server@1.0.0 build
 > tsc
-tsconfig.json(5,25): error TS5108: Option 'moduleResolution=node10' has been removed. Please remove it from your configuration.
-npm error Lifecycle script `build` failed with error:
-npm error code 2
+==> Uploading build...
+==> Uploaded in 2.4s. Compression took 0.3s
+==> Build successful 🎉
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+==> Running 'npm start'
+> gameweb@1.0.0 start
+> npm run start --workspace=server
+> server@1.0.0 start
+> node dist/index.js
+node:internal/modules/esm/resolve:275
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/opt/render/project/src/shared/src/types.js' imported from /opt/render/project/src/shared/src/index.ts
+    at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:991:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:719:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:736:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:765:52)
+    at #resolve (node:internal/modules/esm/loader:701:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:621:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:160:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:245:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///opt/render/project/src/shared/src/types.js'
+}
+Node.js v24.14.1
+npm error Lifecycle script `start` failed with error:
+npm error code 1
 npm error path /opt/render/project/src/server
 npm error workspace server@1.0.0
 npm error location /opt/render/project/src/server
 npm error command failed
-npm error command sh -c tsc
-==> Build failed 😞
+npm error command sh -c node dist/index.js
+==> Exited with status 1
 ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
