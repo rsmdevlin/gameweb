@@ -78,6 +78,26 @@ export class GameManager {
     });
   }
 
+  // Spawn points around the map (avoid walls and obstacles)
+  private spawnPoints = [
+    { x: 0, y: 1, z: 0 },
+    { x: 10, y: 1, z: 10 },
+    { x: -10, y: 1, z: 10 },
+    { x: 10, y: 1, z: -10 },
+    { x: -10, y: 1, z: -10 },
+    { x: 15, y: 1, z: 0 },
+    { x: -15, y: 1, z: 0 },
+    { x: 0, y: 1, z: 15 },
+    { x: 0, y: 1, z: -15 }
+  ];
+  private nextSpawnIndex = 0;
+
+  private getNextSpawnPoint() {
+    const spawn = this.spawnPoints[this.nextSpawnIndex];
+    this.nextSpawnIndex = (this.nextSpawnIndex + 1) % this.spawnPoints.length;
+    return { ...spawn };
+  }
+
   joinServer(
     userId: string,
     username: string,
@@ -99,11 +119,12 @@ export class GameManager {
       return { success: false, error: 'Server is full' };
     }
 
-    // Create player
+    // Create player with spawn point
+    const spawnPosition = this.getNextSpawnPoint();
     const player: Player = {
       id: userId,
       username,
-      position: { x: 0, y: 1, z: 0 },
+      position: spawnPosition,
       rotation: { x: 0, y: 0, z: 0 },
       team: 'hunter',
       health: 100,
