@@ -159,10 +159,15 @@ function handleCreateServer(ws: AuthenticatedWebSocket, data: any) {
 }
 
 function handleJoinServer(ws: AuthenticatedWebSocket, data: { serverId: string; password?: string }) {
-  if (!ws.userId || !ws.username) return;
+  console.log('[JOIN_SERVER] Request from user:', ws.userId, 'to server:', data.serverId);
+
+  if (!ws.userId || !ws.username) {
+    console.error('[JOIN_SERVER] Missing userId or username');
+    return;
+  }
 
   if (!gameManager) {
-    console.error('GameManager not initialized!');
+    console.error('[JOIN_SERVER] GameManager not initialized!');
     sendMessage(ws, {
       type: MessageType.ERROR,
       data: { error: 'Server not ready' },
@@ -172,8 +177,10 @@ function handleJoinServer(ws: AuthenticatedWebSocket, data: { serverId: string; 
   }
 
   const result = gameManager.joinServer(ws.userId, ws.username, ws, data.serverId, data.password);
+  console.log('[JOIN_SERVER] Result:', result);
 
   if (!result.success) {
+    console.error('[JOIN_SERVER] Failed:', result.error);
     sendMessage(ws, {
       type: MessageType.ERROR,
       data: { error: result.error },
@@ -182,6 +189,7 @@ function handleJoinServer(ws: AuthenticatedWebSocket, data: { serverId: string; 
     return;
   }
 
+  console.log('[JOIN_SERVER] Success! Sending response...');
   sendMessage(ws, {
     type: MessageType.JOIN_SERVER,
     data: { server: result.server, gameState: result.gameState },

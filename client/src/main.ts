@@ -246,7 +246,8 @@ class App {
 
     this.gameClient.on('error', (error) => {
       console.error('Game error:', error);
-      alert('Connection error: ' + error);
+      const errorMessage = typeof error === 'string' ? error : error?.error || error?.message || 'Unknown error';
+      alert('Connection error: ' + errorMessage);
       this.serverBrowser?.show();
       this.hideAllScreens();
     });
