@@ -408,19 +408,22 @@ export class Lobby {
     }
   }
 
-  updatePlayers(players: Player[], hostId: string, maxPlayers: number) {
+  updatePlayers(players: Player[] | Record<string, Player>, hostId: string, maxPlayers: number) {
     const grid = this.container.querySelector('.players-grid');
     const playerCountEl = this.container.querySelector('.player-count');
     const lobbyStatus = this.container.querySelector('.lobby-status');
 
     if (!grid) return;
 
+    // Convert object to array if needed
+    const playerArray = Array.isArray(players) ? players : Object.values(players);
+
     if (playerCountEl) {
-      playerCountEl.textContent = `${players.length}/${maxPlayers}`;
+      playerCountEl.textContent = `${playerArray.length}/${maxPlayers}`;
     }
 
     if (lobbyStatus) {
-      if (players.length >= 2) {
+      if (playerArray.length >= 2) {
         lobbyStatus.textContent = 'Ready to start!';
         (lobbyStatus as HTMLElement).style.color = '#10b981';
       } else {
@@ -429,7 +432,7 @@ export class Lobby {
       }
     }
 
-    grid.innerHTML = players.map(player => `
+    grid.innerHTML = playerArray.map(player => `
       <div class="player-card ${player.id === hostId ? 'host' : ''}">
         <div class="player-name">${player.username}</div>
         ${player.id === hostId ? '<span class="player-badge host">HOST</span>' : ''}
@@ -439,7 +442,7 @@ export class Lobby {
     // Enable start button if host and enough players
     if (this.isHost) {
       const startBtn = this.container.querySelector('.start-btn') as HTMLButtonElement;
-      startBtn.disabled = players.length < 2;
+      startBtn.disabled = playerArray.length < 2;
     }
   }
 
