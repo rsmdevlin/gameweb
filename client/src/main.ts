@@ -3,7 +3,7 @@ import { GameClient } from './game/GameClient';
 import { MainMenu } from './ui/MainMenu';
 import { ServerBrowser } from './ui/ServerBrowser';
 import { Lobby } from './ui/Lobby';
-import type { GameServer } from 'shared';
+import { MessageType, type GameServer } from 'shared';
 
 // Use relative URLs in production, localhost in development
 const API_URL = (import.meta as any).env?.VITE_API_URL || window.location.origin;
@@ -222,10 +222,10 @@ class App {
     this.gameClient.on('connected', () => {
       // Send join server request
       this.gameClient?.send({
-        type: 'join_server',
-        serverId,
-        password
-      } as any);
+        type: MessageType.JOIN_SERVER,
+        data: { serverId, password },
+        timestamp: Date.now()
+      });
     });
 
     this.gameClient.on('joined_server', (data: any) => {
@@ -263,14 +263,22 @@ class App {
 
       this.lobby.onLeaveClick(() => {
         if (confirm('Are you sure you want to leave?')) {
-          this.gameClient?.send({ type: 'leave_server' } as any);
+          this.gameClient?.send({
+            type: MessageType.LEAVE_SERVER,
+            data: {},
+            timestamp: Date.now()
+          });
           this.lobby?.hide();
           this.showServerBrowser();
         }
       });
 
       this.lobby.onStart(() => {
-        this.gameClient?.send({ type: 'start_game' } as any);
+        this.gameClient?.send({
+          type: MessageType.START_GAME,
+          data: {},
+          timestamp: Date.now()
+        });
       });
     }
 
