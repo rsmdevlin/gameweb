@@ -1,0 +1,92 @@
+/* Mobile Responsive Styles */
+
+/* Remove rotate warning - allow both orientations */
+.rotate-screen {
+  display: none !important;
+}
+
+/* Base mobile styles */
+@media (max-width: 768px) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-x pan-y;
+    overscroll-behavior: none;
+  }
+
+  /* Auth screen mobile */
+  .auth-box {
+    width: 95% !important;
+    padding: 24px !important;
+    max-width: none !important;
+  }
+
+  .auth-box h1 {
+    font-size: 24px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .input-group {
+    margin-bottom: 16px !important;
+  }
+
+  .input-group label {
+    font-size: 14px !important;
+  }
+
+  .input-group input {
+    padding: 10px !important;
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
+
+  .btn {
+    padding: 12px !important;
+    font-size: 16px !important;
+  }
+
+  .auth-switch {
+    font-size: 14px !important;
+  }
+}
+
+/* Portrait mode - stack vertically */
+@media (max-width: 768px) and (orientation: portrait) {
+  .auth-box {
+    width: 90% !important;
+  }
+}
+
+/* Landscape mode - optimize for wide screen */
+@media (max-width: 900px) and (orientation: landscape) {
+  .auth-box {
+    max-width: 500px !important;
+    padding: 20px !important;
+  }
+
+  .auth-box h1 {
+    font-size: 20px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .input-group {
+    margin-bottom: 12px !important;
+  }
+
+  .btn {
+    padding: 10px !important;
+  }
+}
+
+/* Very small screens (phones in portrait) */
+@media (max-width: 480px) {
+  .auth-box {
+    padding: 20px !important;
+  }
+
+  .auth-box h1 {
+    font-size: 20px !important;
+  }
+
+  .input-group input {
+    padding: 8px !important;
+  }
+}

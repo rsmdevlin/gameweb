@@ -55,7 +55,27 @@ export class GameManager {
     };
 
     this.servers.set(serverId, { server, gameState, password });
+
+    // Broadcast new server to all connected players
+    this.broadcastServerList();
+
     return server;
+  }
+
+  broadcastServerList() {
+    const servers = this.getServerList();
+    const message = {
+      type: MessageType.SERVER_LIST,
+      data: { servers },
+      timestamp: Date.now()
+    };
+
+    // Send to all connected players
+    this.players.forEach(({ ws }) => {
+      if (ws.readyState === ws.OPEN) {
+        ws.send(JSON.stringify(message));
+      }
+    });
   }
 
   joinServer(
