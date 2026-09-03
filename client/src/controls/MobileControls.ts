@@ -150,10 +150,11 @@ export class MobileControls {
 
     document.body.appendChild(container);
 
-    // Button handlers
+    // Button handlers - support multitouch with joystick
     container.querySelectorAll('.mobile-button').forEach(button => {
       button.addEventListener('touchstart', (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default but don't stop propagation
+        e.stopPropagation();
         const action = (button as HTMLElement).dataset.action;
 
         if (action === 'attack' && this.callbacks.onAttack) {
@@ -161,7 +162,7 @@ export class MobileControls {
         } else if (action === 'transform' && this.callbacks.onTransform) {
           this.callbacks.onTransform();
         }
-      });
+      }, { passive: false });
     });
 
     return container;
