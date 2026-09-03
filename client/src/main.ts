@@ -324,8 +324,16 @@ class App {
   }
 
   private showScreen(screenId: string) {
+    console.log('[App] Switching to screen:', screenId);
     this.hideAllScreens();
-    document.getElementById(screenId)?.classList.add('active');
+    const screen = document.getElementById(screenId);
+    console.log('[App] Screen element:', screen);
+    if (screen) {
+      screen.classList.add('active');
+      console.log('[App] Screen classes:', screen.className);
+    } else {
+      console.error('[App] Screen not found:', screenId);
+    }
   }
 }
 

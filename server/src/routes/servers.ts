@@ -27,7 +27,7 @@ serversRouter.get('/', authMiddleware, (req: Request, res: Response) => {
 });
 
 // Create server
-serversRouter.post('/', authMiddleware, (req: Request, res: Response) => {
+serversRouter.post('/', authMiddleware, (req: any, res: Response) => {
   try {
     if (!gameManager) {
       return res.status(500).json({ message: 'Game manager not initialized' });
@@ -43,15 +43,19 @@ serversRouter.post('/', authMiddleware, (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Max players must be between 2 and 16' });
     }
 
+    // Create server with hostId from authenticated user
     const server = gameManager.createServer(
       {
         name,
         map,
         maxPlayers,
-        hasPassword: !!password
+        hasPassword: !!password,
+        hostId: req.userId  // Add hostId from auth middleware
       },
       password
     );
+
+    console.log(`[HTTP API] Server created: ${server.id} by ${req.username} (${req.userId})`);
 
     res.status(201).json(server);
   } catch (error) {

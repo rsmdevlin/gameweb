@@ -97,7 +97,15 @@ export class GameClient {
 
         // Initialize renderer after screen is shown
         setTimeout(() => {
+          console.log('[GameClient] Initializing renderer...');
+          const canvas = document.getElementById('game-canvas');
+          console.log('[GameClient] Canvas element:', canvas);
+          if (!canvas) {
+            console.error('[GameClient] Canvas element not found!');
+            return;
+          }
           this.initRenderer();
+          console.log('[GameClient] Renderer initialized:', !!this.renderer);
         }, 150);
         break;
 

@@ -1,73 +1,83 @@
-СТОП. Не считай текущую игру готовой.
-
-Я посмотрел текущий результат в браузере. Сейчас это технический прототип: зелёная плоскость, примитивы, простой HUD. Это НЕ та игра, которую я просил.
-
-Backend уже работает — его не нужно заново переписывать без необходимости. Теперь основной приоритет — реально сделать frontend игры и gameplay.
-
-Что нужно сделать сейчас:
-
-Убрать текущий кринжовый prototype-look.
-Сделать полноценное красивое главное меню/лаунчер:
-PLAY
-SERVER BROWSER
-PROFILE
-SETTINGS
-LOGOUT
-Сделать нормальный Server Browser и Create Server, подключенные к уже работающему backend.
-Сделать Lobby с игроками и кнопкой Start.
-Сделать настоящую 3D игру:
-нормальный third-person персонаж;
-качественная 3D модель персонажа;
-idle/walk/run/jump animations;
-нормальная камера;
-WASD + mouse;
-реальные 3D объекты и окружение;
-нормальное освещение;
-тени;
-атмосферная карта.
-Реализовать настоящий Prop Hunt:
-сервер назначает Hunter/Prop;
-Prop превращается в реальные объекты карты;
-Prop может двигаться и прятаться;
-Hunter может искать и атаковать;
-damage/death;
-spectator;
-round timer;
-win/lose;
-score.
-Подключить это к существующему WebSocket multiplayer, чтобы два браузера реально видели друг друга и синхронизировались.
-Добавить нормальный игровой HUD и realtime chat.
-Сделать mobile landscape controls.
-Использовать реальные качественные лицензированные GLB/GLTF assets, а не кубы и примитивы. Лицензии записывать в ASSETS.md.
-
-ВАЖНО:
-
-Не делай очередную демонстрацию Three.js.
-
-Не оставляй зелёную плоскость и набор случайных кубов как финальную карту.
-
-Не делай fake multiplayer.
-
-Не заменяй настоящие модели placeholder-геометрией.
-
-Не останавливайся на UI или одной сцене.
-
-Работай по приоритету:
-
-MENU → SERVER BROWSER → LOBBY → CHARACTER → MAP → PROP SYSTEM → HUNTER → ROUND SYSTEM → MULTIPLAYER → POLISH
-
-После каждого законченного этапа запускай проект и проверяй его в браузере.
-
-Если backend уже работает — используй его API/WebSocket, а не переписывай всё заново.
-
-Когда закончишь, игра должна выглядеть как начало настоящей коммерческой browser 3D game, а не как Three.js test scene.
-
-После работы обязательно:
-
-build;
-test;
-проверить запуск;
-git commit;
-git push.
-
-Не говори "готово", пока реально не проверил результат в браузере.
+==> Downloading cache...
+==> Cloning from https://github.com/rsmdevlin/gameweb
+==> Checking out commit 2c9b37012a7579f9cfed824c9287ae540e929bdb in branch master
+==> Downloaded 69MB in 1s. Extraction took 1s.
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'npm install && npm run build'...
+up to date, audited 200 packages in 3s
+26 packages are looking for funding
+  run `npm fund` for details
+7 vulnerabilities (4 moderate, 2 high, 1 critical)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> gameweb@1.0.0 build
+> npm run build --workspace=shared && npm run build --workspaces --if-present
+> shared@1.0.0 build
+> tsc
+> client@1.0.0 build
+> vite build
+vite v5.4.21 building for production...
+transforming...
+✓ 19 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  6.19 kB │ gzip:   1.78 kB
+dist/assets/index-GoBpRTcz.js  110.24 kB │ gzip:  28.85 kB │ map:   357.69 kB
+dist/assets/three-CRhk35-X.js  535.25 kB │ gzip: 135.23 kB │ map: 1,998.97 kB
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.35s
+> server@1.0.0 build
+> tsc
+> shared@1.0.0 build
+> tsc
+==> Uploading build...
+==> Uploaded in 2.0s. Compression took 0.7s
+==> Build successful 🎉
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+==> Running 'npm start'
+> gameweb@1.0.0 start
+> npm run start --workspace=server
+> server@1.0.0 start
+> node dist/index.js
+(node:94) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Database tables initialized
+✓ Database initialized
+✓ Server running on port 10000
+✓ WebSocket server ready at ws://0.0.0.0:10000/ws
+==> Your service is live 🎉
+==> 
+==> ///////////////////////////////////////////////////////////
+==> 
+==> Available at your primary URL https://basagrams.onrender.com
+==> 
+==> ///////////////////////////////////////////////////////////
+User slaughter authenticated
+[JOIN_SERVER] Request from user: e8622600-4b5d-4482-a1a9-35cf1707f38a to server: cba17c74-9dcc-437c-b225-dd8ee6c554ae
+[JOIN_SERVER] Result: {
+  success: true,
+  server: {
+    id: 'cba17c74-9dcc-437c-b225-dd8ee6c554ae',
+    currentPlayers: 1,
+    name: 'test',
+    map: 'arena',
+    maxPlayers: 10,
+    hasPassword: false
+  },
+  gameState: {
+    serverId: 'cba17c74-9dcc-437c-b225-dd8ee6c554ae',
+    phase: 'lobby',
+    timer: 0,
+    players: { 'e8622600-4b5d-4482-a1a9-35cf1707f38a': [Object] },
+    score: { hunters: 0, props: 0 }
+  }
+}
+[JOIN_SERVER] Success! Sending response...
