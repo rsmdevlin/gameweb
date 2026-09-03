@@ -168,9 +168,9 @@ export class MobileControls {
   }
 
   private setupJoystick() {
-    const handleMove = (clientX: number, clientY: number) => {
-      if (!this.isJoystickActive) return;
+    let joystickTouchId: number | null = null;
 
+    const handleMove = (clientX: number, clientY: number) => {
       const rect = this.joystickBase.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -189,37 +189,71 @@ export class MobileControls {
       this.joystickKnob.style.transform = `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px))`;
 
       this.moveX = deltaX / maxDistance;
-      this.moveY = deltaY / maxDistance;
+      this.moveY = -deltaY / maxDistance; // Invert Y so up = forward
 
       if (this.callbacks.onMove) {
         this.callbacks.onMove(this.moveX, this.moveY);
       }
     };
 
+    const resetJoystick = () => {
+      joystickTouchId = null;
+      this.isJoystickActive = false;
+      this.joystickKnob.style.transform = 'translate(-50%, -50%)';
+      this.moveX = 0;
+      this.moveY = 0;
+
+      if (this.callbacks.onMove) {
+        this.callbacks.onMove(0, 0);
+      }
+    };
+
     this.joystickBase.addEventListener('touchstart', (e) => {
       e.preventDefault();
-      this.isJoystickActive = true;
-      const touch = e.touches[0];
-      handleMove(touch.clientX, touch.clientY);
-    });
+      e.stopPropagation();
+
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        joystickTouchId = touch.identifier;
+        this.isJoystickActive = true;
+        handleMove(touch.clientX, touch.clientY);
+      }
+    }, { passive: false });
 
     document.addEventListener('touchmove', (e) => {
-      if (this.isJoystickActive && e.touches.length > 0) {
-        const touch = e.touches[0];
-        handleMove(touch.clientX, touch.clientY);
+      if (!this.isJoystickActive || joystickTouchId === null) return;
+
+      // Find the touch that belongs to the joystick
+      for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        if (touch.identifier === joystickTouchId) {
+          e.preventDefault();
+          handleMove(touch.clientX, touch.clientY);
+          break;
+        }
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchend', (e) => {
+      if (!this.isJoystickActive || joystickTouchId === null) return;
+
+      // Check if the joystick touch ended
+      let joystickEnded = true;
+      for (let i = 0; i < e.touches.length; i++) {
+        if (e.touches[i].identifier === joystickTouchId) {
+          joystickEnded = false;
+          break;
+        }
+      }
+
+      if (joystickEnded) {
+        resetJoystick();
       }
     });
 
-    document.addEventListener('touchend', () => {
+    document.addEventListener('touchcancel', () => {
       if (this.isJoystickActive) {
-        this.isJoystickActive = false;
-        this.joystickKnob.style.transform = 'translate(-50%, -50%)';
-        this.moveX = 0;
-        this.moveY = 0;
-
-        if (this.callbacks.onMove) {
-          this.callbacks.onMove(0, 0);
-        }
+        resetJoystick();
       }
     });
   }
