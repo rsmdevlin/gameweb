@@ -297,11 +297,15 @@ export class GameRenderer {
   private async createPlayerMesh(playerId: string, player: Player) {
     // Try to load CesiumMan model from CDN
     try {
-      const assetManager = new (await import('../game/AssetManager.js')).AssetManager();
+      const { AssetManager } = await import('../game/AssetManager.js');
+      const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
+
+      const assetManager = new AssetManager();
       const characterAsset = assetManager.characterModels[0]; // CesiumMan
+      const loader = new GLTFLoader();
 
       const gltf = await new Promise<any>((resolve, reject) => {
-        new (await import('three/examples/jsm/loaders/GLTFLoader.js')).GLTFLoader().load(
+        loader.load(
           characterAsset.path,
           resolve,
           undefined,
