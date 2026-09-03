@@ -15,7 +15,7 @@ class App {
   private mainMenu: MainMenu | null = null;
   private serverBrowser: ServerBrowser | null = null;
   private lobby: Lobby | null = null;
-  private currentUser: { username: string; token: string } | null = null;
+  private currentUser: { username: string; token: string; userId?: string } | null = null;
   private currentServer: GameServer | null = null;
 
   constructor() {
@@ -219,7 +219,12 @@ class App {
     // Initialize game client
     this.gameClient = new GameClient(WS_URL, this.currentUser.token);
 
-    this.gameClient.on('connected', () => {
+    this.gameClient.on('connected', (data: any) => {
+      // Save userId from auth
+      if (data?.userId && this.currentUser) {
+        this.currentUser.userId = data.userId;
+      }
+
       // Send join server request
       this.gameClient?.send({
         type: MessageType.JOIN_SERVER,
@@ -283,7 +288,7 @@ class App {
     }
 
     this.lobby.setServerInfo(server.name, server.map, server.maxPlayers);
-    this.lobby.setHost(server.hostId === this.currentUser?.token);
+    this.lobby.setHost(server.hostId === this.currentUser?.userId);
     this.lobby.updatePlayers(gameState.players, server.hostId, server.maxPlayers);
     this.lobby.show();
   }

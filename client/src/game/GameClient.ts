@@ -56,7 +56,7 @@ export class GameClient {
       case MessageType.AUTH_SUCCESS:
         console.log('Authenticated:', message.data);
         this.localPlayerId = message.data.userId;
-        this.emit('connected');
+        this.emit('connected', { userId: message.data.userId });
         break;
 
       case MessageType.AUTH_FAILED:

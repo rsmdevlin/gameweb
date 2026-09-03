@@ -46,12 +46,203 @@
   .auth-switch {
     font-size: 14px !important;
   }
+
+  /* Main Menu Mobile */
+  .menu-container {
+    width: 95% !important;
+    padding: 20px !important;
+    max-width: none !important;
+  }
+
+  .game-title {
+    font-size: 32px !important;
+  }
+
+  .game-subtitle {
+    font-size: 14px !important;
+  }
+
+  .menu-btn {
+    padding: 14px 20px !important;
+    font-size: 16px !important;
+    min-height: 50px !important;
+  }
+
+  .btn-icon {
+    font-size: 20px !important;
+  }
+
+  .btn-text {
+    font-size: 16px !important;
+  }
+
+  /* Server Browser Mobile */
+  .browser-container {
+    width: 95% !important;
+    padding: 16px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+
+  .browser-header h2 {
+    font-size: 20px !important;
+  }
+
+  .create-server-btn, .refresh-btn, .back-btn {
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+    min-height: 44px !important;
+  }
+
+  .server-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .server-card {
+    padding: 14px !important;
+  }
+
+  .server-name {
+    font-size: 16px !important;
+  }
+
+  .server-info {
+    font-size: 13px !important;
+  }
+
+  .join-btn {
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    min-height: 40px !important;
+  }
+
+  /* Modal Mobile */
+  .modal-content {
+    width: 95% !important;
+    max-width: none !important;
+    padding: 20px !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+  }
+
+  .modal-content h3 {
+    font-size: 18px !important;
+  }
+
+  .modal-input {
+    padding: 10px !important;
+    font-size: 16px !important;
+  }
+
+  .modal-btn {
+    padding: 12px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
+  }
+
+  /* Lobby Mobile */
+  .lobby-container {
+    width: 95% !important;
+    max-width: none !important;
+    padding: 16px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+
+  .lobby-header h2 {
+    font-size: 20px !important;
+  }
+
+  .server-details {
+    font-size: 13px !important;
+  }
+
+  .players-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .player-card {
+    padding: 12px !important;
+  }
+
+  .player-name {
+    font-size: 15px !important;
+  }
+
+  /* Lobby Chat Mobile - FIX */
+  .lobby-chat {
+    max-height: 200px !important;
+    min-height: 150px !important;
+  }
+
+  .chat-messages {
+    max-height: 140px !important;
+    font-size: 13px !important;
+  }
+
+  .chat-input-container {
+    padding: 8px !important;
+  }
+
+  .chat-input {
+    padding: 8px !important;
+    font-size: 15px !important;
+  }
+
+  .chat-send-btn {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+    min-width: 60px !important;
+  }
+
+  .lobby-actions {
+    gap: 8px !important;
+  }
+
+  .lobby-btn {
+    padding: 12px !important;
+    font-size: 15px !important;
+    min-height: 48px !important;
+  }
+
+  .start-btn {
+    font-size: 16px !important;
+  }
 }
 
 /* Portrait mode - stack vertically */
 @media (max-width: 768px) and (orientation: portrait) {
   .auth-box {
     width: 90% !important;
+  }
+
+  .menu-container {
+    width: 90% !important;
+  }
+
+  .browser-container {
+    width: 90% !important;
+    max-height: 80vh !important;
+  }
+
+  .lobby-container {
+    width: 90% !important;
+    max-height: 80vh !important;
+  }
+
+  /* Stack buttons vertically in portrait */
+  .menu-buttons {
+    gap: 12px !important;
+  }
+
+  .lobby-actions {
+    flex-direction: column !important;
+  }
+
+  .lobby-btn {
+    width: 100% !important;
   }
 }
 
@@ -74,6 +265,33 @@
   .btn {
     padding: 10px !important;
   }
+
+  .menu-container {
+    max-width: 600px !important;
+    padding: 20px !important;
+  }
+
+  .game-title {
+    font-size: 28px !important;
+  }
+
+  .menu-btn {
+    padding: 12px 18px !important;
+  }
+
+  .browser-container {
+    max-width: 700px !important;
+    max-height: 75vh !important;
+  }
+
+  .lobby-container {
+    max-width: 700px !important;
+    max-height: 75vh !important;
+  }
+
+  .lobby-chat {
+    max-height: 150px !important;
+  }
 }
 
 /* Very small screens (phones in portrait) */
@@ -89,4 +307,21 @@
   .input-group input {
     padding: 8px !important;
   }
+
+  .menu-container {
+    padding: 16px !important;
+  }
+
+  .game-title {
+    font-size: 28px !important;
+  }
+
+  .browser-container {
+    padding: 12px !important;
+  }
+
+  .lobby-container {
+    padding: 12px !important;
+  }
 }
+
