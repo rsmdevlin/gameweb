@@ -63,40 +63,25 @@ export class GameRenderer {
     const isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const isLowEnd = isMobile || navigator.hardwareConcurrency <= 4;
 
-    // Renderer setup
+    // Renderer setup - ultra low quality for performance
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Lower pixel ratio for performance
-    const pixelRatio = isLowEnd ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio;
+    // Lower pixel ratio drastically for performance
+    const pixelRatio = isMobile ? 1 : Math.min(window.devicePixelRatio, 1.5);
     this.renderer.setPixelRatio(pixelRatio);
 
-    // Shadows only on desktop
-    this.renderer.shadowMap.enabled = !isMobile;
-    if (this.renderer.shadowMap.enabled) {
-      this.renderer.shadowMap.type = THREE.BasicShadowMap; // Faster than PCFSoft
-    }
+    // No shadows at all - huge performance gain
+    this.renderer.shadowMap.enabled = false;
 
     // Scene setup
     this.scene.background = new THREE.Color(0x87CEEB);
 
-    // Reduce fog distance on mobile
-    const fogFar = isLowEnd ? 100 : 200;
-    this.scene.fog = new THREE.Fog(0x87CEEB, 30, fogFar);
+    // Minimal fog
+    this.scene.fog = new THREE.Fog(0x87CEEB, 20, 80);
 
-    // Lighting - simplified for performance
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    // Only ambient light - no directional for performance
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     this.scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(50, 50, 50);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.camera.left = -50;
-    directionalLight.shadow.camera.right = 50;
-    directionalLight.shadow.camera.top = 50;
-    directionalLight.shadow.camera.bottom = -50;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    this.scene.add(directionalLight);
 
     // Ground and props loaded by MapManager
     this.mapManager.loadMap('arena', this.scene);
@@ -294,60 +279,26 @@ export class GameRenderer {
     this.hud.addChatMessage(username, message);
   }
 
-  private async createPlayerMesh(playerId: string, player: Player) {
-    // Try to load CesiumMan model from CDN
-    try {
-      const { AssetManager } = await import('../game/AssetManager.js');
-      const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
+  private createPlayerMesh(playerId: string, player: Player) {
+    // Ultra-optimized low-poly capsule - 4 segments only
+    const geometry = new THREE.CapsuleGeometry(0.5, 1, 4, 8);
+    const material = new THREE.MeshStandardMaterial({
+      color: player.team === 'hunter' ? 0xff4444 : 0x4444ff,
+      flatShading: true // Faster rendering
+    });
 
-      const assetManager = new AssetManager();
-      const characterAsset = assetManager.characterModels[0]; // CesiumMan
-      const loader = new GLTFLoader();
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(player.position.x, player.position.y, player.position.z);
 
-      const gltf = await new Promise<any>((resolve, reject) => {
-        loader.load(
-          characterAsset.path,
-          resolve,
-          undefined,
-          reject
-        );
-      });
-
-      const model = gltf.scene;
-      model.scale.set(characterAsset.scale, characterAsset.scale, characterAsset.scale);
-      model.position.set(player.position.x, player.position.y, player.position.z);
-
-      // Color by team
-      model.traverse((child: any) => {
-        if (child.isMesh) {
-          child.material = child.material.clone();
-          child.material.color.setHex(player.team === 'hunter' ? 0xff4444 : 0x4444ff);
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
-
-      this.players.set(playerId, model);
-      this.scene.add(model);
-
-      console.log(`Loaded CesiumMan model for player ${playerId}`);
-    } catch (error) {
-      console.warn('Failed to load CDN model, using fallback:', error);
-
-      // Fallback to simple capsule
-      const geometry = new THREE.CapsuleGeometry(0.5, 1, 8, 16);
-      const material = new THREE.MeshStandardMaterial({
-        color: player.team === 'hunter' ? 0xff4444 : 0x4444ff
-      });
-
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(player.position.x, player.position.y, player.position.z);
+    // No shadows on mobile for performance
+    const isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!isMobile) {
       mesh.castShadow = true;
       mesh.receiveShadow = true;
-
-      this.players.set(playerId, mesh);
-      this.scene.add(mesh);
     }
+
+    this.players.set(playerId, mesh);
+    this.scene.add(mesh);
   }
 
   private updatePlayerMesh(playerId: string, player: Player) {
