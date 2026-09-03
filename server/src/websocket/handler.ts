@@ -161,6 +161,16 @@ function handleCreateServer(ws: AuthenticatedWebSocket, data: any) {
 function handleJoinServer(ws: AuthenticatedWebSocket, data: { serverId: string; password?: string }) {
   if (!ws.userId || !ws.username) return;
 
+  if (!gameManager) {
+    console.error('GameManager not initialized!');
+    sendMessage(ws, {
+      type: MessageType.ERROR,
+      data: { error: 'Server not ready' },
+      timestamp: Date.now()
+    });
+    return;
+  }
+
   const result = gameManager.joinServer(ws.userId, ws.username, ws, data.serverId, data.password);
 
   if (!result.success) {
