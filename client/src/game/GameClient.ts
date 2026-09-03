@@ -93,8 +93,12 @@ export class GameClient {
 
       case MessageType.START_GAME:
         console.log('Game starting...');
-        this.initRenderer();
         this.emit('game_started');
+
+        // Initialize renderer after screen is shown
+        setTimeout(() => {
+          this.initRenderer();
+        }, 150);
         break;
 
       case MessageType.PLAYER_DAMAGE:
