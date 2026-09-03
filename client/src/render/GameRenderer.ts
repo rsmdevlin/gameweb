@@ -413,7 +413,28 @@ export class GameRenderer {
   }
 
   dispose() {
-    this.renderer.dispose();
+    // Stop animation loop
+    if (this.renderer) {
+      this.renderer.dispose();
+    }
+
+    // Hide and clean up mobile controls
+    if (this.mobileControls) {
+      this.mobileControls.hide();
+    }
+
+    // Hide and clean up HUD
+    if (this.hud) {
+      this.hud.hide();
+    }
+
+    // Remove event listeners
     window.removeEventListener('resize', () => this.onWindowResize());
+
+    // Clear scene
+    this.scene.clear();
+
+    // Clear player meshes
+    this.players.clear();
   }
 }

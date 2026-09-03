@@ -273,6 +273,13 @@ class App {
             data: {},
             timestamp: Date.now()
           });
+
+          // Clean up game client (renderer, mobile controls, HUD)
+          if (this.gameClient) {
+            this.gameClient.disconnect();
+            this.gameClient = null;
+          }
+
           this.lobby?.hide();
           this.showServerBrowser();
         }
