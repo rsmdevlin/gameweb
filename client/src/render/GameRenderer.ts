@@ -177,9 +177,80 @@ export class GameRenderer {
     // Mouse click for attack
     this.canvas.addEventListener('mousedown', (e) => {
       if (e.button === 0 && this.isPointerLocked) {
-        this.emit('attack', null); // Raycast target later
+        this.emit('attack', null);
       }
     });
+
+    // Touch camera rotation for mobile
+    let lastTouchX = 0;
+    let lastTouchY = 0;
+    let isCameraTouch = false;
+    let cameraTouchId: number | null = null;
+
+    this.canvas.addEventListener('touchstart', (e) => {
+      // Find a touch that's not on UI elements (joystick/buttons)
+      for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const target = touch.target as HTMLElement;
+
+        // Skip if touch is on joystick or buttons
+        if (target.closest('.mobile-joystick') || target.closest('.mobile-buttons')) {
+          continue;
+        }
+
+        // This is a camera rotation touch
+        cameraTouchId = touch.identifier;
+        isCameraTouch = true;
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+        break;
+      }
+    }, { passive: true });
+
+    this.canvas.addEventListener('touchmove', (e) => {
+      if (!isCameraTouch || cameraTouchId === null) return;
+
+      // Find the camera touch
+      for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        if (touch.identifier === cameraTouchId) {
+          const deltaX = touch.clientX - lastTouchX;
+          const deltaY = touch.clientY - lastTouchY;
+
+          this.mouseX -= deltaX * 0.005;
+          this.mouseY -= deltaY * 0.005;
+          this.mouseY = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, this.mouseY));
+
+          lastTouchX = touch.clientX;
+          lastTouchY = touch.clientY;
+          break;
+        }
+      }
+    }, { passive: true });
+
+    const resetCameraTouch = () => {
+      isCameraTouch = false;
+      cameraTouchId = null;
+    };
+
+    this.canvas.addEventListener('touchend', (e) => {
+      if (!isCameraTouch || cameraTouchId === null) return;
+
+      // Check if camera touch ended
+      let cameraEnded = true;
+      for (let i = 0; i < e.touches.length; i++) {
+        if (e.touches[i].identifier === cameraTouchId) {
+          cameraEnded = false;
+          break;
+        }
+      }
+
+      if (cameraEnded) {
+        resetCameraTouch();
+      }
+    }, { passive: true });
+
+    this.canvas.addEventListener('touchcancel', resetCameraTouch, { passive: true });
   }
 
   updateGameState(gameState: GameState) {
