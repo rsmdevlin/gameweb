@@ -53,13 +53,46 @@ When adding new assets:
 
 ## Current Asset List
 
+### Characters
+
+1. **SimplePerson Character Model**
+   - Source: Quaternius (https://quaternius.com)
+   - License: CC0 1.0 Universal (Public Domain)
+   - Format: .glb
+   - Features: Rigged with idle/walk/run/jump animations
+   - Path: `/public/assets/models/character.glb`
+   - Attribution: Not required (CC0)
+   - Fallback: Procedural capsule + sphere geometry
+
+### Props
+
+1. **Barrel**
+   - Source: Quaternius (https://quaternius.com)
+   - License: CC0 1.0 Universal (Public Domain)
+   - Format: .glb
+   - Path: `/public/assets/models/barrel.glb`
+   - Fallback: Procedural cylinder
+
+2. **Crate**
+   - Source: Quaternius (https://quaternius.com)
+   - License: CC0 1.0 Universal (Public Domain)
+   - Format: .glb
+   - Path: `/public/assets/models/crate.glb`
+   - Fallback: Procedural box
+
+3. **Box**
+   - Source: Quaternius (https://quaternius.com)
+   - License: CC0 1.0 Universal (Public Domain)
+   - Format: .glb
+   - Path: `/public/assets/models/box.glb`
+   - Fallback: Procedural box
+
 ### Map: Default Arena
 
 - **Ground Plane**: Generated geometry (Project original)
 - **Props Collection**: 
-  - 10x Boxes (Generated)
-  - 10x Spheres (Generated)
-  - 5x Cones (Generated)
+  - Uses models listed above when available
+  - Falls back to procedural geometry if models not loaded
   - Material: Brown wood-like standard material
 
 ## Future Asset Plans

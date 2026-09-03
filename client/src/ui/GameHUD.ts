@@ -93,11 +93,15 @@ export class GameHUD {
       }
 
       .timer, .phase, .score {
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
         padding: 15px 25px;
-        border-radius: 8px;
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
         color: white;
         text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      }
       }
 
       .timer-label {

@@ -53,6 +53,10 @@ export enum MessageType {
   JOIN_SERVER = 'join_server',
   LEAVE_SERVER = 'leave_server',
 
+  // Lobby
+  PLAYER_JOINED = 'player_joined',
+  PLAYER_LEFT = 'player_left',
+
   // Game state
   GAME_STATE = 'game_state',
   PLAYER_MOVE = 'player_move',
@@ -60,6 +64,10 @@ export enum MessageType {
   PLAYER_ATTACK = 'player_attack',
   PLAYER_DAMAGE = 'player_damage',
   PLAYER_DEATH = 'player_death',
+
+  // Round system
+  ROUND_START = 'round_start',
+  ROUND_END = 'round_end',
 
   // Chat
   CHAT_MESSAGE = 'chat_message',

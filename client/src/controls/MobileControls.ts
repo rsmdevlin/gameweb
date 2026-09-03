@@ -59,23 +59,27 @@ export class MobileControls {
       .joystick-base {
         width: 120px;
         height: 120px;
-        background: rgba(255, 255, 255, 0.3);
-        border: 3px solid rgba(255, 255, 255, 0.6);
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border: 3px solid rgba(126, 34, 206, 0.6);
         border-radius: 50%;
         position: relative;
         touch-action: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
       }
 
       .joystick-knob {
         width: 50px;
         height: 50px;
-        background: rgba(255, 255, 255, 0.8);
+        background: linear-gradient(135deg, #7e22ce 0%, #be185d 100%);
+        border: 2px solid rgba(255, 255, 255, 0.8);
         border-radius: 50%;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         transition: all 0.1s;
+        box-shadow: 0 2px 10px rgba(126, 34, 206, 0.5);
       }
 
       .mobile-buttons {
@@ -95,9 +99,27 @@ export class MobileControls {
       .mobile-button {
         width: 70px;
         height: 70px;
-        background: rgba(255, 255, 255, 0.3);
-        border: 3px solid rgba(255, 255, 255, 0.6);
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border: 3px solid rgba(126, 34, 206, 0.6);
         border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        cursor: pointer;
+        touch-action: none;
+        transition: all 0.2s;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .mobile-button:active {
+        transform: scale(0.9);
+        background: linear-gradient(135deg, #7e22ce 0%, #be185d 100%);
+        border-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 10px rgba(126, 34, 206, 0.7);
+      }
         display: flex;
         align-items: center;
         justify-content: center;

@@ -56,7 +56,6 @@ export class GameClient {
       case MessageType.AUTH_SUCCESS:
         console.log('Authenticated:', message.data);
         this.localPlayerId = message.data.userId;
-        this.initRenderer();
         this.emit('connected');
         break;
 
@@ -65,23 +64,57 @@ export class GameClient {
         this.emit('error', message.data);
         break;
 
+      case MessageType.JOIN_SERVER:
+        console.log('Joined server:', message.data);
+        this.emit('joined_server', message.data);
+        break;
+
       case MessageType.GAME_STATE:
         this.gameState = message.data;
         if (this.renderer && this.gameState) {
           this.renderer.updateGameState(this.gameState);
         }
+        this.emit('game_state', this.gameState);
         break;
 
       case MessageType.SERVER_LIST:
         this.emit('serverList', message.data.servers);
         break;
 
+      case MessageType.PLAYER_JOINED:
+        console.log('Player joined:', message.data);
+        this.emit('lobby_update', message.data);
+        break;
+
+      case MessageType.PLAYER_LEFT:
+        console.log('Player left:', message.data);
+        this.emit('lobby_update', message.data);
+        break;
+
+      case MessageType.START_GAME:
+        console.log('Game starting...');
+        this.initRenderer();
+        this.emit('game_started');
+        break;
+
       case MessageType.PLAYER_DAMAGE:
         console.log('Player damaged:', message.data);
+        this.emit('player_damage', message.data);
         break;
 
       case MessageType.PLAYER_DEATH:
         console.log('Player died:', message.data);
+        this.emit('player_death', message.data);
+        break;
+
+      case MessageType.ROUND_START:
+        console.log('Round started:', message.data);
+        this.emit('round_start', message.data);
+        break;
+
+      case MessageType.ROUND_END:
+        console.log('Round ended:', message.data);
+        this.emit('round_end', message.data);
         break;
 
       case MessageType.CHAT_MESSAGE:

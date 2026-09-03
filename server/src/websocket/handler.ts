@@ -2,10 +2,14 @@ import { WebSocket } from 'ws';
 import type { IncomingMessage } from 'http';
 import jwt from 'jsonwebtoken';
 import { MessageType, type WSMessage } from 'shared';
-import { GameManager } from '../game/GameManager.js';
+import type { GameManager } from '../game/GameManager.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key';
-const gameManager = new GameManager();
+let gameManager: GameManager;
+
+export function setGameManagerForWS(manager: GameManager) {
+  gameManager = manager;
+}
 
 interface AuthenticatedWebSocket extends WebSocket {
   userId?: string;

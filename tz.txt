@@ -1,70 +1,73 @@
-==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 7a8e278a90f8b3d49d913976233ad83cb153ac8c in branch master
-==> Using Node.js version 24.14.1 (default)
-==> Docs on specifying a Node.js version: https://render.com/docs/node-version
-==> Running build command 'npm install && npm run build'...
-added 196 packages, and audited 200 packages in 15s
-26 packages are looking for funding
-  run `npm fund` for details
-7 vulnerabilities (4 moderate, 2 high, 1 critical)
-To address issues that do not require attention, run:
-  npm audit fix
-To address all issues (including breaking changes), run:
-  npm audit fix --force
-Run `npm audit` for details.
-> gameweb@1.0.0 build
-> npm run build --workspaces --if-present
-> client@1.0.0 build
-> vite build
-vite v5.4.21 building for production...
-transforming...
-✓ 16 modules transformed.
-rendering chunks...
-computing gzip size...
-dist/index.html                  6.19 kB │ gzip:   1.78 kB
-dist/assets/index-Ds6KkA7z.js   75.67 kB │ gzip:  21.92 kB │ map:   296.00 kB
-dist/assets/three-DoD-hQDL.js  534.97 kB │ gzip: 135.18 kB │ map: 1,998.62 kB
-(!) Some chunks are larger than 500 kB after minification. Consider:
-- Using dynamic import() to code-split the application
-- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
-- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 1.29s
-> server@1.0.0 build
-> tsc
-==> Uploading build...
-==> Uploaded in 2.4s. Compression took 0.3s
-==> Build successful 🎉
-==> Deploying...
-==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
-==> Running 'npm start'
-> gameweb@1.0.0 start
-> npm run start --workspace=server
-> server@1.0.0 start
-> node dist/index.js
-node:internal/modules/esm/resolve:275
-    throw new ERR_MODULE_NOT_FOUND(
-          ^
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/opt/render/project/src/shared/src/types.js' imported from /opt/render/project/src/shared/src/index.ts
-    at finalizeResolution (node:internal/modules/esm/resolve:275:11)
-    at moduleResolve (node:internal/modules/esm/resolve:865:10)
-    at defaultResolve (node:internal/modules/esm/resolve:991:11)
-    at #cachedDefaultResolve (node:internal/modules/esm/loader:719:20)
-    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:736:38)
-    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:765:52)
-    at #resolve (node:internal/modules/esm/loader:701:17)
-    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:621:35)
-    at ModuleJob.syncLink (node:internal/modules/esm/module_job:160:33)
-    at ModuleJob.link (node:internal/modules/esm/module_job:245:17) {
-  code: 'ERR_MODULE_NOT_FOUND',
-  url: 'file:///opt/render/project/src/shared/src/types.js'
-}
-Node.js v24.14.1
-npm error Lifecycle script `start` failed with error:
-npm error code 1
-npm error path /opt/render/project/src/server
-npm error workspace server@1.0.0
-npm error location /opt/render/project/src/server
-npm error command failed
-npm error command sh -c node dist/index.js
-==> Exited with status 1
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+СТОП. Не считай текущую игру готовой.
+
+Я посмотрел текущий результат в браузере. Сейчас это технический прототип: зелёная плоскость, примитивы, простой HUD. Это НЕ та игра, которую я просил.
+
+Backend уже работает — его не нужно заново переписывать без необходимости. Теперь основной приоритет — реально сделать frontend игры и gameplay.
+
+Что нужно сделать сейчас:
+
+Убрать текущий кринжовый prototype-look.
+Сделать полноценное красивое главное меню/лаунчер:
+PLAY
+SERVER BROWSER
+PROFILE
+SETTINGS
+LOGOUT
+Сделать нормальный Server Browser и Create Server, подключенные к уже работающему backend.
+Сделать Lobby с игроками и кнопкой Start.
+Сделать настоящую 3D игру:
+нормальный third-person персонаж;
+качественная 3D модель персонажа;
+idle/walk/run/jump animations;
+нормальная камера;
+WASD + mouse;
+реальные 3D объекты и окружение;
+нормальное освещение;
+тени;
+атмосферная карта.
+Реализовать настоящий Prop Hunt:
+сервер назначает Hunter/Prop;
+Prop превращается в реальные объекты карты;
+Prop может двигаться и прятаться;
+Hunter может искать и атаковать;
+damage/death;
+spectator;
+round timer;
+win/lose;
+score.
+Подключить это к существующему WebSocket multiplayer, чтобы два браузера реально видели друг друга и синхронизировались.
+Добавить нормальный игровой HUD и realtime chat.
+Сделать mobile landscape controls.
+Использовать реальные качественные лицензированные GLB/GLTF assets, а не кубы и примитивы. Лицензии записывать в ASSETS.md.
+
+ВАЖНО:
+
+Не делай очередную демонстрацию Three.js.
+
+Не оставляй зелёную плоскость и набор случайных кубов как финальную карту.
+
+Не делай fake multiplayer.
+
+Не заменяй настоящие модели placeholder-геометрией.
+
+Не останавливайся на UI или одной сцене.
+
+Работай по приоритету:
+
+MENU → SERVER BROWSER → LOBBY → CHARACTER → MAP → PROP SYSTEM → HUNTER → ROUND SYSTEM → MULTIPLAYER → POLISH
+
+После каждого законченного этапа запускай проект и проверяй его в браузере.
+
+Если backend уже работает — используй его API/WebSocket, а не переписывай всё заново.
+
+Когда закончишь, игра должна выглядеть как начало настоящей коммерческой browser 3D game, а не как Three.js test scene.
+
+После работы обязательно:
+
+build;
+test;
+проверить запуск;
+git commit;
+git push.
+
+Не говори "готово", пока реально не проверил результат в браузере.

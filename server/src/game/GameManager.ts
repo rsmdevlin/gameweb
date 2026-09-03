@@ -95,10 +95,13 @@ export class GameManager {
     serverData.gameState.players[userId] = player;
     serverData.server.currentPlayers++;
 
-    // Broadcast new player to others
+    // Broadcast player joined event
     this.broadcastToServer(serverId, {
-      type: MessageType.GAME_STATE,
-      data: serverData.gameState,
+      type: MessageType.PLAYER_JOINED,
+      data: {
+        players: Object.values(serverData.gameState.players),
+        hostId: serverData.server.hostId
+      },
       timestamp: Date.now()
     });
 
@@ -138,15 +141,19 @@ export class GameManager {
       delete serverData.gameState.players[userId];
       serverData.server.currentPlayers--;
 
+      // Broadcast player left event
+      this.broadcastToServer(playerData.serverId, {
+        type: MessageType.PLAYER_LEFT,
+        data: {
+          players: Object.values(serverData.gameState.players),
+          hostId: serverData.server.hostId
+        },
+        timestamp: Date.now()
+      });
+
       // Remove empty servers
       if (serverData.server.currentPlayers === 0) {
         this.servers.delete(playerData.serverId);
-      } else {
-        this.broadcastToServer(playerData.serverId, {
-          type: MessageType.GAME_STATE,
-          data: serverData.gameState,
-          timestamp: Date.now()
-        });
       }
     }
 

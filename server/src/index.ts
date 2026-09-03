@@ -8,8 +8,10 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { initDatabase } from './database/init.js';
-import { handleWebSocket } from './websocket/handler.js';
+import { handleWebSocket, setGameManagerForWS } from './websocket/handler.js';
 import { authRouter } from './routes/auth.js';
+import { serversRouter, setGameManager } from './routes/servers.js';
+import { GameManager } from './game/GameManager.js';
 import type { IncomingMessage } from 'http';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,8 +32,14 @@ app.use(express.json());
 const clientPath = path.join(__dirname, '../../client/dist');
 app.use(express.static(clientPath));
 
+// Initialize GameManager
+const gameManager = new GameManager();
+setGameManager(gameManager);
+setGameManagerForWS(gameManager);
+
 // Routes
 app.use('/api/auth', authRouter);
+app.use('/api/servers', serversRouter);
 
 app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: Date.now() });
