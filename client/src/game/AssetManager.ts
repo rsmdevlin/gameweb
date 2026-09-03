@@ -14,43 +14,43 @@ export class AssetManager {
   private loader: GLTFLoader;
   private loadedModels: Map<string, THREE.Group> = new Map();
 
-  // Free character models from Mixamo/Quaternius/other CC0 sources
+  // Free character models - using CDN links to CC0 models
   public characterModels: ModelAsset[] = [
     {
-      name: 'SimplePerson',
-      path: '/assets/models/character.glb',
+      name: 'CesiumMan',
+      path: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb',
       scale: 1,
       license: 'CC0 1.0 Universal',
-      author: 'Quaternius',
-      source: 'https://quaternius.com'
+      author: 'Cesium',
+      source: 'https://github.com/KhronosGroup/glTF-Sample-Models'
     }
   ];
 
-  // Free prop models
+  // Free prop models - using CDN links
   public propModels: ModelAsset[] = [
     {
-      name: 'Barrel',
-      path: '/assets/models/barrel.glb',
-      scale: 1,
-      license: 'CC0 1.0 Universal',
-      author: 'Quaternius',
-      source: 'https://quaternius.com'
-    },
-    {
-      name: 'Crate',
-      path: '/assets/models/crate.glb',
-      scale: 1,
-      license: 'CC0 1.0 Universal',
-      author: 'Quaternius',
-      source: 'https://quaternius.com'
-    },
-    {
       name: 'Box',
-      path: '/assets/models/box.glb',
-      scale: 1,
+      path: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb',
+      scale: 0.5,
       license: 'CC0 1.0 Universal',
-      author: 'Quaternius',
-      source: 'https://quaternius.com'
+      author: 'Cesium',
+      source: 'https://github.com/KhronosGroup/glTF-Sample-Models'
+    },
+    {
+      name: 'BoxAnimated',
+      path: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb',
+      scale: 0.5,
+      license: 'CC0 1.0 Universal',
+      author: 'Cesium',
+      source: 'https://github.com/KhronosGroup/glTF-Sample-Models'
+    },
+    {
+      name: 'Cube',
+      path: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Cube/glTF-Binary/Cube.glb',
+      scale: 0.5,
+      license: 'CC0 1.0 Universal',
+      author: 'Cesium',
+      source: 'https://github.com/KhronosGroup/glTF-Sample-Models'
     }
   ];
 
