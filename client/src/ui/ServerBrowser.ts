@@ -5,6 +5,7 @@ export class ServerBrowser {
   private onJoinServer?: (serverId: string, password?: string) => void;
   private onCreateServer?: (config: { name: string; map: string; maxPlayers: number; password?: string }) => void;
   private onBack?: () => void;
+  private onRejoin?: () => void;
 
   constructor() {
     this.container = this.createBrowser();
@@ -18,6 +19,7 @@ export class ServerBrowser {
         <div class="browser-header">
           <button class="back-btn">← Back</button>
           <h2>Server Browser</h2>
+          <button class="rejoin-btn" style="display: none;">🔄 Rejoin Last Server</button>
           <button class="create-server-btn">+ Create Server</button>
         </div>
 
@@ -366,6 +368,18 @@ export class ServerBrowser {
       if (this.onBack) this.onBack();
     });
 
+    // Rejoin last server button
+    const rejoinBtn = browser.querySelector('.rejoin-btn');
+    rejoinBtn?.addEventListener('click', () => {
+      if (this.onRejoin) this.onRejoin();
+    });
+
+    // Show rejoin button if there's a saved server
+    const lastServer = localStorage.getItem('lastServer');
+    if (lastServer && rejoinBtn) {
+      (rejoinBtn as HTMLElement).style.display = 'block';
+    }
+
     // Create server button
     browser.querySelector('.create-server-btn')?.addEventListener('click', () => {
       this.showCreateModal();
@@ -489,6 +503,10 @@ export class ServerBrowser {
 
   onBackClick(callback: () => void) {
     this.onBack = callback;
+  }
+
+  onRejoinClick(callback: () => void) {
+    this.onRejoin = callback;
   }
 
   show() {

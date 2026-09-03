@@ -151,6 +151,14 @@ class App {
         this.showMainMenu();
       });
 
+      this.serverBrowser.onRejoinClick(() => {
+        const lastServer = localStorage.getItem('lastServer');
+        if (lastServer) {
+          const { serverId, password } = JSON.parse(lastServer);
+          this.joinServer(serverId, password);
+        }
+      });
+
       this.serverBrowser.onJoin((serverId, password) => {
         this.joinServer(serverId, password);
       });
@@ -215,6 +223,9 @@ class App {
 
     this.serverBrowser?.hide();
     this.showScreen('loading-screen');
+
+    // Save last server for reconnect
+    localStorage.setItem('lastServer', JSON.stringify({ serverId, password }));
 
     // Initialize game client
     this.gameClient = new GameClient(WS_URL, this.currentUser.token);
