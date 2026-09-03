@@ -294,19 +294,56 @@ export class GameRenderer {
     this.hud.addChatMessage(username, message);
   }
 
-  private createPlayerMesh(playerId: string, player: Player) {
-    const geometry = new THREE.CapsuleGeometry(0.5, 1, 8, 16);
-    const material = new THREE.MeshStandardMaterial({
-      color: player.team === 'hunter' ? 0xff4444 : 0x4444ff
-    });
+  private async createPlayerMesh(playerId: string, player: Player) {
+    // Try to load CesiumMan model from CDN
+    try {
+      const assetManager = new (await import('../game/AssetManager.js')).AssetManager();
+      const characterAsset = assetManager.characterModels[0]; // CesiumMan
 
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(player.position.x, player.position.y, player.position.z);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+      const gltf = await new Promise<any>((resolve, reject) => {
+        new (await import('three/examples/jsm/loaders/GLTFLoader.js')).GLTFLoader().load(
+          characterAsset.path,
+          resolve,
+          undefined,
+          reject
+        );
+      });
 
-    this.players.set(playerId, mesh);
-    this.scene.add(mesh);
+      const model = gltf.scene;
+      model.scale.set(characterAsset.scale, characterAsset.scale, characterAsset.scale);
+      model.position.set(player.position.x, player.position.y, player.position.z);
+
+      // Color by team
+      model.traverse((child: any) => {
+        if (child.isMesh) {
+          child.material = child.material.clone();
+          child.material.color.setHex(player.team === 'hunter' ? 0xff4444 : 0x4444ff);
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      this.players.set(playerId, model);
+      this.scene.add(model);
+
+      console.log(`Loaded CesiumMan model for player ${playerId}`);
+    } catch (error) {
+      console.warn('Failed to load CDN model, using fallback:', error);
+
+      // Fallback to simple capsule
+      const geometry = new THREE.CapsuleGeometry(0.5, 1, 8, 16);
+      const material = new THREE.MeshStandardMaterial({
+        color: player.team === 'hunter' ? 0xff4444 : 0x4444ff
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(player.position.x, player.position.y, player.position.z);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      this.players.set(playerId, mesh);
+      this.scene.add(mesh);
+    }
   }
 
   private updatePlayerMesh(playerId: string, player: Player) {
