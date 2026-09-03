@@ -45,7 +45,8 @@ export class GameRenderer {
     );
     this.renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: true
+      antialias: false, // Disable AA for performance
+      powerPreference: 'high-performance'
     });
 
     this.mobileControls = new MobileControls();
@@ -58,18 +59,32 @@ export class GameRenderer {
   }
 
   init() {
+    // Detect device performance tier
+    const isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isLowEnd = isMobile || navigator.hardwareConcurrency <= 4;
+
     // Renderer setup
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // Lower pixel ratio for performance
+    const pixelRatio = isLowEnd ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio;
+    this.renderer.setPixelRatio(pixelRatio);
+
+    // Shadows only on desktop
+    this.renderer.shadowMap.enabled = !isMobile;
+    if (this.renderer.shadowMap.enabled) {
+      this.renderer.shadowMap.type = THREE.BasicShadowMap; // Faster than PCFSoft
+    }
 
     // Scene setup
     this.scene.background = new THREE.Color(0x87CEEB);
-    this.scene.fog = new THREE.Fog(0x87CEEB, 50, 200);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // Reduce fog distance on mobile
+    const fogFar = isLowEnd ? 100 : 200;
+    this.scene.fog = new THREE.Fog(0x87CEEB, 30, fogFar);
+
+    // Lighting - simplified for performance
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     this.scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
