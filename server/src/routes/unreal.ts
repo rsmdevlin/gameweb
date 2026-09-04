@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import { authMiddleware, type AuthRequest } from '../middleware/auth.js';
 import type { UnrealServerManager } from '../game/UnrealServerManager.js';
 
 let unrealServerManager: UnrealServerManager;
@@ -11,7 +11,7 @@ export function setUnrealServerManager(manager: UnrealServerManager) {
 export const unrealRouter = Router();
 
 // Get Pixel Streaming URL for a game server
-unrealRouter.post('/allocate', authenticateToken, async (req: Request, res: Response) => {
+unrealRouter.post('/allocate', authMiddleware, async (req: AuthRequest, res: Response) => {
   const { serverId, maxPlayers } = req.body;
 
   if (!serverId || !maxPlayers) {
@@ -40,21 +40,21 @@ unrealRouter.post('/heartbeat', async (req: Request, res: Response) => {
 });
 
 // Get UE5 server status
-unrealRouter.get('/status', authenticateToken, async (req: Request, res: Response) => {
+unrealRouter.get('/status', authMiddleware, async (req: AuthRequest, res: Response) => {
   const status = unrealServerManager.getStatus();
   res.json(status);
 });
 
 // Join player to UE5 instance
-unrealRouter.post('/join', authenticateToken, async (req: Request, res: Response) => {
+unrealRouter.post('/join', authMiddleware, async (req: AuthRequest, res: Response) => {
   const { instanceId } = req.body;
-  const userId = (req as any).user.userId;
+  const userId = req.userId;
 
   if (!instanceId) {
     return res.status(400).json({ error: 'instanceId required' });
   }
 
-  const success = unrealServerManager.addPlayerToInstance(instanceId, userId);
+  const success = unrealServerManager.addPlayerToInstance(instanceId, userId!);
 
   if (!success) {
     return res.status(400).json({ error: 'Cannot join instance' });
@@ -64,14 +64,14 @@ unrealRouter.post('/join', authenticateToken, async (req: Request, res: Response
 });
 
 // Leave UE5 instance
-unrealRouter.post('/leave', authenticateToken, async (req: Request, res: Response) => {
+unrealRouter.post('/leave', authMiddleware, async (req: AuthRequest, res: Response) => {
   const { instanceId } = req.body;
-  const userId = (req as any).user.userId;
+  const userId = req.userId;
 
   if (!instanceId) {
     return res.status(400).json({ error: 'instanceId required' });
   }
 
-  unrealServerManager.removePlayerFromInstance(instanceId, userId);
+  unrealServerManager.removePlayerFromInstance(instanceId, userId!);
   res.json({ ok: true });
 });
