@@ -1,60 +1,549 @@
-==> Downloading cache...
-==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 94753064921fb92de01bad8c10180049cd7883dd in branch master
-==> Downloaded 69MB in 1s. Extraction took 2s.
-==> Using Node.js version 24.14.1 (default)
-==> Docs on specifying a Node.js version: https://render.com/docs/node-version
-==> Running build command 'npm install && npm run build'...
-up to date, audited 200 packages in 5s
-26 packages are looking for funding
-  run `npm fund` for details
-7 vulnerabilities (4 moderate, 2 high, 1 critical)
-To address issues that do not require attention, run:
-  npm audit fix
-To address all issues (including breaking changes), run:
-  npm audit fix --force
-Run `npm audit` for details.
-> gameweb@1.0.0 build
-> npm run build --workspace=shared && npm run build --workspaces --if-present
-> shared@1.0.0 build
-> tsc
-> client@1.0.0 build
-> vite build
-vite v5.4.21 building for production...
-transforming...
-✓ 12 modules transformed.
-x Build failed in 77ms
-error during build:
-[vite:esbuild] Transform failed with 1 error:
-/opt/render/project/src/client/src/render/GameRenderer.ts:304:13: ERROR: "await" can only be used inside an "async" function
-file: /opt/render/project/src/client/src/render/GameRenderer.ts:304:13
-"await" can only be used inside an "async" function
-302|  
-303|        const gltf = await new Promise<any>((resolve, reject) => {
-304|          new (await import('three/examples/jsm/loaders/GLTFLoader.js')).GLTFLoader().load(
-   |               ^
-305|            characterAsset.path,
-306|            resolve,
-    at failureErrorWithLog (/opt/render/project/src/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
-    at /opt/render/project/src/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
-    at responseCallbacks.<computed> (/opt/render/project/src/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
-    at handleIncomingPacket (/opt/render/project/src/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
-    at Socket.readFromStdout (/opt/render/project/src/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
-    at Socket.emit (node:events:508:28)
-    at addChunk (node:internal/streams/readable:563:12)
-    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
-    at Readable.push (node:internal/streams/readable:394:5)
-    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
-npm error Lifecycle script `build` failed with error:
-npm error code 1
-npm error path /opt/render/project/src/client
-npm error workspace client@1.0.0
-npm error location /opt/render/project/src/client
-npm error command failed
-npm error command sh -c vite build
-> server@1.0.0 build
-> tsc
-> shared@1.0.0 build
-> tsc
-==> Build failed 😞
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+Мы меняем направление проекта: делаем игру на **Unreal Engine 5**.
+
+GitHub repo:
+`rsmdevlin/gameweb`
+
+Цель текущего этапа — сделать **красивый, реально играемый Vertical Slice 3D Multiplayer Prop Hunt**, а не технический prototype.
+
+## АРХИТЕКТУРА
+
+Unreal Engine 5:
+
+* вся 3D игра;
+* персонажи;
+* карта;
+* анимации;
+* камера;
+* Prop Hunt gameplay;
+* физика;
+* VFX;
+* звук;
+* UI игры.
+
+Наш существующий backend:
+
+* Node.js;
+* WebSocket;
+* MySQL через `DATABASE_URL`;
+* authentication;
+* accounts;
+* rooms;
+* lobby;
+* chat;
+* player/game state.
+
+Render:
+
+* backend;
+* MySQL connection;
+* API/WebSocket.
+
+GPU server:
+
+* Unreal Engine 5;
+* Pixel Streaming;
+* WebRTC для браузера.
+
+GitHub хранит Unreal project + backend + web/Pixel Streaming integration.
+
+---
+
+# ЧТО СДЕЛАТЬ СЕЙЧАС
+
+Не пытайся сразу создать 20 карт и 100 механик.
+
+Сделай **один очень качественный Vertical Slice**, который показывает конечное качество игры.
+
+Игровой flow:
+
+LOGIN
+→ MAIN MENU
+→ SERVERS
+→ CREATE/JOIN SERVER
+→ LOBBY
+→ START
+→ UNREAL 3D GAME
+→ ROUND
+→ RESULT
+→ LOBBY
+
+---
+
+# 1. MAIN MENU
+
+Сделай красивый игровой launcher-style интерфейс.
+
+Не стандартный HTML prototype.
+
+Стиль:
+
+* dark;
+* cinematic;
+* modern;
+* premium;
+* плавные transitions;
+* красивые кнопки;
+* background с живой 3D сценой/атмосферой.
+
+Кнопки:
+
+PLAY
+PROFILE
+SETTINGS
+QUIT/LOGOUT
+
+---
+
+# 2. SERVER BROWSER
+
+Реальные комнаты через существующий backend.
+
+Показывать:
+
+Server Name
+Players
+Max Players
+Map
+Mode
+Password
+JOIN
+
+Создание:
+
+Server Name
+Password optional
+Max Players
+Map
+Mode
+
+---
+
+# 3. LOBBY
+
+Красивое multiplayer lobby.
+
+Показывать реальные подключённые аккаунты.
+
+Например:
+
+PLAYER 1
+PLAYER 2
+PLAYER 3
+
+Ready status.
+
+Owner может START GAME.
+
+---
+
+# 4. UNREAL GAME
+
+Сделай полноценную 3D сцену.
+
+НЕ использовать зелёную плоскость и набор кубов как финальный результат.
+
+Нужна атмосферная карта.
+
+Например:
+
+## ABANDONED HOTEL
+
+Небольшая, но детально сделанная карта:
+
+* lobby;
+* corridors;
+* rooms;
+* furniture;
+* reception;
+* kitchen;
+* storage;
+* stairs;
+* basement;
+* декоративные объекты;
+* believable lighting.
+
+Главное — не размер, а качество.
+
+---
+
+# 5. 3D CHARACTER
+
+Используй качественную готовую модель персонажа с разрешённой лицензией.
+
+Нужны:
+
+Idle
+Walk
+Run
+Jump
+Fall
+Land
+Attack
+Death
+
+Third-person camera.
+
+Нормальная камера:
+
+* smooth follow;
+* collision;
+* camera rotation;
+* zoom;
+* no clipping through walls.
+
+---
+
+# 6. PROP HUNT
+
+Сделать реальный игровой vertical slice.
+
+Минимум:
+
+HUNTER
+VS
+PROPS
+
+Сервер определяет роли.
+
+Например:
+
+4 players:
+1 Hunter
+3 Props
+
+---
+
+# 7. PROPS
+
+Использовать реальные 3D assets карты.
+
+Минимум 8–12 разных типов:
+
+Chair
+Table
+Box
+Barrel
+Lamp
+Plant
+Bin
+Crate
+Bucket
+Bottle
+etc.
+
+Prop игрок может выбрать объект и превратиться в него.
+
+После transformation:
+
+Character → Prop
+
+Prop должен:
+
+* двигаться;
+* вращаться;
+* прыгать;
+* прятаться;
+* синхронизироваться с другими игроками.
+
+---
+
+# 8. HUNTER
+
+Hunter должен иметь оружие/инструмент.
+
+Минимальный gameplay:
+
+* aim;
+* shoot;
+* hit detection;
+* damage;
+* kill;
+* reload/cooldown.
+
+Если Hunter стреляет в обычный объект — получает penalty.
+
+---
+
+# 9. ROUND
+
+Сделать полноценный round loop:
+
+PREPARATION
+→ HIDING
+→ HUNT
+→ ROUND END
+
+Например:
+
+30 sec preparation
+20 sec hiding
+5 min hunt
+
+Таймер должен быть серверным.
+
+---
+
+# 10. WIN CONDITIONS
+
+Props:
+
+выжить до окончания времени.
+
+Hunters:
+
+найти и уничтожить всех Props.
+
+После раунда:
+
+WINNER
+SCORE
+KILLS
+SURVIVAL TIME
+
+Затем обратно в lobby.
+
+---
+
+# 11. MULTIPLAYER
+
+Это должен быть настоящий multiplayer.
+
+Два разных браузера должны подключаться к одному server/game session.
+
+Игроки должны видеть:
+
+* друг друга;
+* movement;
+* rotation;
+* animation;
+* transformation;
+* attacks;
+* damage;
+* death.
+
+Не fake players.
+
+Не локальная имитация.
+
+Не client-only multiplayer.
+
+Использовать server-authoritative архитектуру.
+
+---
+
+# 12. BACKEND
+
+Существующий Node/WebSocket backend не переписывать без необходимости.
+
+Интегрировать Unreal с ним.
+
+Backend отвечает за:
+
+* auth;
+* users;
+* rooms;
+* lobby;
+* matchmaking/room state;
+* chat;
+* persistence.
+
+Realtime gameplay state должен быть согласован с Unreal multiplayer architecture.
+
+Если для Unreal нужен отдельный dedicated game server layer — добавь его архитектурно правильно, не ломая существующий backend.
+
+---
+
+# 13. PIXEL STREAMING
+
+Подготовить Unreal под Pixel Streaming.
+
+Браузер должен получать Unreal через WebRTC.
+
+Сделать web integration:
+
+Browser
+→ Pixel Streaming
+→ Unreal
+
+Аутентификация/room information должны интегрироваться с нашим backend.
+
+Не делать вид, что Pixel Streaming работает, если он реально не настроен.
+
+---
+
+# 14. MOBILE
+
+Мобильный пользователь должен получить **реально адаптированную игру**, а не уменьшенную desktop-версию.
+
+Сделать mobile-specific:
+
+* UI;
+* touch controls;
+* virtual joystick;
+* camera touch control;
+* attack button;
+* jump;
+* ability;
+* interact;
+* sprint;
+* responsive HUD.
+
+Кнопки должны быть удобными для пальцев.
+
+Учитывать разные размеры экранов.
+
+Если используется landscape для gameplay — сделать полноценную landscape-ориентированную версию с адаптированным интерфейсом.
+
+Главное: мобильный игрок должен реально иметь возможность пройти весь Vertical Slice и играть в multiplayer.
+
+---
+
+# 15. AUDIO / VFX
+
+Добавить game feel:
+
+* footsteps;
+* weapon sounds;
+* hit sounds;
+* transformation sound;
+* UI sounds;
+* ambient sound;
+* round start/end;
+* basic particles;
+* muzzle flash;
+* hit effects;
+* subtle camera effects.
+
+---
+
+# 16. ASSETS
+
+Использовать качественные готовые 3D assets.
+
+Предпочтительно:
+`.glb/.gltf`, FBX и native Unreal assets.
+
+Каждый внешний asset должен иметь разрешённую лицензию для использования в проекте.
+
+Не брать случайные модели без понятной лицензии.
+
+Создать:
+
+`ASSETS.md`
+
+с:
+
+Asset
+Author
+Source
+License
+
+---
+
+# 17. QUALITY BAR
+
+Текущий Three.js prototype с зелёным полом и примитивами НЕ является целевым качеством.
+
+Нам нужен визуальный уровень:
+
+* believable environment;
+* good materials;
+* proper lighting;
+* shadows;
+* character animation;
+* atmospheric composition;
+* polished UI;
+* responsive gameplay.
+
+Лучше сделать одну маленькую карту очень хорошо, чем большую пустую карту.
+
+---
+
+# 18. PERFORMANCE
+
+Оптимизировать под:
+
+Desktop
+и
+Mobile.
+
+Использовать:
+
+* LOD;
+* Nanite там, где это подходит;
+* разумные texture sizes;
+* culling;
+* optimized lighting;
+* scalable quality settings.
+
+Не делать сцену настолько тяжёлой, чтобы браузер через Pixel Streaming был практически неиграбельным.
+
+---
+
+# 19. РАБОТАЙ САМОСТОЯТЕЛЬНО
+
+Не спрашивай меня разрешение на каждую техническую мелочь.
+
+Сам принимай нормальные решения.
+
+Если нужно установить Unreal plugin/dependency — установи/настрой.
+
+Если нужен отдельный game server — создай архитектуру.
+
+Если какой-то asset недоступен — найди другой с подходящей лицензией.
+
+Если текущий backend требует небольших изменений — внеси их.
+
+---
+
+# 20. GIT
+
+После каждого законченного этапа:
+
+```bash
+git status
+git add .
+git commit -m "feat: ..."
+git push origin <current-branch>
+```
+
+Не использовать:
+
+```bash
+git push --force
+git push -f
+```
+
+Не коммитить секреты или `.env`.
+
+---
+
+# ГЛАВНАЯ ЦЕЛЬ
+
+В конце этого этапа я хочу получить не "заготовку Unreal проекта", а **Vertical Slice**, который можно показать человеку и сказать:
+
+> Вот наша будущая игра.
+
+То есть:
+
+LOGIN
+→ SERVER
+→ LOBBY
+→ START
+→ красивая Unreal 3D карта
+→ настоящий персонаж
+→ Hunter / Props
+→ transformation
+→ movement
+→ shooting
+→ damage
+→ death
+→ round
+→ winner
+→ multiplayer
+→ mobile controls
+→ return to lobby.
+
+Сначала добейся, чтобы этот один полный цикл реально работал.
+
+Потом уже будем расширять игру картами, предметами, способностями и дополнительными механиками.

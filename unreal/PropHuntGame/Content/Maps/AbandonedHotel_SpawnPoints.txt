@@ -1,0 +1,32 @@
+// Map spawn points for Abandoned Hotel
+// These coordinates will be placed in UE5 Editor
+
+// Format: X, Y, Z, Yaw
+
+// Lobby spawn points
+PlayerStart_Lobby_1: 0, 0, 100, 0
+PlayerStart_Lobby_2: 200, 0, 100, 0
+PlayerStart_Lobby_3: -200, 0, 100, 0
+
+// Corridor spawn points
+PlayerStart_Corridor_1: 1000, 500, 100, 90
+PlayerStart_Corridor_2: 1000, -500, 100, 90
+
+// Room spawn points
+PlayerStart_Room101: 2000, 1000, 100, 180
+PlayerStart_Room102: 2000, -1000, 100, 180
+PlayerStart_Room201: 2000, 1000, 500, 180
+PlayerStart_Room202: 2000, -1000, 500, 180
+
+// Kitchen spawn point
+PlayerStart_Kitchen: 1500, 2000, 100, 270
+
+// Storage spawn point
+PlayerStart_Storage: 500, -2000, 100, 0
+
+// Basement spawn points
+PlayerStart_Basement_1: 0, 0, -300, 0
+PlayerStart_Basement_2: 500, 500, -300, 45
+
+// Reception spawn point
+PlayerStart_Reception: -500, 0, 100, 180

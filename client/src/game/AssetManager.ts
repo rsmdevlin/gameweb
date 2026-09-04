@@ -14,45 +14,28 @@ export class AssetManager {
   private loader: GLTFLoader;
   private loadedModels: Map<string, THREE.Group> = new Map();
 
-  // Free character models - using CDN links to CC0 models
+  // Free character models - LOCAL FILES with animations
   public characterModels: ModelAsset[] = [
     {
-      name: 'CesiumMan',
-      path: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb',
+      name: 'Soldier',
+      path: '/models/Soldier.glb',
       scale: 1,
-      license: 'CC0 1.0 Universal',
-      author: 'Cesium',
-      source: 'https://github.com/KhronosGroup/glTF-Sample-Models'
+      license: 'Three.js examples - MIT',
+      author: 'Three.js',
+      source: 'https://github.com/mrdoob/three.js'
+    },
+    {
+      name: 'Robot',
+      path: '/models/RobotExpressive.glb',
+      scale: 0.5,
+      license: 'Three.js examples - MIT',
+      author: 'Three.js',
+      source: 'https://github.com/mrdoob/three.js'
     }
   ];
 
-  // Free prop models - using CDN links
-  public propModels: ModelAsset[] = [
-    {
-      name: 'Box',
-      path: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb',
-      scale: 0.5,
-      license: 'CC0 1.0 Universal',
-      author: 'Cesium',
-      source: 'https://github.com/KhronosGroup/glTF-Sample-Models'
-    },
-    {
-      name: 'BoxAnimated',
-      path: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb',
-      scale: 0.5,
-      license: 'CC0 1.0 Universal',
-      author: 'Cesium',
-      source: 'https://github.com/KhronosGroup/glTF-Sample-Models'
-    },
-    {
-      name: 'Cube',
-      path: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Cube/glTF-Binary/Cube.glb',
-      scale: 0.5,
-      license: 'CC0 1.0 Universal',
-      author: 'Cesium',
-      source: 'https://github.com/KhronosGroup/glTF-Sample-Models'
-    }
-  ];
+  // Free prop models - will use procedural for now
+  public propModels: ModelAsset[] = [];
 
   constructor() {
     this.loader = new GLTFLoader();

@@ -279,26 +279,67 @@ export class GameRenderer {
     this.hud.addChatMessage(username, message);
   }
 
-  private createPlayerMesh(playerId: string, player: Player) {
-    // Ultra-optimized low-poly capsule - 4 segments only
-    const geometry = new THREE.CapsuleGeometry(0.5, 1, 4, 8);
-    const material = new THREE.MeshStandardMaterial({
-      color: player.team === 'hunter' ? 0xff4444 : 0x4444ff,
-      flatShading: true // Faster rendering
-    });
+  private async createPlayerMesh(playerId: string, player: Player) {
+    // Load optimized Soldier model with animations
+    try {
+      const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
+      const loader = new GLTFLoader();
 
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(player.position.x, player.position.y, player.position.z);
+      const gltf = await new Promise<any>((resolve, reject) => {
+        loader.load('/models/Soldier.glb', resolve, undefined, reject);
+      });
 
-    // No shadows on mobile for performance
-    const isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (!isMobile) {
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
+      const model = gltf.scene;
+      model.scale.set(1, 1, 1);
+      model.position.set(player.position.x, player.position.y, player.position.z);
+
+      // Color by team
+      model.traverse((child: any) => {
+        if (child.isMesh) {
+          // Clone material to avoid sharing between players
+          if (child.material) {
+            child.material = child.material.clone();
+            child.material.color.setHex(player.team === 'hunter' ? 0xff4444 : 0x4444ff);
+          }
+          // No shadows for performance
+          child.castShadow = false;
+          child.receiveShadow = false;
+        }
+      });
+
+      // Setup animations
+      if (gltf.animations && gltf.animations.length > 0) {
+        const mixer = new THREE.AnimationMixer(model);
+        const idleClip = gltf.animations.find((clip: any) =>
+          clip.name.toLowerCase().includes('idle')
+        );
+        if (idleClip) {
+          const action = mixer.clipAction(idleClip);
+          action.play();
+          // Store mixer on model for updates
+          (model as any).mixer = mixer;
+        }
+      }
+
+      this.players.set(playerId, model);
+      this.scene.add(model);
+
+      console.log(`✓ Loaded Soldier model for ${playerId}`);
+    } catch (error) {
+      console.warn('Failed to load model, using fallback:', error);
+
+      // Fallback - ultra simple
+      const geometry = new THREE.CapsuleGeometry(0.5, 1, 4, 8);
+      const material = new THREE.MeshBasicMaterial({
+        color: player.team === 'hunter' ? 0xff4444 : 0x4444ff
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(player.position.x, player.position.y, player.position.z);
+
+      this.players.set(playerId, mesh);
+      this.scene.add(mesh);
     }
-
-    this.players.set(playerId, mesh);
-    this.scene.add(mesh);
   }
 
   private updatePlayerMesh(playerId: string, player: Player) {

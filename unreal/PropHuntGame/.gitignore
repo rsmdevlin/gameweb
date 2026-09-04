@@ -1,0 +1,43 @@
+# Unreal Engine gitignore
+
+# Visual Studio
+.vs/
+*.sln
+*.suo
+*.user
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+
+# Unreal Engine
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.pdb
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Starter Content (optional, can be large)
+Content/StarterContent/
+
+# Asset files that are too large for git
+*.uasset
+*.umap
+
+# For assets, use Git LFS instead

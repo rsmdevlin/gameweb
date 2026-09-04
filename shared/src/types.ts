@@ -76,6 +76,12 @@ export enum MessageType {
   START_GAME = 'start_game',
   END_GAME = 'end_game',
 
+  // UE5 Integration
+  UE5_ALLOCATE = 'ue5_allocate',
+  UE5_ALLOCATED = 'ue5_allocated',
+  UE5_READY = 'ue5_ready',
+  UE5_ERROR = 'ue5_error',
+
   // Error
   ERROR = 'error'
 }
@@ -130,4 +136,19 @@ export interface PlayerStats {
   kills: number;
   deaths: number;
   time_played: number;
+}
+
+// UE5 Integration types
+export interface UE5ServerAllocation {
+  instanceId: string;
+  pixelStreamingUrl: string;
+  serverToken: string;
+}
+
+export interface UE5InstanceStatus {
+  id: string;
+  serverId: string;
+  status: 'starting' | 'ready' | 'running' | 'stopping' | 'stopped';
+  playerCount: number;
+  maxPlayers: number;
 }

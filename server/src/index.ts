@@ -11,7 +11,9 @@ import { initDatabase } from './database/init.js';
 import { handleWebSocket, setGameManagerForWS } from './websocket/handler.js';
 import { authRouter } from './routes/auth.js';
 import { serversRouter, setGameManager } from './routes/servers.js';
+import { unrealRouter, setUnrealServerManager } from './routes/unreal.js';
 import { GameManager } from './game/GameManager.js';
+import { UnrealServerManager } from './game/UnrealServerManager.js';
 import type { IncomingMessage } from 'http';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,14 +34,17 @@ app.use(express.json());
 const clientPath = path.join(__dirname, '../../client/dist');
 app.use(express.static(clientPath));
 
-// Initialize GameManager
+// Initialize GameManager and UnrealServerManager
 const gameManager = new GameManager();
+const unrealServerManager = new UnrealServerManager();
 setGameManager(gameManager);
 setGameManagerForWS(gameManager);
+setUnrealServerManager(unrealServerManager);
 
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/servers', serversRouter);
+app.use('/api/unreal', unrealRouter);
 
 app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: Date.now() });
