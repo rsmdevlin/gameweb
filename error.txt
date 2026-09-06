@@ -1,7 +1,5 @@
-==> Downloading cache...
-==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 3c3ca8550327b9a2e56545b678f0c056a2e35cea in branch master
-==> Downloaded 225MB in 1s. Extraction took 4s.
+==> Checking out commit 053479df9b699c7eb25c94ac115920752db5b682 in branch master
+==> Downloaded 225MB in 2s. Extraction took 3s.
 ==> Using Node.js version 24.14.1 (default)
 ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
 ==> Running build command 'npm install && npm run build'...
@@ -16,13 +14,26 @@ Run `npm audit` for details.
 > npm run build -w apps/server && npm run build -w apps/web
 > @vortex/server@1.0.0 build
 > tsc
-tsconfig.json(18,5): error TS5102: Option 'suppressImplicitAnyIndexErrors' has been removed. Please remove it from your configuration.
+> @vortex/web@1.0.0 build
+> tsc -b && vite build
+src/components/DatePicker.tsx(2,30): error TS7016: Could not find a declaration file for module 'react-dom'. '/opt/render/project/src/node_modules/react-dom/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react-dom` if it exists or add a new declaration (.d.ts) file containing `declare module 'react-dom';`
+src/components/EmojiPicker.tsx(2,30): error TS7016: Could not find a declaration file for module 'react-dom'. '/opt/render/project/src/node_modules/react-dom/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react-dom` if it exists or add a new declaration (.d.ts) file containing `declare module 'react-dom';`
+src/components/ImageLightbox.tsx(2,30): error TS7016: Could not find a declaration file for module 'react-dom'. '/opt/render/project/src/node_modules/react-dom/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react-dom` if it exists or add a new declaration (.d.ts) file containing `declare module 'react-dom';`
+src/components/MessageBubble.tsx(2,30): error TS7016: Could not find a declaration file for module 'react-dom'. '/opt/render/project/src/node_modules/react-dom/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react-dom` if it exists or add a new declaration (.d.ts) file containing `declare module 'react-dom';`
+src/components/Sidebar.tsx(24,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/components/StoryViewer.tsx(11,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/main.tsx(2,22): error TS7016: Could not find a declaration file for module 'react-dom/client'. '/opt/render/project/src/node_modules/react-dom/client.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react-dom` if it exists or add a new declaration (.d.ts) file containing `declare module 'react-dom/client';`
 npm error Lifecycle script `build` failed with error:
-npm error code 2
-npm error path /opt/render/project/src/apps/server
-npm error workspace @vortex/server@1.0.0
-npm error location /opt/render/project/src/apps/server
+npm error code 1
+npm error path /opt/render/project/src/apps/web
+npm error workspace @vortex/web@1.0.0
+npm error location /opt/render/project/src/apps/web
 npm error command failed
-npm error command sh -c tsc
+npm error command sh -c tsc -b && vite build
 ==> Build failed 😞
 ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
