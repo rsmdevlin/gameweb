@@ -34,6 +34,7 @@ import GroupSettings from './GroupSettings';
 import ForwardModal from './ForwardModal';
 import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
+import AudioPlayer from './AudioPlayer';
 import { useThemeStore } from '../stores/themeStore';
 
 export default function ChatView({
@@ -76,6 +77,11 @@ export default function ChatView({
   const [confirmAction, setConfirmAction] = useState<{ message: string; action: () => void } | null>(null);
   const [scrollReady, setScrollReady] = useState(false);
   const [activeGroupCallParticipants, setActiveGroupCallParticipants] = useState<string[]>([]);
+
+  // Audio player state
+  const [audioPlaylist, setAudioPlaylist] = useState<Array<{ id: string; url: string; title: string; duration?: number }>>([]);
+  const [audioPlayerVisible, setAudioPlayerVisible] = useState(false);
+  const [audioInitialIndex, setAudioInitialIndex] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
