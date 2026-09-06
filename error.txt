@@ -1,48 +1,7 @@
-это вот ща настройка на рендере:
-Key	Value
-Key
-ALLOWED_ORIGINS
-Value
-https://basagrams.onrender.com
-
-
-Key
-DATABASE_URL
-Value
-mysql://gs348298:eKDxA99Mc2sf@80.242.59.112:3306/gs348298
-
-
-Key
-JWT_SECRET
-Value
-basagram_jwt_secret_key_2024_production_secure
-
-
-Key
-NODE_ENV
-Value
-production
-
-
-Key
-PORT
-Value
-10000
-
-
-Key
-SESSION_SECRET
-Value
-basagram_session_secret_key_2024_production_secure
-
-
-
-
-это ерроры:
 ==> Downloading cache...
 ==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit db08fe19348075a02eb731a6b4a0350e449ca674 in branch master
-==> Downloaded 276MB in 2s. Extraction took 4s.
+==> Checking out commit d2bd09c58defb57db47d28b95832e4059eda0e7c in branch master
+==> Downloaded 292MB in 2s. Extraction took 4s.
 ==> Using Node.js version 24.14.1 (default)
 ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
 ==> Running build command 'npm install && npm run build'...
@@ -54,7 +13,7 @@ To address all issues, run:
   npm audit fix
 Run `npm audit` for details.
 > build
-> npm run build -w apps/server && npm run build -w apps/web
+> npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma
 > @vortex/server@1.0.0 build
 > tsc
 > @vortex/web@1.0.0 build
@@ -71,9 +30,23 @@ dist/assets/index-Ce4RFg9e.js   1,213.24 kB │ gzip: 309.74 kB
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.23s
+✓ built in 3.26s
+Prisma schema loaded from apps/server/prisma/schema.prisma
+┌─────────────────────────────────────────────────────────┐
+│  Update available 6.19.2 -> 8.0.0-rc.13                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 84ms
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
 ==> Uploading build...
-==> Uploaded in 4.5s. Compression took 1.3s
+==> Uploaded in 4.6s. Compression took 1.8s
 ==> Build successful 🎉
 ==> Deploying...
 ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
@@ -82,58 +55,49 @@ dist/assets/index-Ce4RFg9e.js   1,213.24 kB │ gzip: 309.74 kB
 > npm run start -w apps/server
 > @vortex/server@1.0.0 start
 > node dist/index.js
-[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
   ⚠ ENCRYPTION_KEY не задан — сообщения хранятся без шифрования. Для продакшена задайте 64-символьный hex-ключ.
-/opt/render/project/src/node_modules/.prisma/client/default.js:43
-    throw new Error('@prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.');
-    ^
-Error: @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
-    at new PrismaClient (/opt/render/project/src/node_modules/.prisma/client/default.js:43:11)
-    at Object.<anonymous> (/opt/render/project/src/apps/server/dist/db.js:6:20)
-    at Module._compile (node:internal/modules/cjs/loader:1812:14)
-    at Object..js (node:internal/modules/cjs/loader:1943:10)
-    at Module.load (node:internal/modules/cjs/loader:1533:32)
-    at Module._load (node:internal/modules/cjs/loader:1335:12)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
-    at Module.require (node:internal/modules/cjs/loader:1556:12)
-    at require (node:internal/modules/helpers:152:16)
-    at Object.<anonymous> (/opt/render/project/src/apps/server/dist/index.js:16:14)
-Node.js v24.14.1
-npm error Lifecycle script `start` failed with error:
-npm error code 1
-npm error path /opt/render/project/src/apps/server
-npm error workspace @vortex/server@1.0.0
-npm error location /opt/render/project/src/apps/server
-npm error command failed
-npm error command sh -c node dist/index.js
-==> Exited with status 1
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
-==> Running 'npm run start'
-> start
-> npm run start -w apps/server
-> @vortex/server@1.0.0 start
-> node dist/index.js
-[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
-  ⚠ ENCRYPTION_KEY не задан — сообщения хранятся без шифрования. Для продакшена задайте 64-символьный hex-ключ.
-/opt/render/project/src/node_modules/.prisma/client/default.js:43
-    throw new Error('@prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.');
-    ^
-Error: @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
-    at new PrismaClient (/opt/render/project/src/node_modules/.prisma/client/default.js:43:11)
-    at Object.<anonymous> (/opt/render/project/src/apps/server/dist/db.js:6:20)
-    at Module._compile (node:internal/modules/cjs/loader:1812:14)
-    at Object..js (node:internal/modules/cjs/loader:1943:10)
-    at Module.load (node:internal/modules/cjs/loader:1533:32)
-    at Module._load (node:internal/modules/cjs/loader:1335:12)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
-    at Module.require (node:internal/modules/cjs/loader:1556:12)
-    at require (node:internal/modules/helpers:152:16)
-    at Object.<anonymous> (/opt/render/project/src/apps/server/dist/index.js:16:14)
-Node.js v24.14.1
-npm error Lifecycle script `start` failed with error:
-npm error code 1
-npm error path /opt/render/project/src/apps/server
-npm error workspace @vortex/server@1.0.0
-npm error location /opt/render/project/src/apps/server
-npm error command failed
-npm error command sh -c node dist/index.js
+  ⚡ Vortex Server запущен на порту 10000
+Ошибка сброса онлайн-статусов: PrismaClientKnownRequestError: 
+Invalid `prisma.user.updateMany()` invocation:
+The table `User` does not exist in the current database.
+    at ei.handleRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:7268)
+    at ei.handleAndLogRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6593)
+    at ei.request (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6300)
+    at async a (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:130:9551) {
+  code: 'P2021',
+  meta: { modelName: 'User', table: 'User' },
+  clientVersion: '6.19.2'
+}
+Story cleanup error: PrismaClientKnownRequestError: 
+Invalid `prisma.story.findMany()` invocation:
+The table `Story` does not exist in the current database.
+    at ei.handleRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:7268)
+    at ei.handleAndLogRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6593)
+    at ei.request (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6300)
+    at async a (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async cleanupExpiredStories (/opt/render/project/src/apps/server/dist/index.js:134:25) {
+  code: 'P2021',
+  meta: { modelName: 'Story', table: 'Story' },
+  clientVersion: '6.19.2'
+}
+Error rescheduling messages: PrismaClientKnownRequestError: 
+Invalid `prisma.message.findMany()` invocation:
+The table `Message` does not exist in the current database.
+    at ei.handleRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:7268)
+    at ei.handleAndLogRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6593)
+    at ei.request (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6300)
+    at async Array.findMany (/opt/render/project/src/apps/server/dist/db.js:65:33)
+    at async a (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async rescheduleMessages (/opt/render/project/src/apps/server/dist/socket/index.js:970:27) {
+  code: 'P2021',
+  meta: { modelName: 'Message', table: 'Message' },
+  clientVersion: '6.19.2'
+}
+==> Your service is live 🎉
+==> 
+==> ///////////////////////////////////////////////////////////
+==> 
+==> Available at your primary URL https://basagrams.onrender.com
+==> 
+==> ///////////////////////////////////////////////////////////
