@@ -25,6 +25,22 @@ import { useLang } from '../lib/i18n';
 import { AUDIO_EXTENSIONS, MAX_FILE_SIZE } from '../lib/types';
 import EmojiPicker from './EmojiPicker';
 
+// Helper function to get audio file duration
+async function getAudioDuration(file: File): Promise<number | undefined> {
+  return new Promise((resolve) => {
+    const audio = new Audio();
+    audio.onloadedmetadata = () => {
+      resolve(audio.duration);
+      URL.revokeObjectURL(audio.src);
+    };
+    audio.onerror = () => {
+      resolve(undefined);
+      URL.revokeObjectURL(audio.src);
+    };
+    audio.src = URL.createObjectURL(file);
+  });
+}
+
 interface Attachment {
   file: File;
   preview?: string;
@@ -194,6 +210,13 @@ export default function MessageInput({ chatId }: MessageInputProps) {
       setIsSending(true);
       try {
         const result = await api.uploadFile(attachment!.file);
+
+        // Get audio duration if it's an audio file
+        let duration: number | undefined;
+        if (attachment!.type === 'audio' || attachment!.type === 'voice') {
+          duration = await getAudioDuration(attachment!.file);
+        }
+
         socket.emit('send_message', {
           chatId,
           content: trimmed || null,
@@ -202,6 +225,7 @@ export default function MessageInput({ chatId }: MessageInputProps) {
           mediaType: attachment!.type,
           fileName: result.filename,
           fileSize: result.size,
+          duration,
           replyToId: replyTo?.id || null,
           quote: replyTo?.quote || null,
           ...(scheduledAt ? { scheduledAt } : {}),
