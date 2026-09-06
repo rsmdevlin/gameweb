@@ -746,7 +746,7 @@ export default function MessageInput({ chatId }: MessageInputProps) {
               onContextMenu={handleInputContextMenu}
               placeholder={attachment ? t('addCaption') : t('message')}
               rows={1}
-              className="w-full resize-none bg-transparent text-[15px] text-white placeholder-white/40 leading-relaxed py-2.5 px-2 border-none focus:ring-0 max-h-[150px] outline-none"
+              className="w-full resize-none bg-transparent text-[16px] text-white placeholder-white/40 leading-relaxed py-2.5 px-2 border-none focus:ring-0 max-h-[150px] outline-none"
             />
           </div>
 
