@@ -465,38 +465,39 @@ export default function ChatView({
                 }
               }}
             >
-            <div className="relative flex-shrink-0 transform transition-transform duration-300 group-hover:scale-105">
-              {isFavorites ? (
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg ring-2 ring-transparent group-hover:ring-accent/30 transition-all duration-300">
-                  <Bookmark size={20} className="text-white" />
-                </div>
-              ) : (
-                <Avatar
-                  src={chatAvatar}
-                  name={chatName}
-                  size="md"
-                  online={isOnline ? true : undefined}
-                  className="ring-2 ring-transparent group-hover:ring-accent/30 transition-all duration-300 rounded-full"
-                />
-              )}
-            </div>
-            <div className="min-w-0 text-left">
-              <h3 className="text-base font-semibold text-white truncate drop-shadow-sm group-hover:text-accent/90 transition-colors">{chatName}</h3>
-              <p className="text-xs text-zinc-400 truncate">
-                {isFavorites
-                  ? t('favoritesDescription')
-                  : typingInChat.length > 0
-                    ? <span className="text-accent font-medium">{t('typing')}</span>
-                    : isOnline
-                      ? <span className="text-emerald-400">{t('online')}</span>
-                      : chat.type === 'personal' && otherMember?.user.lastSeen
-                        ? `${t('lastSeenAt')} ${formatLastSeen(otherMember.user.lastSeen, lang)}`
-                        : chat.type === 'group'
-                          ? `${chat.members.length} ${t('members')}`
-                          : ''}
-              </p>
-            </div>
-          </button>
+              <div className="relative flex-shrink-0 transform transition-transform duration-300 group-hover:scale-105">
+                {isFavorites ? (
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg ring-2 ring-transparent group-hover:ring-accent/30 transition-all duration-300">
+                    <Bookmark size={20} className="text-white" />
+                  </div>
+                ) : (
+                  <Avatar
+                    src={chatAvatar}
+                    name={chatName}
+                    size="md"
+                    online={isOnline ? true : undefined}
+                    className="ring-2 ring-transparent group-hover:ring-accent/30 transition-all duration-300 rounded-full"
+                  />
+                )}
+              </div>
+              <div className="min-w-0 text-left">
+                <h3 className="text-base font-semibold text-white truncate drop-shadow-sm group-hover:text-accent/90 transition-colors">{chatName}</h3>
+                <p className="text-xs text-zinc-400 truncate">
+                  {isFavorites
+                    ? t('favoritesDescription')
+                    : typingInChat.length > 0
+                      ? <span className="text-accent font-medium">{t('typing')}</span>
+                      : isOnline
+                        ? <span className="text-emerald-400">{t('online')}</span>
+                        : chat.type === 'personal' && otherMember?.user.lastSeen
+                          ? `${t('lastSeenAt')} ${formatLastSeen(otherMember.user.lastSeen, lang)}`
+                          : chat.type === 'group'
+                            ? `${chat.members.length} ${t('members')}`
+                            : ''}
+                </p>
+              </div>
+            </button>
+          </div>
 
           <div className="flex items-center gap-1.5 ml-4">
             {/* Поиск */}
