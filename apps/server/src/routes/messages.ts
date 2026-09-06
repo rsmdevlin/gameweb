@@ -151,7 +151,7 @@ router.get('/chat/:chatId/shared', async (req: AuthRequest, res) => {
       return;
     }
 
-    const baseWhere: Prisma.MessageWhereInput = {
+    const baseWhere: any = {
       chatId,
       isDeleted: false,
       hiddenBy: { none: { userId: req.userId! } },

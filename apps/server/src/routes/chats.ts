@@ -57,21 +57,22 @@ router.get('/', async (req: AuthRequest, res) => {
       },
     });
 
-    // Batch unread counts in a single query to avoid N+1
-    const chatIds = chats.map(c => c.id);
-    let unreadCounts: Array<{ chatId: string; count: bigint }> = [];
-    if (chatIds.length > 0) {
-      unreadCounts = await prisma.$queryRaw<Array<{ chatId: string; count: bigint }>>(
-        Prisma.sql`SELECT m."chatId", COUNT(m.id) as count FROM "Message" m
-         LEFT JOIN "ReadReceipt" rr ON rr."messageId" = m.id AND rr."userId" = ${req.userId}
-         WHERE m."chatId" IN (${Prisma.join(chatIds)})
-         AND m."senderId" != ${req.userId} AND m."isDeleted" = false AND rr.id IS NULL
-         AND m."scheduledAt" IS NULL
-         GROUP BY m."chatId"`
-      ).catch(() => [] as Array<{ chatId: string; count: bigint }>);
+    // Batch unread counts - calculate per chat
+    const unreadMap = new Map<string, number>();
+    for (const chat of chats) {
+      const unreadCount = await prisma.message.count({
+        where: {
+          chatId: chat.id,
+          senderId: { not: req.userId },
+          isDeleted: false,
+          scheduledAt: null,
+          readBy: {
+            none: { userId: req.userId }
+          }
+        }
+      });
+      unreadMap.set(chat.id, unreadCount);
     }
-
-    const unreadMap = new Map(unreadCounts.map(r => [r.chatId, Number(r.count)]));
 
     // Filter last message by clearedAt per user
     const chatsFiltered = chats.map((chat) => {
