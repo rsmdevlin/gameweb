@@ -3,6 +3,8 @@ import { prisma } from '../db';
 import { Prisma } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth';
 import { SENDER_SELECT, MESSAGE_INCLUDE, uploadFile, deleteUploadedFile, encryptUploadedFile } from '../shared';
+import { uploadToCloudinary, deleteFromCloudinary, extractPublicId } from '../cloudinary';
+import fs from 'fs';
 
 const router = Router();
 
@@ -51,25 +53,34 @@ router.get('/chat/:chatId', async (req: AuthRequest, res) => {
 });
 
 // Загрузка файла
-router.post('/upload', uploadFile.single('file'), encryptUploadedFile, async (req: AuthRequest, res) => {
+router.post('/upload', uploadFile.single('file'), async (req: AuthRequest, res) => {
   try {
     if (!req.file) {
       res.status(400).json({ error: 'Файл не загружен' });
       return;
     }
 
-    const fileUrl = `/uploads/${req.file.filename}`;
+    // Upload to Cloudinary
+    const cloudinaryResult = await uploadToCloudinary(req.file.path, 'messages');
+
+    // Delete local file after successful upload
+    fs.unlinkSync(req.file.path);
+
     // multer decodes multipart filenames as latin1 — re-decode as UTF-8
     const originalName = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
 
     res.json({
-      url: fileUrl,
+      url: cloudinaryResult.url,
       filename: originalName,
       size: req.file.size,
       mimetype: req.file.mimetype,
     });
   } catch (error) {
     console.error('Upload error:', error);
+    // Clean up local file on error
+    if (req.file?.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Ошибка загрузки' });
   }
 });

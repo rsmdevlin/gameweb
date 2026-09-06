@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { prisma } from '../db';
 import { AuthRequest } from '../middleware/auth';
 import { USER_SELECT, SENDER_SELECT, uploadUserAvatar, deleteUploadedFile, encryptUploadedFile } from '../shared';
+import { uploadToCloudinary, deleteFromCloudinary, extractPublicId, isCloudinaryUrl } from '../cloudinary';
+import fs from 'fs';
 
 const router = Router();
 
@@ -53,27 +55,39 @@ router.get('/:id', async (req: AuthRequest, res) => {
 });
 
 // Загрузить аватар
-router.post('/avatar', uploadUserAvatar.single('avatar'), encryptUploadedFile, async (req: AuthRequest, res) => {
+router.post('/avatar', uploadUserAvatar.single('avatar'), async (req: AuthRequest, res) => {
   try {
     if (!req.file) {
       res.status(400).json({ error: 'Файл не загружен' });
       return;
     }
 
-    // Delete old avatar file if exists
+    // Delete old avatar from Cloudinary if exists
     const currentUser = await prisma.user.findUnique({ where: { id: req.userId }, select: { avatar: true } });
-    if (currentUser?.avatar) deleteUploadedFile(currentUser.avatar);
+    if (currentUser?.avatar && isCloudinaryUrl(currentUser.avatar)) {
+      const publicId = extractPublicId(currentUser.avatar);
+      if (publicId) await deleteFromCloudinary(publicId);
+    }
 
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    // Upload to Cloudinary
+    const cloudinaryResult = await uploadToCloudinary(req.file.path, 'avatars');
+
+    // Delete local file after successful upload
+    fs.unlinkSync(req.file.path);
 
     const user = await prisma.user.update({
       where: { id: req.userId },
-      data: { avatar: avatarUrl },
+      data: { avatar: cloudinaryResult.url },
       select: USER_SELECT,
     });
 
     res.json(user);
   } catch (error) {
+    console.error('Avatar upload error:', error);
+    // Clean up local file on error
+    if (req.file?.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Ошибка загрузки аватара' });
   }
 });

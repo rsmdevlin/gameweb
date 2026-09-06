@@ -1,30 +1,27 @@
-==> Downloading cache...
-==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 999633006e9b51b80fd80e8ff6b876af985ab76d in branch master
-==> Downloaded 292MB in 2s. Extraction took 4s.
-==> Using Node.js version 24.14.1 (default)
-==> Docs on specifying a Node.js version: https://render.com/docs/node-version
-==> Running build command 'npm install && npm run build'...
-added 6 packages, and audited 271 packages in 2s
-43 packages are looking for funding
-  run `npm fund` for details
-24 vulnerabilities (3 low, 4 moderate, 17 high)
-To address all issues, run:
-  npm audit fix
-Run `npm audit` for details.
-> build
-> npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma && npx prisma db push --schema=./apps/server/prisma/schema.prisma --skip-generate
-> @vortex/server@1.0.0 build
-> tsc
-> @vortex/web@1.0.0 build
-> tsc -b && vite build
-src/components/MessageInput.tsx(227,45): error TS2367: This comparison appears to be unintentional because the types '"video" | "file" | "image"' and '"voice"' have no overlap.
-npm error Lifecycle script `build` failed with error:
-npm error code 1
-npm error path /opt/render/project/src/apps/web
-npm error workspace @vortex/web@1.0.0
-npm error location /opt/render/project/src/apps/web
-npm error command failed
-npm error command sh -c tsc -b && vite build
-==> Build failed 😞
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+	
+Key Name
+Date Created
+API Key
+API Secret
+Status
+ 
+Root
+Root
+
+Sep 07, 2026
+551852942354546
+
+Gh4bTjzwWoZtz9S0ecX8Ma9c6l4
+
+
+Active	
+
+Product Environment
+Cloud name
+hpqscnau
+
+Folder mode
+Dynamic folders
+
+
+Go to API Keys
