@@ -3,6 +3,8 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '../db';
 import { AuthRequest } from '../middleware/auth';
 import { USER_SELECT, SENDER_SELECT, uploadGroupAvatar, deleteUploadedFile, encryptUploadedFile } from '../shared';
+import { uploadToCloudinary, deleteFromCloudinary, extractPublicId, isCloudinaryUrl } from '../cloudinary';
+import fs from 'fs';
 
 const router = Router();
 
@@ -323,7 +325,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
 });
 
 // Загрузить аватар группы (только админ)
-router.post('/:id/avatar', uploadGroupAvatar.single('avatar'), encryptUploadedFile, async (req: AuthRequest, res) => {
+router.post('/:id/avatar', uploadGroupAvatar.single('avatar'), async (req: AuthRequest, res) => {
   try {
     const chatId = String(req.params.id);
 
@@ -341,15 +343,22 @@ router.post('/:id/avatar', uploadGroupAvatar.single('avatar'), encryptUploadedFi
       return;
     }
 
-    // Delete old avatar file
+    // Delete old avatar from Cloudinary if exists
     const currentChat = await prisma.chat.findUnique({ where: { id: chatId }, select: { avatar: true } });
-    if (currentChat?.avatar) deleteUploadedFile(currentChat.avatar);
+    if (currentChat?.avatar && isCloudinaryUrl(currentChat.avatar)) {
+      const publicId = extractPublicId(currentChat.avatar);
+      if (publicId) await deleteFromCloudinary(publicId);
+    }
 
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    // Upload to Cloudinary
+    const cloudinaryResult = await uploadToCloudinary(req.file.path, 'group-avatars');
+
+    // Delete local file after successful upload
+    fs.unlinkSync(req.file.path);
 
     const chat = await prisma.chat.update({
       where: { id: chatId },
-      data: { avatar: avatarUrl },
+      data: { avatar: cloudinaryResult.url },
       include: {
         members: { include: { user: { select: USER_SELECT } } },
         messages: {
@@ -366,6 +375,10 @@ router.post('/:id/avatar', uploadGroupAvatar.single('avatar'), encryptUploadedFi
     res.json(chat);
   } catch (error) {
     console.error('Upload group avatar error:', error);
+    // Clean up local file on error
+    if (req.file?.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Ошибка загрузки аватара' });
   }
 });
