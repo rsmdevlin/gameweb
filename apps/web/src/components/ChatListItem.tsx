@@ -7,6 +7,7 @@ import { useChatStore } from '../stores/chatStore';
 import { useLang } from '../lib/i18n';
 import { stripMarkdown } from '../lib/utils';
 import { api } from '../lib/api';
+import { useLongPress } from '../hooks/useLongPress';
 import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
 import type { Chat } from '../lib/types';
@@ -86,6 +87,15 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
     setCtxMenu({ x: e.clientX, y: e.clientY });
   };
 
+  // Long press for mobile
+  const longPressHandlers = useLongPress({
+    onLongPress: (clientX, clientY) => {
+      setCtxMenu({ x: clientX, y: clientY });
+    },
+    delay: 500,
+    moveThreshold: 10,
+  });
+
   useEffect(() => {
     if (!ctxMenu) return;
     const close = (e: MouseEvent) => {
@@ -128,6 +138,7 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
       <button
         onClick={handleClick}
         onContextMenu={handleContextMenu}
+        {...longPressHandlers}
         className={`w-full flex items-center gap-3 px-3 py-3 transition-colors text-left ${
           isActive ? 'bg-accent/15 border-r-2 border-accent' : 'hover:bg-surface-hover'
         }`}

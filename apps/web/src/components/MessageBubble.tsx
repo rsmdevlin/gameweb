@@ -24,6 +24,7 @@ import { useChatStore } from '../stores/chatStore';
 import { getSocket } from '../lib/socket';
 import { useLang } from '../lib/i18n';
 import { extractWaveform } from '../lib/utils';
+import { useLongPress } from '../hooks/useLongPress';
 import type { Message, MediaItem, Reaction, ChatMember } from '../lib/types';
 import ImageLightbox from './ImageLightbox';
 
@@ -101,6 +102,31 @@ function MessageBubble({
     setContextPos({ x, y });
     setShowContext(true);
   };
+
+  // Long press for mobile
+  const longPressHandlers = useLongPress({
+    onLongPress: (clientX, clientY) => {
+      if (selectionMode) {
+        onToggleSelect?.(message.id);
+        return;
+      }
+
+      setQuotedText(null);
+
+      const menuWidth = 208;
+      const menuHeight = 350;
+      let x = clientX;
+      let y = clientY;
+
+      if (x + menuWidth > window.innerWidth) x = window.innerWidth - menuWidth - 8;
+      if (y + menuHeight > window.innerHeight) y = window.innerHeight - menuHeight - 8;
+
+      setContextPos({ x, y });
+      setShowContext(true);
+    },
+    delay: 500,
+    moveThreshold: 10,
+  });
 
   const handleCopy = () => {
     if (message.content) {
@@ -367,6 +393,7 @@ function MessageBubble({
           if (selectionMode) onToggleSelect?.(message.id);
         }}
         onContextMenu={handleContextMenu}
+        {...longPressHandlers}
       >
         {/* Selection Checkbox */}
         {selectionMode && (
