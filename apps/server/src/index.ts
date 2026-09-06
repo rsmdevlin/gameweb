@@ -138,6 +138,19 @@ app.get('/api/ice-servers', authenticateToken, (_req: AuthRequest, res) => {
 // Socket.io
 setupSocket(io);
 
+// Serve static frontend files in production
+const frontendPath = path.resolve(__dirname, '../../web/dist');
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
+  // Все остальные GET запросы возвращают index.html (для React Router)
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
+      res.sendFile(path.join(frontendPath, 'index.html'));
+    }
+  });
+  console.log('  ✔ Раздаём фронтенд из:', frontendPath);
+}
+
 // При старте сервера сбросить всех в offline
 prisma.user.updateMany({ data: { isOnline: false, lastSeen: new Date() } })
   .then(() => console.log('  ✔ Все пользователи сброшены в offline'))
