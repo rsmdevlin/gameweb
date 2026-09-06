@@ -1,0 +1,17 @@
+/* Mobile-only styles */
+@media (max-width: 768px) {
+  /* Disable text selection and iOS callout/magnifying glass */
+  * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Allow text selection only in input fields */
+  input,
+  textarea,
+  [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}

@@ -151,8 +151,8 @@ if (fs.existsSync(frontendPath)) {
   console.log('  ✔ Раздаём фронтенд из:', frontendPath);
 }
 
-// При старте сервера сбросить всех в offline
-prisma.user.updateMany({ data: { isOnline: false, lastSeen: new Date() } })
+// При старте сервера сбросить всех в offline (не трогаем lastSeen чтобы сохранить реальное время выхода)
+prisma.user.updateMany({ data: { isOnline: false } })
   .then(() => console.log('  ✔ Все пользователи сброшены в offline'))
   .catch((e: unknown) => console.error('Ошибка сброса онлайн-статусов:', e));
 
