@@ -1,14 +1,14 @@
 ==> Downloading cache...
 ==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 8688b5532231994f2b2bff39f1f7a02ecd7a31e4 in branch master
-==> Downloaded 225MB in 2s. Extraction took 3s.
+==> Checking out commit 32a43e988d58a686f47d5b2cc32faf935b1cea82 in branch master
+==> Downloaded 225MB in 2s. Extraction took 4s.
 ==> Using Node.js version 24.14.1 (default)
 ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
 ==> Running build command 'npm install && npm run build'...
-up to date, audited 186 packages in 2s
-28 packages are looking for funding
+added 79 packages, and audited 265 packages in 3s
+43 packages are looking for funding
   run `npm fund` for details
-16 vulnerabilities (1 low, 4 moderate, 11 high)
+24 vulnerabilities (3 low, 4 moderate, 17 high)
 To address all issues, run:
   npm audit fix
 Run `npm audit` for details.
@@ -18,13 +18,41 @@ Run `npm audit` for details.
 > tsc
 > @vortex/web@1.0.0 build
 > tsc -b && vite build
-sh: 1: vite: not found
-npm error Lifecycle script `build` failed with error:
-npm error code 127
-npm error path /opt/render/project/src/apps/web
-npm error workspace @vortex/web@1.0.0
-npm error location /opt/render/project/src/apps/web
-npm error command failed
-npm error command sh -c tsc -b && vite build
-==> Build failed 😞
+vite v6.4.1 building for production...
+transforming...
+✓ 2875 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.79 kB │ gzip:   0.43 kB
+dist/assets/index--HHJtnyk.css    110.23 kB │ gzip:  15.73 kB
+dist/assets/index-Ce4RFg9e.js   1,213.24 kB │ gzip: 309.74 kB
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.62s
+==> Uploading build...
+==> Uploaded in 4.6s. Compression took 1.5s
+==> Build successful 🎉
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+==> Running 'npm start'
+> start
+> npm run dev
+> dev
+> concurrently -k -n server,web -c "#6366f1","#8b5cf6" "npm run dev -w apps/server" "npm run dev -w apps/web"
+sh: 1: concurrently: not found
+==> Exited with status 127
 ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'npm start'
+> start
+> npm run dev
+> dev
+> concurrently -k -n server,web -c "#6366f1","#8b5cf6" "npm run dev -w apps/server" "npm run dev -w apps/web"
+sh: 1: concurrently: not found
+==> Running 'npm start'
+> start
+> npm run dev
+> dev
+> concurrently -k -n server,web -c "#6366f1","#8b5cf6" "npm run dev -w apps/server" "npm run dev -w apps/web"
+sh: 1: concurrently: not found

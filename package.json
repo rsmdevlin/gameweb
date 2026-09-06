@@ -10,7 +10,7 @@
     "db:push": "npm run db:push -w apps/server",
     "db:seed": "npm run db:seed -w apps/server",
     "setup": "npm install && npm run db:push && npm run db:seed",
-    "start": "npm run dev"
+    "start": "npm run start -w apps/server"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
