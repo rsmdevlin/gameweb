@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import fs from 'fs';
@@ -31,6 +32,9 @@ const io = new Server(server, {
 
 // Trust first proxy (Nginx) so req.ip returns real client IP from X-Forwarded-For
 app.set('trust proxy', 1);
+
+// Enable gzip compression for all responses
+app.use(compression());
 
 app.use(cors({ origin: config.corsOrigins }));
 app.use(express.json({ limit: '10mb' }));

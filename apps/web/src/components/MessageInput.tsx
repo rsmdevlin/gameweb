@@ -23,6 +23,7 @@ import { api } from '../lib/api';
 import { getSocket } from '../lib/socket';
 import { useLang } from '../lib/i18n';
 import { AUDIO_EXTENSIONS, MAX_FILE_SIZE } from '../lib/types';
+import { compressImage, shouldCompressImage } from '../lib/imageCompressor';
 import EmojiPicker from './EmojiPicker';
 
 // Helper function to get audio file duration
@@ -209,7 +210,17 @@ export default function MessageInput({ chatId }: MessageInputProps) {
     if (hasAttachment) {
       setIsSending(true);
       try {
-        const result = await api.uploadFile(attachment!.file);
+        // Compress image if needed
+        let fileToUpload = attachment!.file;
+        if (attachment!.type === 'image' && shouldCompressImage(fileToUpload)) {
+          try {
+            fileToUpload = await compressImage(fileToUpload);
+          } catch (e) {
+            console.warn('Image compression failed, uploading original:', e);
+          }
+        }
+
+        const result = await api.uploadFile(fileToUpload);
 
         // Get audio duration if it's an audio file
         let duration: number | undefined;

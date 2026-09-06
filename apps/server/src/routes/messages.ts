@@ -10,8 +10,8 @@ const router = Router();
 router.get('/chat/:chatId', async (req: AuthRequest, res) => {
   try {
     const chatId = String(req.params.chatId);
-    const { cursor, limit = '50' } = req.query;
-    const take = Math.min(Math.max(1, parseInt(limit as string) || 50), 200);
+    const { cursor, limit = '30' } = req.query;
+    const take = Math.min(Math.max(1, parseInt(limit as string) || 30), 200);
 
     const member = await prisma.chatMember.findUnique({
       where: { chatId_userId: { chatId, userId: req.userId! } },
