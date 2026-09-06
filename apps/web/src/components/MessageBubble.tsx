@@ -37,6 +37,7 @@ interface MessageBubbleProps {
   isSelected?: boolean;
   onToggleSelect?: (id: string) => void;
   onStartSelectionMode?: (id: string) => void;
+  onPlayAudio?: (messageId: string) => void;
 }
 
 function MessageBubble({
@@ -47,7 +48,8 @@ function MessageBubble({
   selectionMode,
   isSelected,
   onToggleSelect,
-  onStartSelectionMode
+  onStartSelectionMode,
+  onPlayAudio
 }: MessageBubbleProps) {
   const { user } = useAuthStore();
   const { setReplyTo, setEditingMessage, pinnedMessages, chats } = useChatStore();
