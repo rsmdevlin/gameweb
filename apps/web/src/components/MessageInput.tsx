@@ -45,7 +45,7 @@ async function getAudioDuration(file: File): Promise<number | undefined> {
 interface Attachment {
   file: File;
   preview?: string;
-  type: 'image' | 'video' | 'file' | 'audio';
+  type: 'image' | 'video' | 'file' | 'audio' | 'voice';
 }
 
 interface MessageInputProps {
