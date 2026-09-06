@@ -24,9 +24,12 @@ import { useChatStore } from '../stores/chatStore';
 import { getSocket } from '../lib/socket';
 import { useLang } from '../lib/i18n';
 import { extractWaveform } from '../lib/utils';
+import { getMediaUrl } from '../lib/mediaUrl';
 import { useLongPress } from '../hooks/useLongPress';
 import type { Message, MediaItem, Reaction, ChatMember } from '../lib/types';
 import ImageLightbox from './ImageLightbox';
+
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 interface MessageBubbleProps {
   message: Message;
@@ -412,7 +415,7 @@ function MessageBubble({
             {showAvatar ? (
               <button onClick={() => onViewProfile?.(message.senderId)}>
                 {senderAvatar ? (
-                  <img src={senderAvatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+                  <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold">
                     {senderName[0]?.toUpperCase() || '?'}
@@ -470,15 +473,18 @@ function MessageBubble({
               <div className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''} ${!message.content ? 'rounded-[1.25rem]' : ''} bg-black/40 overflow-hidden`}>
                 {media
                   .filter((m) => m.type === 'image')
-                  .map((m) => (
-                    <img
-                      key={m.id}
-                      src={m.url}
-                      alt=""
-                      className="max-w-full max-h-80 object-cover cursor-pointer hover:brightness-90 transition-all"
-                      onClick={() => setLightboxUrl(m.url)}
-                    />
-                  ))}
+                  .map((m) => {
+                    const imgUrl = getMediaUrl(m.url);
+                    return (
+                      <img
+                        key={m.id}
+                        src={imgUrl}
+                        alt=""
+                        className="max-w-full max-h-80 object-cover cursor-pointer hover:brightness-90 transition-all"
+                        onClick={() => setLightboxUrl(imgUrl)}
+                      />
+                    );
+                  })}
               </div>
             )}
 
@@ -486,25 +492,31 @@ function MessageBubble({
             {hasVideo &&
               media
                 .filter((m) => m.type === 'video')
-                .map((m) => (
-                  <div key={m.id} className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''}`}>
-                    <video
-                      src={m.url}
-                      controls
-                      className="max-w-full max-h-80 rounded-lg"
-                    />
-                  </div>
-                ))}
+                .map((m) => {
+                  const videoUrl = getMediaUrl(m.url);
+                  return (
+                    <div key={m.id} className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''}`}>
+                      <video
+                        src={videoUrl}
+                        controls
+                        className="max-w-full max-h-80 rounded-lg"
+                      />
+                    </div>
+                  );
+                })}
 
             {/* Голосовое */}
-            {hasVoice && (
-              <div className="flex items-center gap-3 min-w-[200px]">
-                <audio
-                  ref={audioRef}
-                  src={media.find((m) => m.type === 'voice')?.url}
-                  preload="auto"
-                  onError={(e) => console.error('Audio load error:', e)}
-                />
+            {hasVoice && (() => {
+              const voiceMedia = media.find((m) => m.type === 'voice');
+              const voiceUrl = getMediaUrl(voiceMedia?.url);
+              return (
+                <div className="flex items-center gap-3 min-w-[200px]">
+                  <audio
+                    ref={audioRef}
+                    src={voiceUrl}
+                    preload="auto"
+                    onError={(e) => console.error('Audio load error:', e)}
+                  />
                 <button
                   onClick={toggleAudio}
                   className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
@@ -550,11 +562,12 @@ function MessageBubble({
                   <span className={`text-xs mt-0.5 block ${isMine ? 'text-white/60' : 'text-zinc-500'}`}>
                     {isPlaying
                       ? formatDuration(audioRef.current?.currentTime || 0)
-                      : formatDuration(audioDuration || message.media?.find((m) => m.type === 'voice')?.duration || 0)}
+                      : formatDuration(audioDuration || voiceMedia?.duration || 0)}
                   </span>
                 </div>
               </div>
-            )}
+              );
+            })()}
 
             {/* Аудио (mp3 файлы) */}
             {hasAudio && (() => {
@@ -568,47 +581,19 @@ function MessageBubble({
                     </div>
                   )}
                   <div className="flex items-center gap-3">
-                    <audio
-                      ref={audioRef}
-                      src={audioMedia?.url}
-                      preload="auto"
-                      onError={(e) => console.error('Audio load error:', e)}
-                    />
                     <button
-                      onClick={toggleAudio}
+                      onClick={() => onPlayAudio?.(message.id)}
                       className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
                         } transition-colors`}
                     >
-                      {isPlaying ? (
-                        <Pause size={16} className={isMine ? 'text-white' : 'text-vortex-400'} />
-                      ) : (
-                        <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
-                      )}
+                      <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
                     </button>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-[2px] h-6">
-                        {Array.from({ length: 28 }).map((_, i) => {
-                          const barHeight = [40, 65, 35, 80, 50, 90, 45, 70, 55, 85, 30, 75, 60, 95, 40, 80, 50, 70, 35, 90, 55, 65, 45, 85, 60, 75, 50, 40][i] || 50;
-                          const progress = audioProgress / 100;
-                          const barProgress = i / 28;
-                          const isActive = barProgress < progress;
-                          return (
-                            <div
-                              key={i}
-                              className={`flex-1 rounded-full transition-colors duration-150 ${isActive
-                                ? isMine ? 'bg-white/80' : 'bg-vortex-400'
-                                : isMine ? 'bg-white/20' : 'bg-white/10'
-                                }`}
-                              style={{ height: `${barHeight}%` }}
-                            />
-                          );
-                        })}
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>
+                          {audioMedia?.duration ? formatDuration(audioMedia.duration) : '--:--'}
+                        </span>
                       </div>
-                      <span className={`text-xs mt-0.5 block ${isMine ? 'text-white/60' : 'text-zinc-500'}`}>
-                        {isPlaying
-                          ? formatDuration(audioRef.current?.currentTime || 0)
-                          : formatDuration(audioDuration || 0)}
-                      </span>
                     </div>
                   </div>
                 </div>
@@ -709,7 +694,7 @@ function MessageBubble({
             {showAvatar ? (
               <button onClick={() => onViewProfile?.(message.senderId)}>
                 {senderAvatar ? (
-                  <img src={senderAvatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+                  <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold">
                     {senderName[0]?.toUpperCase() || '?'}

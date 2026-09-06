@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { getInitials, generateAvatarColor } from '../lib/utils';
+import { getMediaUrl } from '../lib/mediaUrl';
 
 interface AvatarProps {
   src?: string | null;
@@ -30,11 +31,14 @@ function AvatarInner({ src, name, size = 'md', className = '', online }: AvatarP
   const initials = getInitials(name || '?');
   const gradientClass = generateAvatarColor(name || '');
 
+  // Add API_URL prefix for relative paths
+  const avatarSrc = getMediaUrl(src);
+
   return (
     <div className={`relative shrink-0 ${className}`}>
-      {src ? (
+      {avatarSrc ? (
         <img
-          src={src}
+          src={avatarSrc}
           alt={name}
           className={`${sizeClass} rounded-full object-cover`}
         />

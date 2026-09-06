@@ -25,6 +25,7 @@ import { getSocket } from '../lib/socket';
 import { isChatMuted, toggleMuteChat } from '../lib/sounds';
 import { useLang } from '../lib/i18n';
 import { formatLastSeen } from '../lib/utils';
+import { getMediaUrl } from '../lib/mediaUrl';
 import type { UserBasic, Message } from '../lib/types';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
@@ -256,7 +257,7 @@ export default function ChatView({
 
     const playlist = audioMessages.map((m) => ({
       id: m.id,
-      url: m.media![0].url,
+      url: getMediaUrl(m.media![0].url),
       title: m.media![0].filename || 'Audio',
       duration: m.media![0].duration,
     }));
