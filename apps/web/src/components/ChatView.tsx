@@ -16,6 +16,7 @@ import {
   Pin,
   Forward,
   Bookmark,
+  ArrowLeft,
 } from 'lucide-react';
 import { useChatStore } from '../stores/chatStore';
 import { useAuthStore } from '../stores/authStore';
@@ -35,7 +36,17 @@ import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
 import { useThemeStore } from '../stores/themeStore';
 
-export default function ChatView({ onStartCall, onStartGroupCall }: { onStartCall?: (targetUser: UserBasic, type: 'voice' | 'video') => void; onStartGroupCall?: (chatId: string, chatName: string, type: 'voice' | 'video') => void }) {
+export default function ChatView({
+  onStartCall,
+  onStartGroupCall,
+  onBack,
+  isMobile
+}: {
+  onStartCall?: (targetUser: UserBasic, type: 'voice' | 'video') => void;
+  onStartGroupCall?: (chatId: string, chatName: string, type: 'voice' | 'video') => void;
+  onBack?: () => void;
+  isMobile?: boolean;
+}) {
   const { user } = useAuthStore();
   const { t, lang } = useLang();
   const { chatTheme } = useThemeStore();
@@ -433,16 +444,27 @@ export default function ChatView({ onStartCall, onStartGroupCall }: { onStartCal
         </div>
       ) : (
         <div className="h-[76px] flex items-center justify-between px-6 border-b border-border/40 bg-surface-secondary/80 backdrop-blur-xl z-20 flex-shrink-0">
-          <button
-            className="flex items-center gap-3 min-w-0 flex-1 group transition-all"
-            onClick={() => {
-              if (chat.type === 'personal' && otherMember) {
-                setProfileUserId(otherMember.user.id);
-              } else if (chat.type === 'group') {
-                setShowGroupSettings(true);
-              }
-            }}
-          >
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            {/* Back button for mobile */}
+            {isMobile && onBack && (
+              <button
+                onClick={onBack}
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 active:bg-white/10 transition-colors flex-shrink-0"
+              >
+                <ArrowLeft size={20} className="text-white" />
+              </button>
+            )}
+
+            <button
+              className="flex items-center gap-3 min-w-0 flex-1 group transition-all"
+              onClick={() => {
+                if (chat.type === 'personal' && otherMember) {
+                  setProfileUserId(otherMember.user.id);
+                } else if (chat.type === 'group') {
+                  setShowGroupSettings(true);
+                }
+              }}
+            >
             <div className="relative flex-shrink-0 transform transition-transform duration-300 group-hover:scale-105">
               {isFavorites ? (
                 <div className="w-11 h-11 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg ring-2 ring-transparent group-hover:ring-accent/30 transition-all duration-300">

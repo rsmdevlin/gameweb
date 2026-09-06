@@ -30,9 +30,13 @@ export default function ChatPage() {
     setPinnedMessage,
     removePinnedMessage,
     clearStore,
+    activeChat,
   } = useChatStore();
   const { user } = useAuthStore();
   const initialized = useRef(false);
+
+  // Mobile state
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   // Call state
   const [callOpen, setCallOpen] = useState(false);
@@ -51,6 +55,16 @@ export default function ChatPage() {
   const [groupCallSessionId, setGroupCallSessionId] = useState(0);
 
   const { t } = useLang();
+
+  // Handle window resize for mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (initialized.current) return;
@@ -257,15 +271,36 @@ export default function ChatPage() {
     setGroupCallOpen(false);
   };
 
+  const handleBackToSidebar = () => {
+    useChatStore.getState().setActiveChat(null);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-full flex bg-surface p-3 gap-3 overflow-hidden"
+      className={`h-full flex bg-surface overflow-hidden ${isMobile ? '' : 'p-3 gap-3'}`}
     >
-      <Sidebar />
-      <ChatView onStartCall={handleStartCall} onStartGroupCall={handleStartGroupCall} />
+      {/* Sidebar - on mobile: hide when chat is open */}
+      {(!isMobile || !activeChat) && (
+        <div className={isMobile ? 'w-full h-full' : ''}>
+          <Sidebar />
+        </div>
+      )}
+
+      {/* ChatView - on mobile: hide when no chat selected */}
+      {(!isMobile || activeChat) && (
+        <div className={isMobile ? 'w-full h-full' : 'flex-1'}>
+          <ChatView
+            onStartCall={handleStartCall}
+            onStartGroupCall={handleStartGroupCall}
+            onBack={isMobile ? handleBackToSidebar : undefined}
+            isMobile={isMobile}
+          />
+        </div>
+      )}
+
       <CallModal
         key={callSessionId}
         isOpen={callOpen}
@@ -290,7 +325,7 @@ export default function ChatPage() {
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] px-5 py-3 rounded-2xl bg-surface-secondary shadow-2xl border border-border flex items-center gap-3"
+            className={`fixed ${isMobile ? 'top-4' : 'top-6'} left-1/2 -translate-x-1/2 z-[9999] px-5 py-3 rounded-2xl bg-surface-secondary shadow-2xl border border-border flex items-center gap-3`}
           >
             <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
               <Send size={14} className="text-emerald-400" />
