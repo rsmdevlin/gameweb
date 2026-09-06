@@ -247,6 +247,26 @@ export default function ChatView({
     chatViewRef.current.style.setProperty('--mouse-y', `${e.clientY - top}px`);
   };
 
+  // Open audio player with playlist
+  const handlePlayAudio = (messageId: string) => {
+    // Collect all audio messages from chat
+    const audioMessages = chatMessages.filter(
+      (m) => m.type === 'file' && m.media?.[0] && ['audio', 'voice'].includes(m.media[0].type)
+    );
+
+    const playlist = audioMessages.map((m) => ({
+      id: m.id,
+      url: m.media![0].url,
+      title: m.media![0].filename || t('audio'),
+      duration: m.media![0].duration,
+    }));
+
+    const initialIndex = playlist.findIndex((p) => p.id === messageId);
+    setAudioPlaylist(playlist);
+    setAudioInitialIndex(initialIndex >= 0 ? initialIndex : 0);
+    setAudioPlayerVisible(true);
+  };
+
   // Поиск сообщений
   useEffect(() => {
     if (!searchText.trim() || !activeChat) {
@@ -818,6 +838,7 @@ export default function ChatView({
                     isSelected={selectedMessages.has(msg.id)}
                     onToggleSelect={handleToggleSelect}
                     onStartSelectionMode={handleStartSelection}
+                    onPlayAudio={handlePlayAudio}
                   />
                 </div>
               );
@@ -901,6 +922,15 @@ export default function ChatView({
         }}
         onCancel={() => setConfirmAction(null)}
       />
+
+      {/* Audio Player */}
+      {audioPlayerVisible && audioPlaylist.length > 0 && (
+        <AudioPlayer
+          playlist={audioPlaylist}
+          initialIndex={audioInitialIndex}
+          onClose={() => setAudioPlayerVisible(false)}
+        />
+      )}
     </div>
   );
 }
