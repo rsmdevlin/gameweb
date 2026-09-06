@@ -35,7 +35,7 @@ import GroupSettings from './GroupSettings';
 import ForwardModal from './ForwardModal';
 import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
-import AudioPlayer from './AudioPlayer';
+import AudioPlayerV2 from './AudioPlayerV2';
 import { useThemeStore } from '../stores/themeStore';
 
 export default function ChatView({
@@ -257,9 +257,12 @@ export default function ChatView({
 
     const playlist = audioMessages.map((m) => ({
       id: m.id,
-      url: getMediaUrl(m.media![0].url),
+      url: m.media![0].url,
       title: m.media![0].filename || 'Audio',
       duration: m.media![0].duration,
+      messageId: m.id,
+      senderId: m.senderId,
+      canDelete: m.senderId === user?.id || (chat?.type === 'group' && chatMembers.find(cm => cm.userId === user?.id)?.role === 'admin'),
     }));
 
     const initialIndex = playlist.findIndex((p) => p.id === messageId);
@@ -926,10 +929,50 @@ export default function ChatView({
 
       {/* Audio Player */}
       {audioPlayerVisible && audioPlaylist.length > 0 && (
-        <AudioPlayer
+        <AudioPlayerV2
           playlist={audioPlaylist}
           initialIndex={audioInitialIndex}
           onClose={() => setAudioPlayerVisible(false)}
+          onShowInChat={(messageId) => {
+            // Scroll to message in chat
+            const messageEl = document.getElementById(`msg-${messageId}`);
+            if (messageEl) {
+              messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              // Highlight message briefly
+              messageEl.classList.add('ring-2', 'ring-accent');
+              setTimeout(() => {
+                messageEl.classList.remove('ring-2', 'ring-accent');
+              }, 2000);
+            }
+          }}
+          onSaveToFavorites={async (messageId) => {
+            // Forward to favorites chat
+            const favChat = chats.find(c => c.type === 'favorites');
+            if (favChat) {
+              try {
+                await api.forwardMessages([messageId], favChat.id);
+                // Show success notification
+                alert('Сохранено в Избранное');
+              } catch (e) {
+                console.error('Failed to save to favorites:', e);
+                alert('Ошибка сохранения');
+              }
+            }
+          }}
+          onDelete={async (messageId) => {
+            const socket = getSocket();
+            if (!socket) return;
+
+            if (confirm('Удалить это аудио?')) {
+              socket.emit('delete_message', { messageId });
+              // Remove from playlist
+              const newPlaylist = audioPlaylist.filter(t => t.messageId !== messageId);
+              setAudioPlaylist(newPlaylist);
+              if (newPlaylist.length === 0) {
+                setAudioPlayerVisible(false);
+              }
+            }
+          }}
         />
       )}
     </div>
