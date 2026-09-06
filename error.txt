@@ -1,0 +1,225 @@
+==> Downloading cache...
+==> Cloning from https://github.com/rsmdevlin/gameweb
+==> Checking out commit f0ed82ad2a857371dccf9f08fd36317d92246aab in branch master
+==> Downloaded 135MB in 2s. Extraction took 1s.
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'npm install && npm run build'...
+added 183 packages, and audited 186 packages in 6s
+28 packages are looking for funding
+  run `npm fund` for details
+16 vulnerabilities (1 low, 4 moderate, 11 high)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> build
+> npm run build -w apps/server && npm run build -w apps/web
+> @vortex/server@1.0.0 build
+> tsc
+src/db.ts(13,22): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(13,28): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(24,22): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(24,28): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(35,22): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(35,28): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(52,26): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(52,32): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(57,25): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(57,31): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(62,24): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(62,30): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(72,24): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(72,30): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(79,25): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(79,31): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(84,26): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(84,32): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(89,22): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(89,28): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(97,25): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(97,31): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/db.ts(102,24): error TS7031: Binding element 'args' implicitly has an 'any' type.
+src/db.ts(102,30): error TS7031: Binding element 'query' implicitly has an 'any' type.
+src/index.ts(1,21): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/index.ts(9,18): error TS7016: Could not find a declaration file for module 'mime-types'. '/opt/render/project/src/node_modules/mime-types/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/mime-types` if it exists or add a new declaration (.d.ts) file containing `declare module 'mime-types';`
+src/index.ts(39,22): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/index.ts(39,27): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/index.ts(39,32): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/index.ts(105,25): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/index.ts(105,31): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/index.ts(110,68): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/index.ts(162,29): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/middleware/auth.ts(1,49): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/middleware/auth.ts(2,17): error TS7016: Could not find a declaration file for module 'jsonwebtoken'. '/opt/render/project/src/node_modules/jsonwebtoken/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/jsonwebtoken` if it exists or add a new declaration (.d.ts) file containing `declare module 'jsonwebtoken';`
+src/middleware/auth.ts(10,26): error TS2339: Property 'headers' does not exist on type 'AuthRequest'.
+src/routes/auth.ts(1,24): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/routes/auth.ts(2,20): error TS7016: Could not find a declaration file for module 'bcryptjs'. '/opt/render/project/src/node_modules/bcryptjs/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bcryptjs` if it exists or add a new declaration (.d.ts) file containing `declare module 'bcryptjs';`
+src/routes/auth.ts(3,17): error TS7016: Could not find a declaration file for module 'jsonwebtoken'. '/opt/render/project/src/node_modules/jsonwebtoken/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/jsonwebtoken` if it exists or add a new declaration (.d.ts) file containing `declare module 'jsonwebtoken';`
+src/routes/auth.ts(28,50): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/auth.ts(28,55): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/auth.ts(110,30): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/auth.ts(110,35): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/auth.ts(151,63): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(1,24): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/routes/chats.ts(20,42): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(61,31): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/routes/chats.ts(64,28): error TS2347: Untyped function calls may not accept type arguments.
+src/routes/chats.ts(65,16): error TS2339: Property 'sql' does not exist on type 'typeof Prisma'.
+src/routes/chats.ts(67,40): error TS2339: Property 'join' does not exist on type 'typeof Prisma'.
+src/routes/chats.ts(77,38): error TS7006: Parameter 'chat' implicitly has an 'any' type.
+src/routes/chats.ts(78,41): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/routes/chats.ts(81,48): error TS7006: Parameter 'msg' implicitly has an 'any' type.
+src/routes/chats.ts(87,45): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/routes/chats.ts(87,48): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/routes/chats.ts(88,39): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/routes/chats.ts(89,39): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/routes/chats.ts(98,46): error TS7006: Parameter 'chat' implicitly has an 'any' type.
+src/routes/chats.ts(111,51): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(113,28): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(166,52): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(216,48): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(218,37): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(263,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(267,24): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(287,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(289,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(290,26): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(325,110): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(327,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(338,14): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(347,47): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(373,55): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(375,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(413,54): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(415,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(416,29): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(469,64): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(471,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(472,37): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(515,52): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(517,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(532,48): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(534,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/chats.ts(548,40): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/routes/chats.ts(582,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/chats.ts(584,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/friends.ts(1,24): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/routes/friends.ts(9,42): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/friends.ts(24,37): error TS7006: Parameter 'f' implicitly has an 'any' type.
+src/routes/friends.ts(37,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/friends.ts(49,27): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/routes/friends.ts(57,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/friends.ts(69,27): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/routes/friends.ts(77,56): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/friends.ts(80,33): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/friends.ts(111,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/friends.ts(114,30): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/routes/friends.ts(186,53): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/friends.ts(189,37): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/friends.ts(212,54): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/friends.ts(215,37): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/friends.ts(237,48): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/friends.ts(240,37): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(1,24): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/routes/messages.ts(10,54): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/messages.ts(12,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(13,42): error TS2339: Property 'query' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(54,97): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/messages.ts(56,14): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(61,37): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(63,42): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(68,17): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(69,21): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(78,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/messages.ts(80,29): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(81,27): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(107,48): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/messages.ts(109,27): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(140,61): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/messages.ts(142,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(143,26): error TS2339: Property 'query' does not exist on type 'AuthRequest'.
+src/routes/messages.ts(154,29): error TS2694: Namespace '"/opt/render/project/src/node_modules/.prisma/client/default".Prisma' has no exported member 'MessageWhereInput'.
+src/routes/messages.ts(206,18): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/routes/messages.ts(207,15): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/routes/stories.ts(1,24): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/routes/stories.ts(9,42): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/stories.ts(23,39): error TS7006: Parameter 'f' implicitly has an 'any' type.
+src/routes/stories.ts(71,39): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/routes/stories.ts(105,43): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/stories.ts(108,54): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/routes/stories.ts(143,56): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/stories.ts(146,25): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/stories.ts(184,58): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/stories.ts(187,25): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/stories.ts(208,24): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/routes/stories.ts(222,53): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/stories.ts(225,25): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/users.ts(1,24): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/routes/users.ts(9,48): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/users.ts(11,23): error TS2339: Property 'query' does not exist on type 'AuthRequest'.
+src/routes/users.ts(37,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/users.ts(40,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
+src/routes/users.ts(56,105): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/users.ts(58,14): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/users.ts(67,47): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
+src/routes/users.ts(82,51): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/users.ts(100,49): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/users.ts(102,48): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/routes/users.ts(138,57): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/users.ts(140,31): error TS2339: Property 'query' does not exist on type 'AuthRequest'.
+src/routes/users.ts(198,37): error TS7006: Parameter 'msg' implicitly has an 'any' type.
+src/routes/users.ts(214,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/users.ts(216,36): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+src/shared.ts(1,20): error TS7016: Could not find a declaration file for module 'multer'. '/opt/render/project/src/node_modules/multer/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/multer` if it exists or add a new declaration (.d.ts) file containing `declare module 'multer';`
+src/shared.ts(5,49): error TS7016: Could not find a declaration file for module 'express'. '/opt/render/project/src/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
+src/shared.ts(89,19): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/shared.ts(89,25): error TS7006: Parameter '_file' implicitly has an 'any' type.
+src/shared.ts(89,32): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/shared.ts(90,16): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/shared.ts(90,22): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/shared.ts(90,28): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/shared.ts(101,16): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/shared.ts(101,22): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/shared.ts(101,28): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/shared.ts(112,16): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/shared.ts(112,22): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/shared.ts(112,28): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/shared.ts(132,19): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/shared.ts(132,25): error TS7006: Parameter '_file' implicitly has an 'any' type.
+src/shared.ts(132,32): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/shared.ts(133,16): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/shared.ts(133,22): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/shared.ts(133,28): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/shared.ts(139,16): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/shared.ts(139,22): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/shared.ts(139,28): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/socket/index.ts(2,17): error TS7016: Could not find a declaration file for module 'jsonwebtoken'. '/opt/render/project/src/node_modules/jsonwebtoken/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/jsonwebtoken` if it exists or add a new declaration (.d.ts) file containing `declare module 'jsonwebtoken';`
+src/socket/index.ts(287,59): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/socket/index.ts(294,46): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/socket/index.ts(505,46): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/socket/index.ts(510,26): error TS7006: Parameter 'msgId' implicitly has an 'any' type.
+src/socket/index.ts(1104,42): error TS7006: Parameter 'r' implicitly has an 'any' type.
+npm error Lifecycle script `build` failed with error:
+npm error code 2
+npm error path /opt/render/project/src/apps/server
+npm error workspace @vortex/server@1.0.0
+npm error location /opt/render/project/src/apps/server
+npm error command failed
+npm error command sh -c tsc
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
