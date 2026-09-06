@@ -1,6 +1,6 @@
 ==> Downloading cache...
 ==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 4bc3b3fafde4c67a1e72aec50f3eebceb6d50e64 in branch master
+==> Checking out commit 9a5954ed30abff834ef7ff6113b772e4b6eb8e30 in branch master
 ==> Downloaded 225MB in 2s. Extraction took 3s.
 ==> Using Node.js version 24.14.1 (default)
 ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
@@ -18,9 +18,8 @@ Run `npm audit` for details.
 > tsc
 > @vortex/web@1.0.0 build
 > tsc -b && vite build
-error TS2688: Cannot find type definition file for 'vite/client'.
-  The file is in the program because:
-    Entry point of type library 'vite/client' specified in compilerOptions
+src/components/Sidebar.tsx(24,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/components/StoryViewer.tsx(11,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
 npm error Lifecycle script `build` failed with error:
 npm error code 1
 npm error path /opt/render/project/src/apps/web
