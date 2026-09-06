@@ -1,11 +1,52 @@
+это вот ща настройка на рендере:
+Key	Value
+Key
+ALLOWED_ORIGINS
+Value
+https://basagrams.onrender.com
+
+
+Key
+DATABASE_URL
+Value
+mysql://gs348298:eKDxA99Mc2sf@80.242.59.112:3306/gs348298
+
+
+Key
+JWT_SECRET
+Value
+basagram_jwt_secret_key_2024_production_secure
+
+
+Key
+NODE_ENV
+Value
+production
+
+
+Key
+PORT
+Value
+10000
+
+
+Key
+SESSION_SECRET
+Value
+basagram_session_secret_key_2024_production_secure
+
+
+
+
+это ерроры:
 ==> Downloading cache...
 ==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 32a43e988d58a686f47d5b2cc32faf935b1cea82 in branch master
-==> Downloaded 225MB in 2s. Extraction took 4s.
+==> Checking out commit db08fe19348075a02eb731a6b4a0350e449ca674 in branch master
+==> Downloaded 276MB in 2s. Extraction took 4s.
 ==> Using Node.js version 24.14.1 (default)
 ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
 ==> Running build command 'npm install && npm run build'...
-added 79 packages, and audited 265 packages in 3s
+up to date, audited 265 packages in 2s
 43 packages are looking for funding
   run `npm fund` for details
 24 vulnerabilities (3 low, 4 moderate, 17 high)
@@ -30,29 +71,69 @@ dist/assets/index-Ce4RFg9e.js   1,213.24 kB │ gzip: 309.74 kB
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.62s
+✓ built in 3.23s
 ==> Uploading build...
-==> Uploaded in 4.6s. Compression took 1.5s
+==> Uploaded in 4.5s. Compression took 1.3s
 ==> Build successful 🎉
 ==> Deploying...
 ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
-==> Running 'npm start'
+==> Running 'npm run start'
 > start
-> npm run dev
-> dev
-> concurrently -k -n server,web -c "#6366f1","#8b5cf6" "npm run dev -w apps/server" "npm run dev -w apps/web"
-sh: 1: concurrently: not found
-==> Exited with status 127
+> npm run start -w apps/server
+> @vortex/server@1.0.0 start
+> node dist/index.js
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+  ⚠ ENCRYPTION_KEY не задан — сообщения хранятся без шифрования. Для продакшена задайте 64-символьный hex-ключ.
+/opt/render/project/src/node_modules/.prisma/client/default.js:43
+    throw new Error('@prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.');
+    ^
+Error: @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
+    at new PrismaClient (/opt/render/project/src/node_modules/.prisma/client/default.js:43:11)
+    at Object.<anonymous> (/opt/render/project/src/apps/server/dist/db.js:6:20)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1556:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (/opt/render/project/src/apps/server/dist/index.js:16:14)
+Node.js v24.14.1
+npm error Lifecycle script `start` failed with error:
+npm error code 1
+npm error path /opt/render/project/src/apps/server
+npm error workspace @vortex/server@1.0.0
+npm error location /opt/render/project/src/apps/server
+npm error command failed
+npm error command sh -c node dist/index.js
+==> Exited with status 1
 ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
-==> Running 'npm start'
+==> Running 'npm run start'
 > start
-> npm run dev
-> dev
-> concurrently -k -n server,web -c "#6366f1","#8b5cf6" "npm run dev -w apps/server" "npm run dev -w apps/web"
-sh: 1: concurrently: not found
-==> Running 'npm start'
-> start
-> npm run dev
-> dev
-> concurrently -k -n server,web -c "#6366f1","#8b5cf6" "npm run dev -w apps/server" "npm run dev -w apps/web"
-sh: 1: concurrently: not found
+> npm run start -w apps/server
+> @vortex/server@1.0.0 start
+> node dist/index.js
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+  ⚠ ENCRYPTION_KEY не задан — сообщения хранятся без шифрования. Для продакшена задайте 64-символьный hex-ключ.
+/opt/render/project/src/node_modules/.prisma/client/default.js:43
+    throw new Error('@prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.');
+    ^
+Error: @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
+    at new PrismaClient (/opt/render/project/src/node_modules/.prisma/client/default.js:43:11)
+    at Object.<anonymous> (/opt/render/project/src/apps/server/dist/db.js:6:20)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1556:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (/opt/render/project/src/apps/server/dist/index.js:16:14)
+Node.js v24.14.1
+npm error Lifecycle script `start` failed with error:
+npm error code 1
+npm error path /opt/render/project/src/apps/server
+npm error workspace @vortex/server@1.0.0
+npm error location /opt/render/project/src/apps/server
+npm error command failed
+npm error command sh -c node dist/index.js
