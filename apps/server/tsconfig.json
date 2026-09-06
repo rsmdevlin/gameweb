@@ -15,7 +15,6 @@
     "resolveJsonModule": true,
     "declaration": false,
     "sourceMap": false,
-    "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },

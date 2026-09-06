@@ -1,7 +1,7 @@
 ==> Downloading cache...
 ==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit e215c02ee100249a4a78e4a8b1fb50ae9a30f722 in branch master
-==> Downloaded 225MB in 6s. Extraction took 4s.
+==> Checking out commit 3c3ca8550327b9a2e56545b678f0c056a2e35cea in branch master
+==> Downloaded 225MB in 1s. Extraction took 4s.
 ==> Using Node.js version 24.14.1 (default)
 ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
 ==> Running build command 'npm install && npm run build'...
@@ -16,55 +16,7 @@ Run `npm audit` for details.
 > npm run build -w apps/server && npm run build -w apps/web
 > @vortex/server@1.0.0 build
 > tsc
-src/middleware/auth.ts(10,26): error TS2339: Property 'headers' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(64,28): error TS2347: Untyped function calls may not accept type arguments.
-src/routes/chats.ts(65,16): error TS2339: Property 'sql' does not exist on type 'typeof Prisma'.
-src/routes/chats.ts(67,40): error TS2339: Property 'join' does not exist on type 'typeof Prisma'.
-src/routes/chats.ts(113,28): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(218,37): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(267,24): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(289,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(290,26): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(327,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(338,14): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(347,47): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(375,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(415,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(416,29): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(471,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(472,37): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(517,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(534,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/chats.ts(584,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/friends.ts(80,33): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/friends.ts(114,30): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
-src/routes/friends.ts(189,37): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/friends.ts(215,37): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/friends.ts(240,37): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(12,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(13,42): error TS2339: Property 'query' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(56,14): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(61,37): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(63,42): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(68,17): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(69,21): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(80,29): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(81,27): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(109,27): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(142,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(143,26): error TS2339: Property 'query' does not exist on type 'AuthRequest'.
-src/routes/messages.ts(154,29): error TS2694: Namespace '"/opt/render/project/src/node_modules/.prisma/client/default".Prisma' has no exported member 'MessageWhereInput'.
-src/routes/stories.ts(108,54): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
-src/routes/stories.ts(146,25): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/stories.ts(187,25): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/stories.ts(225,25): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/users.ts(11,23): error TS2339: Property 'query' does not exist on type 'AuthRequest'.
-src/routes/users.ts(40,31): error TS2339: Property 'params' does not exist on type 'AuthRequest'.
-src/routes/users.ts(58,14): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/users.ts(67,47): error TS2339: Property 'file' does not exist on type 'AuthRequest'.
-src/routes/users.ts(102,48): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
-src/routes/users.ts(140,31): error TS2339: Property 'query' does not exist on type 'AuthRequest'.
-src/routes/users.ts(216,36): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+tsconfig.json(18,5): error TS5102: Option 'suppressImplicitAnyIndexErrors' has been removed. Please remove it from your configuration.
 npm error Lifecycle script `build` failed with error:
 npm error code 2
 npm error path /opt/render/project/src/apps/server
