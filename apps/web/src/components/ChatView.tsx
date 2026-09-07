@@ -854,18 +854,12 @@ export default function ChatView({
             <div className="w-6 h-6 border-2 border-vortex-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : chatMessages.length === 0 ? (
-          <div className="flex items-center justify-center h-full relative">
-            {/* Animated background blobs */}
-            <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-vortex-500/30 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-            </div>
-
-            <div className="max-w-md w-full mx-4 relative z-10">
+          <div className="flex items-center justify-center h-full">
+            <div className="max-w-md w-full mx-4">
               <div className="relative rounded-3xl p-8 text-center overflow-hidden">
                 {/* Multi-layer blur background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-surface-secondary/80 via-surface-secondary/60 to-surface-tertiary/80 backdrop-blur-2xl" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-vortex-500/10 via-transparent to-purple-500/10" />
+                <div className="absolute inset-0 bg-gradient-to-br from-surface-secondary/80 via-surface-secondary/60 to-surface-tertiary/80 backdrop-blur-2xl rounded-3xl" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-vortex-500/10 via-transparent to-purple-500/10 rounded-3xl" />
                 <div className="absolute inset-0 border border-white/20 rounded-3xl" />
 
                 {/* Content */}
