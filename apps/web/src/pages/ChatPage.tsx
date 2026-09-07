@@ -13,6 +13,7 @@ import Sidebar from '../components/Sidebar';
 import ChatView from '../components/ChatView';
 import CallModal from '../components/CallModal';
 import GroupCallModal from '../components/GroupCallModal';
+import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
 
 export default function ChatPage() {
   const {
@@ -337,6 +338,9 @@ export default function ChatPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Global Audio Player */}
+      <GlobalAudioPlayer />
 
     </motion.div>
   );

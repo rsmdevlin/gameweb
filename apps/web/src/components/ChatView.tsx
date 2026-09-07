@@ -37,7 +37,7 @@ import ForwardModal from './ForwardModal';
 import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
 import AudioMiniPlayer from './AudioMiniPlayer';
-import AudioPlayerV2 from './AudioPlayerV2';
+import AudioPlaylistModal from './AudioPlaylistModal';
 import { useThemeStore } from '../stores/themeStore';
 
 export default function ChatView({
@@ -447,7 +447,7 @@ export default function ChatView({
     <div
       ref={chatViewRef}
       onMouseMove={handleMouseMove}
-      className={`flex-1 flex flex-col h-full rounded-3xl overflow-hidden shadow-[0_0_120px_-20px_rgba(0,0,0,0.5)] border border-border/50 relative z-0 chat-theme-${chatTheme} transition-colors duration-500 ${audioPlayerVisible ? 'pb-20' : ''}`}
+      className={`flex-1 flex flex-col h-full rounded-3xl overflow-hidden shadow-[0_0_120px_-20px_rgba(0,0,0,0.5)] border border-border/50 relative z-0 chat-theme-${chatTheme} transition-colors duration-500`}
     >
       {/* Шапка чата */}
       {selectionMode ? (
@@ -982,50 +982,10 @@ export default function ChatView({
       {/* Full Audio Player (expanded) */}
       <AnimatePresence>
         {audioPlayerExpanded && audioPlayerVisible && (
-          <motion.div
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed inset-0 z-50 bg-surface flex flex-col"
-          >
-            <AudioPlayerV2
-              playlist={useAudioPlayerStore.getState().playlist}
-              initialIndex={useAudioPlayerStore.getState().currentIndex}
-              onClose={() => setAudioPlayerExpanded(false)}
-              onShowInChat={(messageId) => {
-                if (activeChat) {
-                  const messageEl = document.getElementById(`msg-${messageId}`);
-                  if (messageEl) {
-                    messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    messageEl.classList.add('ring-2', 'ring-accent');
-                    setTimeout(() => {
-                      messageEl.classList.remove('ring-2', 'ring-accent');
-                    }, 2000);
-                  }
-                }
-                setAudioPlayerExpanded(false);
-              }}
-              onSaveToFavorites={async (messageId) => {
-                const socket = getSocket();
-                const favChat = chats.find(c => c.type === 'favorites');
-                if (socket && favChat) {
-                  socket.emit('forward_messages', {
-                    messageIds: [messageId],
-                    targetChatId: favChat.id,
-                  });
-                  alert('Сохранено в Избранное');
-                }
-              }}
-              onDelete={async (messageId) => {
-                const socket = getSocket();
-                if (!socket) return;
-                if (confirm('Удалить это аудио?')) {
-                  socket.emit('delete_message', { messageId });
-                }
-              }}
-            />
-          </motion.div>
+          <AudioPlaylistModal
+            onClose={() => setAudioPlayerExpanded(false)}
+            onContextMenu={(x, y) => setAudioContextMenu({ x, y })}
+          />
         )}
       </AnimatePresence>
 
