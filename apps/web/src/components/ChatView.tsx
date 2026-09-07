@@ -867,27 +867,34 @@ export default function ChatView({
                 const prevMsg = i > 0 ? chatMessages[i - 1] : null;
                 const showDate = !prevMsg || new Date(msg.createdAt).toDateString() !== new Date(prevMsg.createdAt).toDateString();
 
-                // Если дата изменилась или отправитель другой - новая группа
-                if (msg.senderId !== currentSenderId || showDate) {
+                // Если дата изменилась - закрываем группу и вставляем разделитель
+                if (showDate && currentGroup.length > 0) {
+                  messageGroups.push({ senderId: currentSenderId!, messages: currentGroup });
+                  currentGroup = [];
+                  currentSenderId = null;
+                }
+
+                if (showDate) {
+                  messageGroups.push({
+                    senderId: 'DATE_SEPARATOR',
+                    messages: [],
+                    showDate: {
+                      date: new Date(msg.createdAt).toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
+                        day: 'numeric',
+                        month: 'long',
+                      }),
+                      beforeIndex: i
+                    }
+                  });
+                }
+
+                // Если отправитель другой - закрываем группу
+                if (msg.senderId !== currentSenderId) {
                   if (currentGroup.length > 0) {
                     messageGroups.push({ senderId: currentSenderId!, messages: currentGroup });
                   }
                   currentGroup = [msg];
                   currentSenderId = msg.senderId;
-
-                  if (showDate) {
-                    messageGroups.push({
-                      senderId: 'DATE_SEPARATOR',
-                      messages: [],
-                      showDate: {
-                        date: new Date(msg.createdAt).toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
-                          day: 'numeric',
-                          month: 'long',
-                        }),
-                        beforeIndex: i
-                      }
-                    });
-                  }
                 } else {
                   currentGroup.push(msg);
                 }
