@@ -93,6 +93,33 @@
     radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
 }
 
+/* Исправление текстов в светлой теме */
+[data-theme="light"] .text-white {
+  color: #0a0a0a !important;
+}
+
+[data-theme="light"] .text-zinc-100,
+[data-theme="light"] .text-zinc-200,
+[data-theme="light"] .text-zinc-300 {
+  color: #18181b !important;
+}
+
+[data-theme="light"] .text-zinc-400 {
+  color: #52525b !important;
+}
+
+[data-theme="light"] .text-zinc-500 {
+  color: #71717a !important;
+}
+
+[data-theme="light"] .bubble-received {
+  color: #0a0a0a !important;
+}
+
+[data-theme="light"] .bubble-sent {
+  color: #ffffff !important;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
@@ -134,8 +161,14 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: #09090b;
   color: #fafafa;
+  font-size: calc(1rem * var(--text-scale));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Применяем масштаб текста ко всем элементам */
+* {
+  font-size: inherit;
 }
 
 @keyframes slideIn {

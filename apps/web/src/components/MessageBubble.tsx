@@ -605,6 +605,11 @@ function MessageBubble({
             onContextMenu={handleContextMenu}
             onDoubleClick={handleReply}
             title={t('reply') ? `${t('reply')} (Double Click)` : 'Double click to reply'}
+            style={{
+              borderRadius: isGroupStart && isGroupEnd
+                ? 'var(--message-radius)'
+                : undefined
+            }}
             className={`cursor-pointer overflow-hidden transition-all duration-300 ${
               hasImage && !message.content
                 ? 'p-0 shadow-none border-none'
@@ -612,22 +617,22 @@ function MessageBubble({
                   ? 'bubble-sent text-white shadow-sm px-4 py-2.5 hover:shadow-md hover:brightness-105'
                   : 'bubble-received text-zinc-100 shadow-sm px-4 py-2.5 hover:shadow-md hover:brightness-105'
             } ${
-              // Хвостики как в Telegram
+              // Хвостики как в Telegram - используем CSS переменную для скругления
               isMine
                 ? isGroupStart && isGroupEnd
-                  ? 'rounded-2xl' // Одиночное сообщение - все углы скруглены
+                  ? '' // Одиночное - стиль из style выше
                   : isGroupStart
-                    ? 'rounded-t-2xl rounded-bl-2xl rounded-br-md' // Первое в группе - хвостик справа снизу
+                    ? '[border-radius:var(--message-radius)_var(--message-radius)_4px_var(--message-radius)]' // Первое в группе - хвостик справа снизу
                     : isGroupEnd
-                      ? 'rounded-b-2xl rounded-tl-2xl rounded-tr-md' // Последнее в группе - хвостик справа сверху
-                      : 'rounded-tl-2xl rounded-bl-2xl rounded-tr-md rounded-br-md' // Среднее - квадратное справа
+                      ? '[border-radius:var(--message-radius)_4px_var(--message-radius)_var(--message-radius)]' // Последнее в группе - хвостик справа сверху
+                      : '[border-radius:var(--message-radius)_4px_4px_var(--message-radius)]' // Среднее - квадратное справа
                 : isGroupStart && isGroupEnd
-                  ? 'rounded-2xl' // Одиночное сообщение - все углы скруглены
+                  ? '' // Одиночное - стиль из style выше
                   : isGroupStart
-                    ? 'rounded-t-2xl rounded-br-2xl rounded-bl-md' // Первое в группе - хвостик слева снизу
+                    ? '[border-radius:var(--message-radius)_var(--message-radius)_var(--message-radius)_4px]' // Первое в группе - хвостик слева снизу
                     : isGroupEnd
-                      ? 'rounded-b-2xl rounded-tr-2xl rounded-tl-md' // Последнее в группе - хвостик слева сверху
-                      : 'rounded-tr-2xl rounded-br-2xl rounded-tl-md rounded-bl-md' // Среднее - квадратное слева
+                      ? '[border-radius:4px_var(--message-radius)_var(--message-radius)_var(--message-radius)]' // Последнее в группе - хвостик слева сверху
+                      : '[border-radius:4px_var(--message-radius)_var(--message-radius)_4px]' // Среднее - квадратное слева
             }`}
           >
             {/* Рендер пересланного сообщения */}
