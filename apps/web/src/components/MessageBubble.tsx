@@ -624,6 +624,15 @@ function MessageBubble({
                           : formatDuration(audioDuration || audioMedia?.duration || 0)}
                       </span>
                     </div>
+                    {/* Кнопка открыть плеер */}
+                    <button
+                      onClick={() => onPlayAudio?.(message.id)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/10 hover:bg-white/20' : 'bg-surface-tertiary hover:bg-surface-hover'
+                        } transition-colors`}
+                      title="Открыть плеер"
+                    >
+                      <MoreHorizontal size={14} className={isMine ? 'text-white/70' : 'text-zinc-400'} />
+                    </button>
                   </div>
                   {/* Время и прочтение для аудио */}
                   <div className="flex justify-end mt-1">

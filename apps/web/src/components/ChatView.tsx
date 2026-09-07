@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useChatStore } from '../stores/chatStore';
 import { useAuthStore } from '../stores/authStore';
+import { useAudioPlayerStore } from '../stores/audioPlayerStore';
 import { api } from '../lib/api';
 import { getSocket } from '../lib/socket';
 import { isChatMuted, toggleMuteChat } from '../lib/sounds';
@@ -35,7 +36,6 @@ import GroupSettings from './GroupSettings';
 import ForwardModal from './ForwardModal';
 import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
-import AudioPlayerV2 from './AudioPlayerV2';
 import { useThemeStore } from '../stores/themeStore';
 
 export default function ChatView({
@@ -79,10 +79,8 @@ export default function ChatView({
   const [scrollReady, setScrollReady] = useState(false);
   const [activeGroupCallParticipants, setActiveGroupCallParticipants] = useState<string[]>([]);
 
-  // Audio player state
-  const [audioPlaylist, setAudioPlaylist] = useState<Array<{ id: string; url: string; title: string; duration?: number; messageId: string; senderId?: string; canDelete?: boolean }>>([]);
-  const [audioPlayerVisible, setAudioPlayerVisible] = useState(false);
-  const [audioInitialIndex, setAudioInitialIndex] = useState(0);
+  // Audio player - use global store
+  const { setPlaylist: setGlobalAudioPlaylist } = useAudioPlayerStore();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -250,6 +248,8 @@ export default function ChatView({
 
   // Open audio player with playlist
   const handlePlayAudio = (messageId: string) => {
+    if (!activeChat) return;
+
     // Collect all audio messages from chat
     const audioMessages = chatMessages.filter(
       (m) => m.type === 'file' && m.media?.[0] && ['audio', 'voice'].includes(m.media[0].type)
@@ -266,9 +266,7 @@ export default function ChatView({
     }));
 
     const initialIndex = playlist.findIndex((p) => p.id === messageId);
-    setAudioPlaylist(playlist);
-    setAudioInitialIndex(initialIndex >= 0 ? initialIndex : 0);
-    setAudioPlayerVisible(true);
+    setGlobalAudioPlaylist(playlist, initialIndex >= 0 ? initialIndex : 0, activeChat);
   };
 
   // Поиск сообщений
@@ -926,58 +924,6 @@ export default function ChatView({
         }}
         onCancel={() => setConfirmAction(null)}
       />
-
-      {/* Audio Player */}
-      {audioPlayerVisible && audioPlaylist.length > 0 && (
-        <AudioPlayerV2
-          playlist={audioPlaylist}
-          initialIndex={audioInitialIndex}
-          onClose={() => setAudioPlayerVisible(false)}
-          onShowInChat={(messageId) => {
-            // Scroll to message in chat
-            const messageEl = document.getElementById(`msg-${messageId}`);
-            if (messageEl) {
-              messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              // Highlight message briefly
-              messageEl.classList.add('ring-2', 'ring-accent');
-              setTimeout(() => {
-                messageEl.classList.remove('ring-2', 'ring-accent');
-              }, 2000);
-            }
-          }}
-          onSaveToFavorites={async (messageId) => {
-            // Forward to favorites chat via socket
-            const socket = getSocket();
-            const favChat = chats.find(c => c.type === 'favorites');
-            if (socket && favChat) {
-              try {
-                socket.emit('forward_messages', {
-                  messageIds: [messageId],
-                  targetChatId: favChat.id,
-                });
-                alert('Сохранено в Избранное');
-              } catch (e) {
-                console.error('Failed to save to favorites:', e);
-                alert('Ошибка сохранения');
-              }
-            }
-          }}
-          onDelete={async (messageId) => {
-            const socket = getSocket();
-            if (!socket) return;
-
-            if (confirm('Удалить это аудио?')) {
-              socket.emit('delete_message', { messageId });
-              // Remove from playlist
-              const newPlaylist = audioPlaylist.filter(t => t.messageId !== messageId);
-              setAudioPlaylist(newPlaylist);
-              if (newPlaylist.length === 0) {
-                setAudioPlayerVisible(false);
-              }
-            }
-          }}
-        />
-      )}
     </div>
   );
 }

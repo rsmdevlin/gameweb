@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useChatStore } from '../stores/chatStore';
 import { useAuthStore } from '../stores/authStore';
+import { useAudioPlayerStore } from '../stores/audioPlayerStore';
 import { getSocket, disconnectSocket } from '../lib/socket';
 import { api } from '../lib/api';
 import { playNotificationSound, isChatMuted } from '../lib/sounds';
@@ -12,6 +13,7 @@ import Sidebar from '../components/Sidebar';
 import ChatView from '../components/ChatView';
 import CallModal from '../components/CallModal';
 import GroupCallModal from '../components/GroupCallModal';
+import AudioPlayerV2 from '../components/AudioPlayerV2';
 
 export default function ChatPage() {
   const {
@@ -31,8 +33,10 @@ export default function ChatPage() {
     removePinnedMessage,
     clearStore,
     activeChat,
+    chats,
   } = useChatStore();
   const { user } = useAuthStore();
+  const { playlist, currentIndex, isVisible, chatId, close } = useAudioPlayerStore();
   const initialized = useRef(false);
 
   // Mobile state
@@ -334,6 +338,46 @@ export default function ChatPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Global Audio Player */}
+      {isVisible && playlist.length > 0 && (
+        <AudioPlayerV2
+          playlist={playlist}
+          initialIndex={currentIndex}
+          onClose={close}
+          onShowInChat={(messageId) => {
+            // Scroll to message in chat if we're in the same chat
+            if (chatId && activeChat === chatId) {
+              const messageEl = document.getElementById(`msg-${messageId}`);
+              if (messageEl) {
+                messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                messageEl.classList.add('ring-2', 'ring-accent');
+                setTimeout(() => {
+                  messageEl.classList.remove('ring-2', 'ring-accent');
+                }, 2000);
+              }
+            }
+          }}
+          onSaveToFavorites={async (messageId) => {
+            const socket = getSocket();
+            const favChat = chats.find(c => c.type === 'favorites');
+            if (socket && favChat) {
+              socket.emit('forward_messages', {
+                messageIds: [messageId],
+                targetChatId: favChat.id,
+              });
+              alert('Сохранено в Избранное');
+            }
+          }}
+          onDelete={async (messageId) => {
+            const socket = getSocket();
+            if (!socket) return;
+            if (confirm('Удалить это аудио?')) {
+              socket.emit('delete_message', { messageId });
+            }
+          }}
+        />
+      )}
     </motion.div>
   );
 }
