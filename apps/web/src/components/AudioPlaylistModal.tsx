@@ -13,6 +13,7 @@ export default function AudioPlaylistModal({ onClose, onContextMenu }: AudioPlay
   const { playlist, currentIndex, isPlaying, currentTime, duration, audioElement, setIsPlaying, nextTrack, prevTrack } = useAudioPlayerStore();
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleTrackClick = (index: number) => {
     const track = playlist[index];
@@ -90,7 +91,11 @@ export default function AudioPlaylistModal({ onClose, onContextMenu }: AudioPlay
 
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     if (info.offset.y > 150) {
+      // Drag down - close
       onClose();
+    } else if (info.offset.y < -100 && !isExpanded) {
+      // Drag up - expand to full screen
+      setIsExpanded(true);
     }
   };
 
@@ -98,17 +103,17 @@ export default function AudioPlaylistModal({ onClose, onContextMenu }: AudioPlay
     <motion.div
       drag="y"
       dragConstraints={{ top: 0, bottom: 0 }}
-      dragElastic={{ top: 0, bottom: 0.5 }}
+      dragElastic={{ top: 0.5, bottom: 0.5 }}
       onDragEnd={handleDragEnd}
       initial={{ y: '100%' }}
-      animate={{ y: 0 }}
+      animate={{ y: 0, height: isExpanded ? '100vh' : '50vh' }}
       exit={{ y: '100%' }}
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
       className="fixed inset-0 z-50 flex items-end pointer-events-none"
     >
-      <div className="w-full max-w-2xl mx-auto h-1/2 bg-surface rounded-t-3xl shadow-2xl border-t border-l border-r border-border flex flex-col pointer-events-auto">
+      <div className={`w-full max-w-2xl mx-auto ${isExpanded ? 'h-screen' : 'h-1/2'} bg-surface rounded-t-3xl shadow-2xl border-t border-l border-r border-border flex flex-col pointer-events-auto transition-all duration-300`}>
         {/* Drag handle */}
-        <div className="flex items-center justify-center py-3 cursor-grab active:cursor-grabbing">
+        <div className="flex items-center justify-center py-3 cursor-grab active:cursor-grabbing flex-shrink-0">
           <div className="w-12 h-1 bg-zinc-600 rounded-full" />
         </div>
 

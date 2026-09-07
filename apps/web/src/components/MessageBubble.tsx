@@ -684,15 +684,48 @@ function MessageBubble({
                   {Object.keys(reactionGroups).length > 0 && (
                     <>
                       {Object.entries(reactionGroups).map(([emoji, data]) => (
-                        <ReactionButton
-                          key={emoji}
-                          emoji={emoji}
-                          count={data.count}
-                          isMine={data.isMine}
-                          users={data.users}
-                          onReact={handleReaction}
-                          onShowDetails={(e, u) => setReactionDetails({ emoji: e, users: u })}
-                        />
+                        <div key={emoji} className="flex items-center">
+                          <button
+                            onClick={() => handleReaction(emoji)}
+                            onContextMenu={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setReactionDetails({ emoji, users: data.users });
+                            }}
+                            className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs transition-all ${
+                              data.isMine
+                                ? 'bg-vortex-500/40 border border-vortex-500/60'
+                                : 'bg-white/10 border border-white/20 hover:bg-white/20'
+                            }`}
+                          >
+                            {/* Показываем аватарки только если меньше 3 реакций */}
+                            {data.count < 3 && data.users.length > 0 && (
+                              <div className="flex -space-x-1 mr-0.5">
+                                {data.users.slice(0, 2).map((u, i) => (
+                                  u.avatar ? (
+                                    <img
+                                      key={i}
+                                      src={getMediaUrl(u.avatar)}
+                                      alt=""
+                                      className="w-4 h-4 rounded-full object-cover border border-black/50"
+                                    />
+                                  ) : (
+                                    <div
+                                      key={i}
+                                      className="w-4 h-4 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[8px] font-semibold border border-black/50"
+                                    >
+                                      {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
+                                    </div>
+                                  )
+                                ))}
+                              </div>
+                            )}
+                            <span className="text-sm">{emoji}</span>
+                            {data.count > 1 && (
+                              <span className="text-white/80 text-[10px] font-medium ml-0.5">{data.count}</span>
+                            )}
+                          </button>
+                        </div>
                       ))}
                       <div className="w-px h-3 bg-white/20" />
                     </>
@@ -715,17 +748,49 @@ function MessageBubble({
             {/* Реакции для текстовых сообщений */}
             {message.content && Object.keys(reactionGroups).length > 0 && (
               <div className="flex justify-end mt-1">
-                <div className="flex items-center gap-1.5 bg-surface-tertiary/50 px-2 py-0.5 rounded-full">
+                <div className="flex items-center gap-1.5 bg-surface-tertiary/50 px-2 py-0.5 rounded-full border border-border/50">
                   {Object.entries(reactionGroups).map(([emoji, data]) => (
-                    <ReactionButton
+                    <button
                       key={emoji}
-                      emoji={emoji}
-                      count={data.count}
-                      isMine={data.isMine}
-                      users={data.users}
-                      onReact={handleReaction}
-                      onShowDetails={(e, u) => setReactionDetails({ emoji: e, users: u })}
-                    />
+                      onClick={() => handleReaction(emoji)}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setReactionDetails({ emoji, users: data.users });
+                      }}
+                      className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs transition-all ${
+                        data.isMine
+                          ? 'bg-vortex-500/40 border border-vortex-500/60'
+                          : 'bg-white/10 border border-white/20 hover:bg-white/20'
+                      }`}
+                    >
+                      {/* Показываем аватарки только если меньше 3 реакций */}
+                      {data.count < 3 && data.users.length > 0 && (
+                        <div className="flex -space-x-1 mr-0.5">
+                          {data.users.slice(0, 2).map((u, i) => (
+                            u.avatar ? (
+                              <img
+                                key={i}
+                                src={getMediaUrl(u.avatar)}
+                                alt=""
+                                className="w-4 h-4 rounded-full object-cover border border-black/50"
+                              />
+                            ) : (
+                              <div
+                                key={i}
+                                className="w-4 h-4 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[8px] font-semibold border border-black/50"
+                              >
+                                {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
+                              </div>
+                            )
+                          ))}
+                        </div>
+                      )}
+                      <span className="text-sm">{emoji}</span>
+                      {data.count > 1 && (
+                        <span className="text-white/80 text-[10px] font-medium ml-0.5">{data.count}</span>
+                      )}
+                    </button>
                   ))}
                 </div>
               </div>
