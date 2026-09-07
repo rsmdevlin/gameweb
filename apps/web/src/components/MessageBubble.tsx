@@ -572,7 +572,6 @@ function MessageBubble({
             {/* Аудио (mp3 файлы) */}
             {hasAudio && (() => {
               const audioMedia = media.find((m) => m.type === 'audio');
-              const audioUrl = getMediaUrl(audioMedia?.url);
               return (
                 <div className="min-w-[220px]">
                   {audioMedia?.filename && (
@@ -581,61 +580,24 @@ function MessageBubble({
                       <span className={`text-xs truncate ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>{audioMedia.filename}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-3 min-w-[200px]">
-                    <audio
-                      ref={audioRef}
-                      src={audioUrl}
-                      preload="auto"
-                      onError={(e) => console.error('Audio load error:', e)}
-                    />
-                    <button
-                      onClick={toggleAudio}
-                      className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
-                        } transition-colors`}
-                    >
-                      {isPlaying ? (
-                        <Pause size={16} className={isMine ? 'text-white' : 'text-vortex-400'} />
-                      ) : (
-                        <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
-                      )}
-                    </button>
-                    <div className="flex-1 min-w-0">
-                      {/* Progress bar */}
-                      <div
-                        className="h-1 bg-white/10 rounded-full cursor-pointer mb-1"
-                        onClick={(e) => {
-                          const audio = audioRef.current;
-                          if (!audio || !audio.duration) return;
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          const pct = (e.clientX - rect.left) / rect.width;
-                          audio.currentTime = pct * audio.duration;
-                          setAudioProgress(pct * 100);
-                          if (!isPlaying) toggleAudio();
-                        }}
-                      >
-                        <div
-                          className={`h-full rounded-full transition-all ${isMine ? 'bg-white/80' : 'bg-vortex-400'}`}
-                          style={{ width: `${audioProgress}%` }}
-                        />
-                      </div>
-                      <span className={`text-xs block ${isMine ? 'text-white/60' : 'text-zinc-500'}`}>
-                        {isPlaying
-                          ? formatDuration(audioRef.current?.currentTime || 0)
-                          : formatDuration(audioDuration || audioMedia?.duration || 0)}
-                      </span>
-                    </div>
-                    {/* Кнопка открыть плеер */}
+                  <div className="flex items-center gap-3">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         onPlayAudio?.(message.id);
                       }}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/10 hover:bg-white/20' : 'bg-surface-tertiary hover:bg-surface-hover'
+                      className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
                         } transition-colors`}
-                      title="Открыть плеер"
                     >
-                      <MoreHorizontal size={14} className={isMine ? 'text-white/70' : 'text-zinc-400'} />
+                      <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
                     </button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>
+                          {audioMedia?.duration ? formatDuration(audioMedia.duration) : '--:--'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   {/* Время и прочтение для аудио */}
                   <div className="flex justify-end mt-1">
@@ -647,6 +609,14 @@ function MessageBubble({
                         isRead ? (
                           <CheckCheck size={13} className="text-sky-300 ml-0.5" />
                         ) : (
+                          <Check size={13} className="ml-0.5" />
+                        )
+                      )}
+                    </span>
+                  </div>
+                </div>
+              );
+            })()}
                           <Check size={13} className="ml-0.5" />
                         )
                       )}

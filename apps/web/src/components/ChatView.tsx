@@ -228,7 +228,7 @@ export default function ChatView({
           }
         });
       },
-      { threshold: 0.5 } // Сообщение видно хотя бы на 50%
+      { threshold: 1.0 } // Сообщение видно на 100% (как в Telegram)
     );
 
     // Наблюдать за всеми сообщениями
@@ -280,8 +280,10 @@ export default function ChatView({
 
     // Collect all audio messages from chat
     const audioMessages = chatMessages.filter(
-      (m) => m.type === 'file' && m.media?.[0] && ['audio', 'voice'].includes(m.media[0].type)
+      (m) => (m.type === 'file' || m.type === 'audio' || m.type === 'voice') && m.media?.[0] && ['audio', 'voice'].includes(m.media[0].type)
     );
+
+    console.log('[ChatView] Audio messages found:', audioMessages.length);
 
     const playlist = audioMessages.map((m) => ({
       id: m.id,
@@ -292,6 +294,8 @@ export default function ChatView({
       senderId: m.senderId,
       canDelete: m.senderId === user?.id || (chat?.type === 'group' && chat?.members?.find(cm => cm.userId === user?.id)?.role === 'admin'),
     }));
+
+    console.log('[ChatView] Opening audio player with playlist:', playlist);
 
     const initialIndex = playlist.findIndex((p) => p.id === messageId);
     setGlobalAudioPlaylist(playlist, initialIndex >= 0 ? initialIndex : 0, activeChat);

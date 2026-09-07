@@ -26,9 +26,13 @@ export const useAudioPlayerStore = create<AudioPlayerState>((set) => ({
   isVisible: false,
   chatId: null,
 
-  setPlaylist: (playlist, initialIndex, chatId) =>
-    set({ playlist, currentIndex: initialIndex, isVisible: true, chatId }),
+  setPlaylist: (playlist, initialIndex, chatId) => {
+    console.log('[AudioPlayerStore] setPlaylist called:', { playlist, initialIndex, chatId });
+    set({ playlist, currentIndex: initialIndex, isVisible: true, chatId });
+  },
 
-  close: () =>
-    set({ isVisible: false }),
+  close: () => {
+    console.log('[AudioPlayerStore] close called');
+    set({ isVisible: false });
+  },
 }));
