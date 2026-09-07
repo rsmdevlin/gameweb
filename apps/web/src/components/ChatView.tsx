@@ -36,6 +36,8 @@ import GroupSettings from './GroupSettings';
 import ForwardModal from './ForwardModal';
 import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
+import AudioMiniPlayer from './AudioMiniPlayer';
+import AudioPlayerV2 from './AudioPlayerV2';
 import { useThemeStore } from '../stores/themeStore';
 
 export default function ChatView({
@@ -79,6 +81,8 @@ export default function ChatView({
   const [confirmAction, setConfirmAction] = useState<{ message: string; action: () => void } | null>(null);
   const [scrollReady, setScrollReady] = useState(false);
   const [activeGroupCallParticipants, setActiveGroupCallParticipants] = useState<string[]>([]);
+  const [audioPlayerExpanded, setAudioPlayerExpanded] = useState(false);
+  const [audioContextMenu, setAudioContextMenu] = useState<{ x: number; y: number } | null>(null);
 
   // Audio player - use global store
   const { setPlaylist: setGlobalAudioPlaylist } = useAudioPlayerStore();
@@ -829,6 +833,14 @@ export default function ChatView({
         </button>
       )}
 
+      {/* Audio Mini Player */}
+      {audioPlayerVisible && (
+        <AudioMiniPlayer
+          onExpand={() => setAudioPlayerExpanded(true)}
+          onContextMenu={(x, y) => setAudioContextMenu({ x, y })}
+        />
+      )}
+
       {/* Сообщения */}
       <div
         ref={messagesContainerRef}
@@ -966,6 +978,131 @@ export default function ChatView({
         }}
         onCancel={() => setConfirmAction(null)}
       />
+
+      {/* Full Audio Player (expanded) */}
+      <AnimatePresence>
+        {audioPlayerExpanded && audioPlayerVisible && (
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            className="fixed inset-0 z-50 bg-surface flex flex-col"
+          >
+            <AudioPlayerV2
+              playlist={useAudioPlayerStore.getState().playlist}
+              initialIndex={useAudioPlayerStore.getState().currentIndex}
+              onClose={() => setAudioPlayerExpanded(false)}
+              onShowInChat={(messageId) => {
+                if (activeChat) {
+                  const messageEl = document.getElementById(`msg-${messageId}`);
+                  if (messageEl) {
+                    messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    messageEl.classList.add('ring-2', 'ring-accent');
+                    setTimeout(() => {
+                      messageEl.classList.remove('ring-2', 'ring-accent');
+                    }, 2000);
+                  }
+                }
+                setAudioPlayerExpanded(false);
+              }}
+              onSaveToFavorites={async (messageId) => {
+                const socket = getSocket();
+                const favChat = chats.find(c => c.type === 'favorites');
+                if (socket && favChat) {
+                  socket.emit('forward_messages', {
+                    messageIds: [messageId],
+                    targetChatId: favChat.id,
+                  });
+                  alert('Сохранено в Избранное');
+                }
+              }}
+              onDelete={async (messageId) => {
+                const socket = getSocket();
+                if (!socket) return;
+                if (confirm('Удалить это аудио?')) {
+                  socket.emit('delete_message', { messageId });
+                }
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Audio Context Menu */}
+      <AnimatePresence>
+        {audioContextMenu && (
+          <>
+            <div className="fixed inset-0 z-[60]" onClick={() => setAudioContextMenu(null)} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              style={{ left: audioContextMenu.x, top: audioContextMenu.y }}
+              className="fixed z-[70] bg-surface-secondary rounded-lg shadow-2xl border border-border overflow-hidden min-w-[200px]"
+            >
+              <button
+                onClick={() => {
+                  const socket = getSocket();
+                  const favChat = chats.find(c => c.type === 'favorites');
+                  const currentTrack = useAudioPlayerStore.getState().playlist[useAudioPlayerStore.getState().currentIndex];
+                  if (socket && favChat && currentTrack) {
+                    socket.emit('forward_messages', {
+                      messageIds: [currentTrack.messageId],
+                      targetChatId: favChat.id,
+                    });
+                    alert('Сохранено в Избранное');
+                  }
+                  setAudioContextMenu(null);
+                }}
+                className="w-full px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors text-white text-sm"
+              >
+                <Bookmark size={16} />
+                <span>Сохранить в Избранное</span>
+              </button>
+              <button
+                onClick={() => {
+                  const currentTrack = useAudioPlayerStore.getState().playlist[useAudioPlayerStore.getState().currentIndex];
+                  if (currentTrack && activeChat) {
+                    const messageEl = document.getElementById(`msg-${currentTrack.messageId}`);
+                    if (messageEl) {
+                      messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      messageEl.classList.add('ring-2', 'ring-accent');
+                      setTimeout(() => {
+                        messageEl.classList.remove('ring-2', 'ring-accent');
+                      }, 2000);
+                    }
+                  }
+                  setAudioContextMenu(null);
+                }}
+                className="w-full px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors text-white text-sm"
+              >
+                <Search size={16} />
+                <span>Показать в чате</span>
+              </button>
+              {(() => {
+                const currentTrack = useAudioPlayerStore.getState().playlist[useAudioPlayerStore.getState().currentIndex];
+                return currentTrack?.canDelete ? (
+                  <button
+                    onClick={() => {
+                      const socket = getSocket();
+                      if (!socket || !currentTrack) return;
+                      if (confirm('Удалить это аудио?')) {
+                        socket.emit('delete_message', { messageId: currentTrack.messageId });
+                      }
+                      setAudioContextMenu(null);
+                    }}
+                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-red-500/10 transition-colors text-red-500 text-sm"
+                  >
+                    <Trash2 size={16} />
+                    <span>Удалить</span>
+                  </button>
+                ) : null;
+              })()}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
