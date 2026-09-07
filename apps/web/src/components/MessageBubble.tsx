@@ -536,14 +536,14 @@ function MessageBubble({
 
         {/* Аватар (чужие) - floating/sticky через всю группу */}
         {!isMine && (
-          <div className="w-8 flex-shrink-0 mr-2 self-end">
+          <div className="w-8 flex-shrink-0 mr-2">
             {showAvatar ? (
-              <div className="sticky top-[4.5rem]">
-                <button onClick={() => onViewProfile?.(message.senderId)} className="relative z-10">
+              <div className="sticky top-20 z-20">
+                <button onClick={() => onViewProfile?.(message.senderId)} className="block">
                   {senderAvatar ? (
-                    <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover shadow-lg" />
+                    <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover shadow-lg ring-2 ring-vortex-500/20" />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold shadow-lg">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold shadow-lg ring-2 ring-vortex-500/20">
                       {senderName[0]?.toUpperCase() || '?'}
                     </div>
                   )}
