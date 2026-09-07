@@ -1011,7 +1011,8 @@ export default function ChatView({
                       messageIds: [currentTrack.messageId],
                       targetChatId: favChat.id,
                     });
-                    alert('Сохранено в Избранное');
+                    // Success notification
+                    setTimeout(() => alert('Сохранено в Избранное'), 100);
                   }
                   setAudioContextMenu(null);
                 }}
@@ -1024,14 +1025,19 @@ export default function ChatView({
                 onClick={() => {
                   const currentTrack = useAudioPlayerStore.getState().playlist[useAudioPlayerStore.getState().currentIndex];
                   if (currentTrack && activeChat) {
-                    const messageEl = document.getElementById(`msg-${currentTrack.messageId}`);
-                    if (messageEl) {
-                      messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      messageEl.classList.add('ring-2', 'ring-accent');
-                      setTimeout(() => {
-                        messageEl.classList.remove('ring-2', 'ring-accent');
-                      }, 2000);
-                    }
+                    // Close expanded mode
+                    setAudioPlayerExpanded(false);
+                    // Scroll to message
+                    setTimeout(() => {
+                      const messageEl = document.getElementById(`msg-${currentTrack.messageId}`);
+                      if (messageEl) {
+                        messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        messageEl.classList.add('ring-2', 'ring-accent');
+                        setTimeout(() => {
+                          messageEl.classList.remove('ring-2', 'ring-accent');
+                        }, 2000);
+                      }
+                    }, 100);
                   }
                   setAudioContextMenu(null);
                 }}
