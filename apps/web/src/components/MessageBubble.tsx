@@ -735,26 +735,26 @@ function MessageBubble({
 
             {/* Текст */}
             {message.content && (
-              <div className="text-content clearfix with-meta">
-                <div className="flex items-end gap-2">
-                  <p className="text-sm whitespace-pre-wrap break-words flex-1 leading-relaxed">
-                    {renderFormattedText(message.content)}
-                  </p>
-                  <span className={`text-[10px] flex-shrink-0 flex items-center gap-0.5 self-end ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
-                    {message.isEdited && <span>{t('edited')}</span>}
-                    {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
-                    {timeStr}
-                    {isMine && !message.scheduledAt && (
-                      isRead ? (
-                        <CheckCheck size={13} className="text-sky-300 ml-0.5" />
-                      ) : (
-                        <Check size={13} className="ml-0.5" />
-                      )
-                    )}
-                  </span>
-                </div>
+              <div className="text-content clearfix with-meta relative">
+                <p className="text-sm whitespace-pre-wrap break-words leading-relaxed pr-16">
+                  {renderFormattedText(message.content)}
+                </p>
 
-                {/* Реакции - отдельный блок внутри message-content */}
+                {/* Время и индикатор - всегда справа внизу текста */}
+                <span className={`absolute bottom-0 right-0 text-[10px] flex items-center gap-0.5 ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
+                  {message.isEdited && <span>{t('edited')}</span>}
+                  {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
+                  {timeStr}
+                  {isMine && !message.scheduledAt && (
+                    isRead ? (
+                      <CheckCheck size={13} className="text-sky-300 ml-0.5" />
+                    ) : (
+                      <Check size={13} className="ml-0.5" />
+                    )
+                  )}
+                </span>
+
+                {/* Реакции - снизу под текстом */}
                 <ReactionsBlock />
               </div>
             )}
