@@ -860,21 +860,18 @@ export default function ChatView({
             {chatMessages.map((msg, i) => {
               const prevMsg = i > 0 ? chatMessages[i - 1] : null;
               const nextMsg = i < chatMessages.length - 1 ? chatMessages[i + 1] : null;
-              // Показывать аватарку на первом сообщении в серии (sticky будет следовать до последнего)
-              const showAvatar = !prevMsg || prevMsg.senderId !== msg.senderId;
-              const isLastInSeries = !nextMsg || nextMsg.senderId !== msg.senderId;
+
+              // Начало новой группы сообщений от одного отправителя
+              const isGroupStart = !prevMsg || prevMsg.senderId !== msg.senderId;
+              const isGroupEnd = !nextMsg || nextMsg.senderId !== msg.senderId;
+
+              const showAvatar = isGroupStart;
               const showDate =
                 !prevMsg ||
                 new Date(msg.createdAt).toDateString() !== new Date(prevMsg.createdAt).toDateString();
 
               return (
-                <div
-                  key={msg.id}
-                  id={`msg-${msg.id}`}
-                  data-message-id={msg.id}
-                  data-sender-id={msg.senderId}
-                  className="transition-colors duration-500"
-                >
+                <div key={msg.id}>
                   {showDate && (
                     <div className="flex justify-center my-4">
                       <span className="px-3 py-1 rounded-full text-xs text-zinc-400 glass">
@@ -885,17 +882,28 @@ export default function ChatView({
                       </span>
                     </div>
                   )}
-                  <MessageBubble
-                    message={msg}
-                    isMine={msg.senderId === user?.id}
-                    showAvatar={showAvatar}
-                    onViewProfile={(userId) => setProfileUserId(userId)}
-                    selectionMode={selectionMode}
-                    isSelected={selectedMessages.has(msg.id)}
-                    onToggleSelect={handleToggleSelect}
-                    onStartSelectionMode={handleStartSelection}
-                    onPlayAudio={handlePlayAudio}
-                  />
+
+                  {/* Группа сообщений с floating avatar */}
+                  <div className={isGroupStart ? 'relative' : ''}>
+                    <div
+                      id={`msg-${msg.id}`}
+                      data-message-id={msg.id}
+                      data-sender-id={msg.senderId}
+                      className="transition-colors duration-500"
+                    >
+                      <MessageBubble
+                        message={msg}
+                        isMine={msg.senderId === user?.id}
+                        showAvatar={showAvatar}
+                        onViewProfile={(userId) => setProfileUserId(userId)}
+                        selectionMode={selectionMode}
+                        isSelected={selectedMessages.has(msg.id)}
+                        onToggleSelect={handleToggleSelect}
+                        onStartSelectionMode={handleStartSelection}
+                        onPlayAudio={handlePlayAudio}
+                      />
+                    </div>
+                  </div>
                 </div>
               );
             })}
