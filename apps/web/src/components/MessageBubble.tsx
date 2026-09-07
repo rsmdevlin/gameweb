@@ -356,6 +356,85 @@ function MessageBubble({
     if (r.userId === user?.id) reactionGroups[r.emoji].isMine = true;
   });
 
+  // Компонент реакций (переиспользуемый)
+  const ReactionsBlock = () => {
+    if (Object.keys(reactionGroups).length === 0) return null;
+
+    return (
+      <div className="Reactions flex flex-wrap items-center gap-1 mt-1.5" dir="ltr">
+        {Object.entries(reactionGroups).map(([emoji, data]) => (
+          <button
+            key={emoji}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleReaction(emoji);
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setReactionDetails({ emoji, users: data.users });
+            }}
+            onTouchStart={(e) => {
+              const touch = e.touches[0];
+              const timer = setTimeout(() => {
+                e.preventDefault();
+                setReactionDetails({ emoji, users: data.users });
+              }, 500);
+              const cleanup = () => {
+                clearTimeout(timer);
+                document.removeEventListener('touchend', cleanup);
+                document.removeEventListener('touchmove', cleanup);
+              };
+              document.addEventListener('touchend', cleanup);
+              document.addEventListener('touchmove', cleanup);
+            }}
+            className={`message-reaction flex items-center h-[30px] rounded-[1.75rem] gap-0.5 transition-all hover:scale-105 backdrop-blur-md border ${
+              data.isMine
+                ? 'bg-white/75 text-zinc-900 border-white/20 shadow-lg'
+                : 'bg-black/40 text-white hover:bg-black/50 border-white/10'
+            }`}
+            style={{ padding: '0 0.375rem 0 0.25rem' }}
+            title={data.users.map(u => u.displayName || u.username).join(', ')}
+          >
+            {/* Эмодзи */}
+            <div className="flex items-center justify-center" style={{ width: '20px', height: '20px' }}>
+              <span className="text-[20px] leading-none">{emoji}</span>
+            </div>
+
+            {/* Аватарки с перекрытием */}
+            <div className="flex items-center" style={{ marginLeft: '2px' }}>
+              {data.users.slice(0, 3).map((u, i) => (
+                u.avatar ? (
+                  <img
+                    key={i}
+                    src={getMediaUrl(u.avatar)}
+                    alt=""
+                    className="w-6 h-6 rounded-full object-cover border-2 border-surface"
+                    style={{ marginLeft: i > 0 ? '-8px' : '0' }}
+                  />
+                ) : (
+                  <div
+                    key={i}
+                    className="w-6 h-6 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-semibold border-2 border-surface"
+                    style={{ marginLeft: i > 0 ? '-8px' : '0' }}
+                  >
+                    {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
+                  </div>
+                )
+              ))}
+            </div>
+
+            {/* Счетчик если больше 3 */}
+            {data.count > 3 && (
+              <span className="text-[10px] font-medium ml-1">+{data.count - 3}</span>
+            )}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   const senderName = message.sender?.displayName || message.sender?.username || '';
   const senderAvatar = message.sender?.avatar;
 
@@ -478,7 +557,7 @@ function MessageBubble({
 
             {/* Изображения */}
             {hasImage && (
-              <div className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''} ${!message.content ? 'rounded-[1.25rem]' : ''} bg-black/40 overflow-hidden`}>
+              <div className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''} ${!message.content ? 'rounded-[1.25rem]' : ''} bg-black/40 overflow-hidden relative`}>
                 {media
                   .filter((m) => m.type === 'image')
                   .map((m) => {
@@ -493,87 +572,101 @@ function MessageBubble({
                       />
                     );
                   })}
+
+                {/* Реакции для медиа */}
+                {!message.content && <ReactionsBlock />}
               </div>
             )}
 
             {/* Видео */}
-            {hasVideo &&
-              media
-                .filter((m) => m.type === 'video')
-                .map((m) => {
-                  const videoUrl = getMediaUrl(m.url);
-                  return (
-                    <div key={m.id} className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''}`}>
-                      <video
-                        src={videoUrl}
-                        controls
-                        className="max-w-full max-h-80 rounded-lg"
-                      />
-                    </div>
-                  );
-                })}
+            {hasVideo && (
+              <div className="relative">
+                {media
+                  .filter((m) => m.type === 'video')
+                  .map((m) => {
+                    const videoUrl = getMediaUrl(m.url);
+                    return (
+                      <div key={m.id} className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''}`}>
+                        <video
+                          src={videoUrl}
+                          controls
+                          className="max-w-full max-h-80 rounded-lg"
+                        />
+                      </div>
+                    );
+                  })}
+
+                {/* Реакции для видео */}
+                {!message.content && <ReactionsBlock />}
+              </div>
+            )}
 
             {/* Голосовое */}
             {hasVoice && (() => {
               const voiceMedia = media.find((m) => m.type === 'voice');
               const voiceUrl = getMediaUrl(voiceMedia?.url);
               return (
-                <div className="flex items-center gap-3 min-w-[200px]">
-                  <audio
-                    ref={audioRef}
-                    src={voiceUrl}
-                    preload="auto"
-                    onError={(e) => console.error('Audio load error:', e)}
-                  />
-                <button
-                  onClick={toggleAudio}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
-                    } transition-colors`}
-                >
-                  {isPlaying ? (
-                    <Pause size={16} className={isMine ? 'text-white' : 'text-vortex-400'} />
-                  ) : (
-                    <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
-                  )}
-                </button>
-                <div className="flex-1 min-w-0">
-                  {/* Waveform visualization */}
-                  <div
-                    className="flex items-end gap-[2px] h-6 cursor-pointer"
-                    onClick={(e) => {
-                      const audio = audioRef.current;
-                      if (!audio || !audio.duration) return;
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const pct = (e.clientX - rect.left) / rect.width;
-                      audio.currentTime = pct * audio.duration;
-                      setAudioProgress(pct * 100);
-                      if (!isPlaying) toggleAudio();
-                    }}
-                  >
-                    {(waveformBars || Array(28).fill(0.5)).map((val, i) => {
-                      const barHeight = Math.max(10, val * 100);
-                      const progress = audioProgress / 100;
-                      const barProgress = i / 28;
-                      const isActive = barProgress < progress;
-                      return (
-                        <div
-                          key={i}
-                          className={`flex-1 rounded-full transition-colors duration-150 ${isActive
-                            ? isMine ? 'bg-white/80' : 'bg-vortex-400'
-                            : isMine ? 'bg-white/20' : 'bg-white/10'
-                            }`}
-                          style={{ height: `${barHeight}%` }}
-                        />
-                      );
-                    })}
+                <div>
+                  <div className="flex items-center gap-3 min-w-[200px]">
+                    <audio
+                      ref={audioRef}
+                      src={voiceUrl}
+                      preload="auto"
+                      onError={(e) => console.error('Audio load error:', e)}
+                    />
+                    <button
+                      onClick={toggleAudio}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
+                        } transition-colors`}
+                    >
+                      {isPlaying ? (
+                        <Pause size={16} className={isMine ? 'text-white' : 'text-vortex-400'} />
+                      ) : (
+                        <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
+                      )}
+                    </button>
+                    <div className="flex-1 min-w-0">
+                      {/* Waveform visualization */}
+                      <div
+                        className="flex items-end gap-[2px] h-6 cursor-pointer"
+                        onClick={(e) => {
+                          const audio = audioRef.current;
+                          if (!audio || !audio.duration) return;
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const pct = (e.clientX - rect.left) / rect.width;
+                          audio.currentTime = pct * audio.duration;
+                          setAudioProgress(pct * 100);
+                          if (!isPlaying) toggleAudio();
+                        }}
+                      >
+                        {(waveformBars || Array(28).fill(0.5)).map((val, i) => {
+                          const barHeight = Math.max(10, val * 100);
+                          const progress = audioProgress / 100;
+                          const barProgress = i / 28;
+                          const isActive = barProgress < progress;
+                          return (
+                            <div
+                              key={i}
+                              className={`flex-1 rounded-full transition-colors duration-150 ${isActive
+                                ? isMine ? 'bg-white/80' : 'bg-vortex-400'
+                                : isMine ? 'bg-white/20' : 'bg-white/10'
+                                }`}
+                              style={{ height: `${barHeight}%` }}
+                            />
+                          );
+                        })}
+                      </div>
+                      <span className={`text-xs mt-0.5 block ${isMine ? 'text-white/60' : 'text-zinc-500'}`}>
+                        {isPlaying
+                          ? formatDuration(audioRef.current?.currentTime || 0)
+                          : formatDuration(audioDuration || voiceMedia?.duration || 0)}
+                      </span>
+                    </div>
                   </div>
-                  <span className={`text-xs mt-0.5 block ${isMine ? 'text-white/60' : 'text-zinc-500'}`}>
-                    {isPlaying
-                      ? formatDuration(audioRef.current?.currentTime || 0)
-                      : formatDuration(audioDuration || voiceMedia?.duration || 0)}
-                  </span>
+
+                  {/* Реакции для голосовых */}
+                  <ReactionsBlock />
                 </div>
-              </div>
               );
             })()}
 
@@ -581,47 +674,52 @@ function MessageBubble({
             {hasAudio && (() => {
               const audioMedia = media.find((m) => m.type === 'audio');
               return (
-                <div className="min-w-[220px]">
-                  {audioMedia?.filename && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <Volume2 size={14} className={isMine ? 'text-white/60' : 'text-vortex-400'} />
-                      <span className={`text-xs truncate ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>{audioMedia.filename}</span>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onPlayAudio?.(message.id);
-                      }}
-                      className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
-                        } transition-colors`}
-                    >
-                      <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
-                    </button>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className={`text-xs ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>
-                          {audioMedia?.duration ? formatDuration(audioMedia.duration) : '--:--'}
-                        </span>
+                <div>
+                  <div className="min-w-[220px]">
+                    {audioMedia?.filename && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <Volume2 size={14} className={isMine ? 'text-white/60' : 'text-vortex-400'} />
+                        <span className={`text-xs truncate ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>{audioMedia.filename}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onPlayAudio?.(message.id);
+                        }}
+                        className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
+                          } transition-colors`}
+                      >
+                        <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
+                      </button>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>
+                            {audioMedia?.duration ? formatDuration(audioMedia.duration) : '--:--'}
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    {/* Время и прочтение для аудио */}
+                    <div className="flex justify-end mt-1">
+                      <span className={`text-[10px] flex items-center gap-0.5 ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
+                        {message.isEdited && <span>{t('edited')}</span>}
+                        {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
+                        {timeStr}
+                        {isMine && !message.scheduledAt && (
+                          isRead ? (
+                            <CheckCheck size={13} className="text-sky-300 ml-0.5" />
+                          ) : (
+                            <Check size={13} className="ml-0.5" />
+                          )
+                        )}
+                      </span>
+                    </div>
                   </div>
-                  {/* Время и прочтение для аудио */}
-                  <div className="flex justify-end mt-1">
-                    <span className={`text-[10px] flex items-center gap-0.5 ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
-                      {message.isEdited && <span>{t('edited')}</span>}
-                      {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
-                      {timeStr}
-                      {isMine && !message.scheduledAt && (
-                        isRead ? (
-                          <CheckCheck size={13} className="text-sky-300 ml-0.5" />
-                        ) : (
-                          <Check size={13} className="ml-0.5" />
-                        )
-                      )}
-                    </span>
-                  </div>
+
+                  {/* Реакции для аудио */}
+                  <ReactionsBlock />
                 </div>
               );
             })()}
@@ -676,62 +774,7 @@ function MessageBubble({
                 </div>
 
                 {/* Реакции - отдельный блок внутри message-content */}
-                {Object.keys(reactionGroups).length > 0 && (
-                  <div className="Reactions flex items-center gap-0.5 mt-1" dir="ltr">
-                    {Object.entries(reactionGroups).map(([emoji, data]) => (
-                      <button
-                        key={emoji}
-                        type="button"
-                        onClick={() => handleReaction(emoji)}
-                        onContextMenu={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setReactionDetails({ emoji, users: data.users });
-                        }}
-                        className={`message-reaction flex items-center h-[30px] rounded-[1.75rem] gap-0.5 transition-all hover:scale-105 ${
-                          data.isMine
-                            ? 'bg-white/75 text-zinc-900'
-                            : 'bg-white/10 text-white hover:bg-white/20'
-                        }`}
-                        style={{ padding: '0 0.375rem 0 0.25rem' }}
-                        title={data.users.map(u => u.displayName || u.username).join(', ')}
-                      >
-                        {/* Эмодзи */}
-                        <div className="flex items-center justify-center" style={{ width: '20px', height: '20px' }}>
-                          <span className="text-[20px] leading-none">{emoji}</span>
-                        </div>
-
-                        {/* Аватарки с перекрытием */}
-                        <div className="flex items-center" style={{ marginLeft: '2px' }}>
-                          {data.users.slice(0, 3).map((u, i) => (
-                            u.avatar ? (
-                              <img
-                                key={i}
-                                src={getMediaUrl(u.avatar)}
-                                alt=""
-                                className="w-6 h-6 rounded-full object-cover border-2 border-surface"
-                                style={{ marginLeft: i > 0 ? '-8px' : '0' }}
-                              />
-                            ) : (
-                              <div
-                                key={i}
-                                className="w-6 h-6 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-semibold border-2 border-surface"
-                                style={{ marginLeft: i > 0 ? '-8px' : '0' }}
-                              >
-                                {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
-                              </div>
-                            )
-                          ))}
-                        </div>
-
-                        {/* Счетчик если больше 3 */}
-                        {data.count > 3 && (
-                          <span className="text-[10px] font-medium ml-1">+{data.count - 3}</span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                <ReactionsBlock />
               </div>
             )}
 
