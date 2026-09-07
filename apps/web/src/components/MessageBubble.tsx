@@ -212,15 +212,31 @@ function MessageBubble({
 
   const handleReaction = (emoji: string) => {
     const socket = getSocket();
-    if (socket) {
-      const existingReaction = message.reactions?.find(
-        (r) => r.userId === user?.id && r.emoji === emoji
-      );
-      if (existingReaction) {
-        socket.emit('remove_reaction', { messageId: message.id, chatId: message.chatId, emoji });
-      } else {
-        socket.emit('add_reaction', { messageId: message.id, chatId: message.chatId, emoji });
+    if (!socket || !user) return;
+
+    // Проверяем текущие реакции пользователя на это сообщение
+    const myReactions = message.reactions?.filter((r) => r.userId === user.id) || [];
+    const existingReaction = myReactions.find((r) => r.emoji === emoji);
+
+    // Определяем лимит реакций (пока все обычные пользователи, позже добавим проверку премиума)
+    const isPremium = false; // TODO: добавить проверку user.isPremium когда будет поле
+    const reactionLimit = isPremium ? 3 : 1;
+
+    if (existingReaction) {
+      // Убираем существующую реакцию
+      socket.emit('remove_reaction', { messageId: message.id, chatId: message.chatId, emoji });
+    } else {
+      // Проверяем лимит перед добавлением новой реакции
+      if (myReactions.length >= reactionLimit) {
+        // Если достигнут лимит, показываем уведомление
+        alert(isPremium
+          ? `Вы можете поставить максимум ${reactionLimit} реакции на сообщение`
+          : 'Вы можете поставить только 1 реакцию. Купите Basa Premium для 3 реакций!'
+        );
+        setShowContext(false);
+        return;
       }
+      socket.emit('add_reaction', { messageId: message.id, chatId: message.chatId, emoji });
     }
     setShowContext(false);
   };
