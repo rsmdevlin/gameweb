@@ -179,6 +179,11 @@ export default function AuthPage() {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              {!isLogin && (
+                <p className="text-xs text-zinc-500 mt-1.5">
+                  Минимум 6 символов, должен содержать буквы и цифры
+                </p>
+              )}
             </div>
 
             <AnimatePresence>
