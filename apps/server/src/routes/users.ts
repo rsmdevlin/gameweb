@@ -244,4 +244,30 @@ router.put('/settings', async (req: AuthRequest, res) => {
   }
 });
 
+// Обновить настройки оформления
+router.put('/appearance', async (req: AuthRequest, res) => {
+  try {
+    const { appTheme, nightMode, nightStartTime, nightEndTime, textSize, messageRadius } = req.body;
+
+    const updateData: Record<string, any> = {};
+    if (appTheme && ['light', 'dark'].includes(appTheme)) updateData.appTheme = appTheme;
+    if (nightMode && ['system', 'off', 'scheduled', 'auto'].includes(nightMode)) updateData.nightMode = nightMode;
+    if (nightStartTime && typeof nightStartTime === 'string') updateData.nightStartTime = nightStartTime;
+    if (nightEndTime && typeof nightEndTime === 'string') updateData.nightEndTime = nightEndTime;
+    if (typeof textSize === 'number' && textSize >= 0.8 && textSize <= 1.2) updateData.textSize = textSize;
+    if (typeof messageRadius === 'number' && messageRadius >= 0 && messageRadius <= 24) updateData.messageRadius = messageRadius;
+
+    const user = await prisma.user.update({
+      where: { id: req.userId },
+      data: updateData,
+      select: USER_SELECT,
+    });
+
+    res.json(user);
+  } catch (error) {
+    console.error('Appearance settings error:', error);
+    res.status(500).json({ error: 'Ошибка сохранения настроек оформления' });
+  }
+});
+
 export default router;

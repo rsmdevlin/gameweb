@@ -605,12 +605,29 @@ function MessageBubble({
             onContextMenu={handleContextMenu}
             onDoubleClick={handleReply}
             title={t('reply') ? `${t('reply')} (Double Click)` : 'Double click to reply'}
-            className={`cursor-pointer rounded-[1.25rem] overflow-hidden transition-all duration-300 ${
+            className={`cursor-pointer overflow-hidden transition-all duration-300 ${
               hasImage && !message.content
                 ? 'p-0 shadow-none border-none'
                 : isMine
                   ? 'bubble-sent text-white shadow-sm px-4 py-2.5 hover:shadow-md hover:brightness-105'
                   : 'bubble-received text-zinc-100 shadow-sm px-4 py-2.5 hover:shadow-md hover:brightness-105'
+            } ${
+              // Хвостики как в Telegram
+              isMine
+                ? isGroupStart && isGroupEnd
+                  ? 'rounded-2xl' // Одиночное сообщение - все углы скруглены
+                  : isGroupStart
+                    ? 'rounded-t-2xl rounded-bl-2xl rounded-br-md' // Первое в группе - хвостик справа снизу
+                    : isGroupEnd
+                      ? 'rounded-b-2xl rounded-tl-2xl rounded-tr-md' // Последнее в группе - хвостик справа сверху
+                      : 'rounded-tl-2xl rounded-bl-2xl rounded-tr-md rounded-br-md' // Среднее - квадратное справа
+                : isGroupStart && isGroupEnd
+                  ? 'rounded-2xl' // Одиночное сообщение - все углы скруглены
+                  : isGroupStart
+                    ? 'rounded-t-2xl rounded-br-2xl rounded-bl-md' // Первое в группе - хвостик слева снизу
+                    : isGroupEnd
+                      ? 'rounded-b-2xl rounded-tr-2xl rounded-tl-md' // Последнее в группе - хвостик слева сверху
+                      : 'rounded-tr-2xl rounded-br-2xl rounded-tl-md rounded-bl-md' // Среднее - квадратное слева
             }`}
           >
             {/* Рендер пересланного сообщения */}

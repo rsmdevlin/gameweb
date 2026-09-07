@@ -103,6 +103,20 @@ class ApiClient {
     return this.request<User>('/users/avatar', { method: 'DELETE' });
   }
 
+  async updateAppearance(data: {
+    appTheme?: string;
+    nightMode?: string;
+    nightStartTime?: string;
+    nightEndTime?: string;
+    textSize?: number;
+    messageRadius?: number;
+  }) {
+    return this.request<User>('/users/appearance', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
   async searchMessages(query: string, chatId?: string) {
     const params = new URLSearchParams({ q: query });
     if (chatId) params.append('chatId', chatId);

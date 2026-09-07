@@ -23,6 +23,14 @@ model User {
   hideStoryViews Boolean @default(false)
   registrationIp String?
 
+  // Настройки оформления
+  appTheme         String  @default("dark") // "light" | "dark"
+  nightMode        String  @default("system") // "system" | "off" | "scheduled" | "auto"
+  nightStartTime   String  @default("22:00")
+  nightEndTime     String  @default("08:00")
+  textSize         Float   @default(1.0) // 0.8 - 1.2
+  messageRadius    Int     @default(16) // 0 - 24
+
   messages    Message[]
   chatMembers ChatMember[]
   reactions   Reaction[]
@@ -39,6 +47,10 @@ model Chat {
   type      String   @default("personal")
   name      String?
   avatar    String?
+  description String? @db.Text
+  inviteLink String? @unique
+  whoCanAddMembers String @default("admins") // "admins" | "all"
+  whoCanSendMessages String @default("all") // "admins" | "all"
   createdAt DateTime @default(now())
 
   members        ChatMember[]

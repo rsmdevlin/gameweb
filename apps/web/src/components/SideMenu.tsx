@@ -38,9 +38,10 @@ import { useLang } from '../lib/i18n';
 import { useThemeStore, ChatTheme } from '../stores/themeStore';
 import DatePicker from './DatePicker';
 import AccountSwitcher from './AccountSwitcher';
+import AppearanceSettings from './AppearanceSettings';
 import type { User as UserType, UserPresence, FriendRequest, FriendWithId } from '../lib/types';
 
-type SideView = 'main' | 'profile' | 'settings' | 'about' | 'themes' | 'friends';
+type SideView = 'main' | 'profile' | 'settings' | 'about' | 'themes' | 'friends' | 'appearance';
 
 interface SideMenuProps {
   isOpen: boolean;
@@ -600,6 +601,22 @@ export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
         <h3 className="text-sm font-semibold text-white flex-1">{t('settings')}</h3>
       </div>
       <div className="flex-1 overflow-y-auto py-2">
+        {/* Appearance settings */}
+        <div className="px-4 py-1">
+          <button
+            onClick={() => changeView('appearance')}
+            className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl bg-surface-tertiary/50 hover:bg-surface-hover transition-colors group"
+          >
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center">
+              <Palette size={18} className="text-white" />
+            </div>
+            <div className="flex-1 min-w-0 text-left">
+              <p className="text-sm font-medium text-zinc-200">Оформление</p>
+              <p className="text-xs text-zinc-500">Темы, цвета, размер текста</p>
+            </div>
+            <ChevronRight size={18} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+          </button>
+        </div>
         {/* Theme picker row */}
         <div className="px-4 py-1">
           <button
@@ -607,7 +624,7 @@ export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
             className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl bg-surface-tertiary/50 hover:bg-surface-hover transition-colors group"
           >
             <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: themeCards.find(t => t.id === chatTheme)?.accent || '#6366f1' }}>
-              <Palette size={18} className="text-white" />
+              <Sparkles size={18} className="text-white" />
             </div>
             <div className="flex-1 min-w-0 text-left">
               <p className="text-sm font-medium text-zinc-200">{t('theme')}</p>
@@ -995,6 +1012,7 @@ export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
               {view === 'profile' && renderProfile()}
               {view === 'settings' && renderSettings()}
               {view === 'themes' && renderThemes()}
+              {view === 'appearance' && <AppearanceSettings onBack={() => changeView('settings')} />}
               {view === 'friends' && renderFriends()}
               {view === 'about' && renderAbout()}
             </AnimatePresence>

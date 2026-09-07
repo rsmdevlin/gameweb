@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { api } from '../lib/api';
 import { connectSocket, disconnectSocket } from '../lib/socket';
 import { useAccountStore } from './accountStore';
+import { useAppThemeStore } from './appThemeStore';
 import type { User } from '../lib/types';
 
 interface AuthState {
@@ -31,6 +32,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       connectSocket(token);
       set({ token, user, isLoading: false });
 
+      // Загружаем настройки оформления
+      const themeStore = useAppThemeStore.getState();
+      themeStore.loadFromUser(user);
+
       // Добавляем аккаунт в список мультиаккаунтов
       const accountStore = useAccountStore.getState();
       accountStore.addAccount({
@@ -56,6 +61,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       api.setToken(token);
       connectSocket(token);
       set({ token, user, isLoading: false });
+
+      // Загружаем настройки оформления
+      const themeStore = useAppThemeStore.getState();
+      themeStore.loadFromUser(user);
 
       // Добавляем аккаунт в список мультиаккаунтов
       const accountStore = useAccountStore.getState();
@@ -96,6 +105,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const { user } = await api.getMe();
         connectSocket(token);
         set({ user, isLoading: false });
+
+        // Загружаем настройки оформления
+        const themeStore = useAppThemeStore.getState();
+        themeStore.loadFromUser(user);
+
         return;
       } catch (err) {
         lastError = err;
