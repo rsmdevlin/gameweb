@@ -676,126 +676,69 @@ function MessageBubble({
               </div>
             )}
 
-            {/* Время для медиа без текста + реакции */}
+            {/* Время для медиа без текста */}
             {!message.content && (hasImage || hasVideo) && (
               <div className={`flex justify-end px-3 py-1 ${hasImage ? '-mt-8 relative z-10' : ''}`}>
-                <div className="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm">
-                  {/* Реакции */}
-                  {Object.keys(reactionGroups).length > 0 && (
-                    <>
-                      {Object.entries(reactionGroups).map(([emoji, data]) => (
-                        <div key={emoji} className="flex items-center">
-                          <button
-                            onClick={() => handleReaction(emoji)}
-                            onContextMenu={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setReactionDetails({ emoji, users: data.users });
-                            }}
-                            className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs transition-all ${
-                              data.isMine
-                                ? 'bg-vortex-500/40 border border-vortex-500/60'
-                                : 'bg-white/10 border border-white/20 hover:bg-white/20'
-                            }`}
-                          >
-                            {/* Показываем аватарки только если меньше 3 реакций */}
-                            {data.count < 3 && data.users.length > 0 && (
-                              <div className="flex -space-x-1 mr-0.5">
-                                {data.users.slice(0, 2).map((u, i) => (
-                                  u.avatar ? (
-                                    <img
-                                      key={i}
-                                      src={getMediaUrl(u.avatar)}
-                                      alt=""
-                                      className="w-4 h-4 rounded-full object-cover border border-black/50"
-                                    />
-                                  ) : (
-                                    <div
-                                      key={i}
-                                      className="w-4 h-4 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[8px] font-semibold border border-black/50"
-                                    >
-                                      {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
-                                    </div>
-                                  )
-                                ))}
-                              </div>
-                            )}
-                            <span className="text-sm">{emoji}</span>
-                            {data.count > 1 && (
-                              <span className="text-white/80 text-[10px] font-medium ml-0.5">{data.count}</span>
-                            )}
-                          </button>
-                        </div>
-                      ))}
-                      <div className="w-px h-3 bg-white/20" />
-                    </>
+                <span className="text-[10px] text-white/70 bg-black/40 px-2 py-0.5 rounded-full flex items-center gap-1 backdrop-blur-sm">
+                  {timeStr}
+                  {isMine && (
+                    isRead ? (
+                      <CheckCheck size={11} className="text-sky-300" />
+                    ) : (
+                      <Check size={11} />
+                    )
                   )}
-                  {/* Время и прочтение */}
-                  <span className="text-[10px] text-white/70 flex items-center gap-1">
-                    {timeStr}
-                    {isMine && (
-                      isRead ? (
-                        <CheckCheck size={11} className="text-sky-300" />
-                      ) : (
-                        <Check size={11} />
-                      )
-                    )}
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {/* Реакции для текстовых сообщений */}
-            {message.content && Object.keys(reactionGroups).length > 0 && (
-              <div className="flex justify-end mt-1">
-                <div className="flex items-center gap-1.5 bg-surface-tertiary/50 px-2 py-0.5 rounded-full border border-border/50">
-                  {Object.entries(reactionGroups).map(([emoji, data]) => (
-                    <button
-                      key={emoji}
-                      onClick={() => handleReaction(emoji)}
-                      onContextMenu={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setReactionDetails({ emoji, users: data.users });
-                      }}
-                      className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs transition-all ${
-                        data.isMine
-                          ? 'bg-vortex-500/40 border border-vortex-500/60'
-                          : 'bg-white/10 border border-white/20 hover:bg-white/20'
-                      }`}
-                    >
-                      {/* Показываем аватарки только если меньше 3 реакций */}
-                      {data.count < 3 && data.users.length > 0 && (
-                        <div className="flex -space-x-1 mr-0.5">
-                          {data.users.slice(0, 2).map((u, i) => (
-                            u.avatar ? (
-                              <img
-                                key={i}
-                                src={getMediaUrl(u.avatar)}
-                                alt=""
-                                className="w-4 h-4 rounded-full object-cover border border-black/50"
-                              />
-                            ) : (
-                              <div
-                                key={i}
-                                className="w-4 h-4 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[8px] font-semibold border border-black/50"
-                              >
-                                {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
-                              </div>
-                            )
-                          ))}
-                        </div>
-                      )}
-                      <span className="text-sm">{emoji}</span>
-                      {data.count > 1 && (
-                        <span className="text-white/80 text-[10px] font-medium ml-0.5">{data.count}</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
+                </span>
               </div>
             )}
           </div>
+
+          {/* Реакции - под сообщением как в Telegram */}
+          {Object.keys(reactionGroups).length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1 px-3">
+              {Object.entries(reactionGroups).map(([emoji, data]) => (
+                <button
+                  key={emoji}
+                  onClick={() => handleReaction(emoji)}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setReactionDetails({ emoji, users: data.users });
+                  }}
+                  className={`flex items-center gap-1.5 px-2 py-1 rounded-full transition-all ${
+                    data.isMine
+                      ? 'bg-vortex-500/20 border-2 border-vortex-500/50'
+                      : 'bg-surface-tertiary border-2 border-border hover:border-zinc-600'
+                  }`}
+                >
+                  <span className="text-base">{emoji}</span>
+                  {/* Аватарки пользователей */}
+                  <div className="flex -space-x-1.5">
+                    {data.users.slice(0, 3).map((u, i) => (
+                      u.avatar ? (
+                        <img
+                          key={i}
+                          src={getMediaUrl(u.avatar)}
+                          alt=""
+                          className="w-5 h-5 rounded-full object-cover border-2 border-surface"
+                        />
+                      ) : (
+                        <div
+                          key={i}
+                          className="w-5 h-5 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[9px] font-semibold border-2 border-surface"
+                        >
+                          {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
+                        </div>
+                      )
+                    ))}
+                  </div>
+                  {data.count > 3 && (
+                    <span className="text-xs text-zinc-400 ml-0.5">+{data.count - 3}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Аватар (свои) */}
