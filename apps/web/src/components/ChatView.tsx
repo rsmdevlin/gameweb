@@ -852,62 +852,60 @@ export default function ChatView({
             <div className="w-6 h-6 border-2 border-vortex-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : chatMessages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="max-w-md w-full mx-4">
-              <div className="glass rounded-3xl p-8 text-center backdrop-blur-xl border border-white/10 shadow-2xl">
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold text-white mb-2">Сообщений пока нет...</h3>
-                  <p className="text-sm text-zinc-400">Отправьте сообщение или нажмите на приветствие ниже.</p>
-                </div>
+          <div className="flex items-center justify-center h-full relative">
+            {/* Animated background blobs */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-vortex-500/30 rounded-full blur-3xl animate-pulse" />
+              <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+            </div>
 
-                <div className="flex items-center justify-center gap-4 mt-6">
-                  <button
-                    onClick={() => {
-                      const socket = getSocket();
-                      if (socket && activeChat) {
-                        socket.emit('send_message', {
-                          chatId: activeChat,
-                          content: '👋',
-                          type: 'text',
-                        });
-                      }
-                    }}
-                    className="group relative w-16 h-16 rounded-2xl bg-gradient-to-br from-vortex-500/20 to-purple-600/20 hover:from-vortex-500/30 hover:to-purple-600/30 border border-vortex-500/30 hover:border-vortex-500/50 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:rotate-6"
-                  >
-                    <span className="text-3xl group-hover:scale-125 transition-transform duration-300">👋</span>
-                  </button>
+            <div className="max-w-md w-full mx-4 relative z-10">
+              <div className="relative rounded-3xl p-8 text-center overflow-hidden">
+                {/* Multi-layer blur background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-surface-secondary/80 via-surface-secondary/60 to-surface-tertiary/80 backdrop-blur-2xl" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-vortex-500/10 via-transparent to-purple-500/10" />
+                <div className="absolute inset-0 border border-white/20 rounded-3xl" />
 
-                  <button
-                    onClick={() => {
-                      const socket = getSocket();
-                      if (socket && activeChat) {
-                        socket.emit('send_message', {
-                          chatId: activeChat,
-                          content: '👍',
-                          type: 'text',
-                        });
-                      }
-                    }}
-                    className="group relative w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-600/20 hover:from-blue-500/30 hover:to-cyan-600/30 border border-blue-500/30 hover:border-blue-500/50 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:-rotate-6"
-                  >
-                    <span className="text-3xl group-hover:scale-125 transition-transform duration-300">👍</span>
-                  </button>
+                {/* Content */}
+                <div className="relative z-10">
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-white mb-2 drop-shadow-lg">Сообщений пока нет...</h3>
+                    <p className="text-sm text-zinc-300 drop-shadow">Отправьте сообщение или нажмите на приветствие ниже.</p>
+                  </div>
 
-                  <button
-                    onClick={() => {
-                      const socket = getSocket();
-                      if (socket && activeChat) {
-                        socket.emit('send_message', {
-                          chatId: activeChat,
-                          content: '❤️',
-                          type: 'text',
-                        });
-                      }
-                    }}
-                    className="group relative w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500/20 to-pink-600/20 hover:from-red-500/30 hover:to-pink-600/30 border border-red-500/30 hover:border-red-500/50 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:rotate-6"
-                  >
-                    <span className="text-3xl group-hover:scale-125 transition-transform duration-300">❤️</span>
-                  </button>
+                  <div className="flex items-center justify-center gap-4 mt-6">
+                    <button
+                      onClick={() => {
+                        const socket = getSocket();
+                        if (socket && activeChat) {
+                          socket.emit('send_message', {
+                            chatId: activeChat,
+                            content: '👋',
+                            type: 'text',
+                          });
+                        }
+                      }}
+                      className="group relative w-20 h-20 rounded-2xl bg-gradient-to-br from-vortex-500/40 to-purple-600/40 backdrop-blur-md hover:from-vortex-500/60 hover:to-purple-600/60 border-2 border-vortex-400/50 hover:border-vortex-400/80 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:rotate-6 shadow-xl hover:shadow-vortex-500/50"
+                    >
+                      <span className="text-4xl group-hover:scale-125 transition-transform duration-300 filter drop-shadow-lg">👋</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        const socket = getSocket();
+                        if (socket && activeChat) {
+                          socket.emit('send_message', {
+                            chatId: activeChat,
+                            content: '😊',
+                            type: 'text',
+                          });
+                        }
+                      }}
+                      className="group relative w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500/40 to-orange-600/40 backdrop-blur-md hover:from-amber-500/60 hover:to-orange-600/60 border-2 border-amber-400/50 hover:border-amber-400/80 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:-rotate-6 shadow-xl hover:shadow-amber-500/50"
+                    >
+                      <span className="text-4xl group-hover:scale-125 transition-transform duration-300 filter drop-shadow-lg">😊</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
