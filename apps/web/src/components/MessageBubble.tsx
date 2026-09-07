@@ -538,7 +538,7 @@ function MessageBubble({
         {!isMine && (
           <div className="w-8 flex-shrink-0 mr-2">
             {showAvatar ? (
-              <div className="sticky top-[calc(100vh-10rem)] z-20">
+              <div className="sticky top-20 z-20">
                 <button onClick={() => onViewProfile?.(message.senderId)} className="block">
                   {senderAvatar ? (
                     <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover shadow-lg ring-2 ring-vortex-500/20" />
