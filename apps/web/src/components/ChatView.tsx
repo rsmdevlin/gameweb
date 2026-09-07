@@ -915,7 +915,7 @@ export default function ChatView({
                 const isMine = group.senderId === user?.id;
 
                 return (
-                  <div key={`group-${groupIndex}-${group.senderId}`} className="relative min-h-[3rem]">
+                  <div key={`group-${groupIndex}-${group.senderId}`}>
                     {group.messages.map((msg, msgIndex) => {
                       const isGroupStart = msgIndex === 0;
                       const isGroupEnd = msgIndex === group.messages.length - 1;
