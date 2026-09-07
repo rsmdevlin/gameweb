@@ -28,6 +28,7 @@ import {
   Search,
   Shield,
   Eye,
+  UserCog,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useChatStore } from '../stores/chatStore';
@@ -36,6 +37,7 @@ import { getSocket } from '../lib/socket';
 import { useLang } from '../lib/i18n';
 import { useThemeStore, ChatTheme } from '../stores/themeStore';
 import DatePicker from './DatePicker';
+import AccountSwitcher from './AccountSwitcher';
 import type { User as UserType, UserPresence, FriendRequest, FriendWithId } from '../lib/types';
 
 type SideView = 'main' | 'profile' | 'settings' | 'about' | 'themes' | 'friends';
@@ -69,6 +71,7 @@ export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
   const [friendSearch, setFriendSearch] = useState('');
   const [friendSearchResults, setFriendSearchResults] = useState<UserPresence[]>([]);
   const [friendSearchLoading, setFriendSearchLoading] = useState(false);
+  const [showAccountSwitcher, setShowAccountSwitcher] = useState(false);
 
   const themeCards: { id: ChatTheme; color: string; accent: string; name: string; nameEn: string; desc: string; descEn: string; animated?: boolean; gradient?: string }[] = [
     { id: 'midnight', color: '#0f0f13', accent: '#6366f1', name: 'Полночь', nameEn: 'Midnight', desc: 'Тёмная тема с мягкими акцентами', descEn: 'Dark theme with soft accents' },
@@ -300,6 +303,7 @@ export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
 
   const menuItems = [
     { icon: User, label: t('myProfile'), onClick: () => changeView('profile') },
+    { icon: UserCog, label: 'Аккаунты', onClick: () => setShowAccountSwitcher(true) },
     { icon: Users, label: t('friends'), onClick: () => changeView('friends'), badge: friendRequests.length > 0 ? friendRequests.length : undefined },
     { icon: Settings, label: t('settings'), onClick: () => changeView('settings') },
     { divider: true },
@@ -996,6 +1000,18 @@ export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
             </AnimatePresence>
           </motion.div>
         </>
+      )}
+
+      {/* Account Switcher Modal */}
+      {showAccountSwitcher && (
+        <AccountSwitcher
+          onClose={() => setShowAccountSwitcher(false)}
+          onAddAccount={() => {
+            setShowAccountSwitcher(false);
+            // TODO: Navigate to auth page to add new account
+            alert('Функция добавления нового аккаунта будет реализована в следующем обновлении');
+          }}
+        />
       )}
     </AnimatePresence>
   );
