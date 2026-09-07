@@ -853,7 +853,64 @@ export default function ChatView({
           </div>
         ) : chatMessages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-sm text-zinc-500">{t('noMessages')}</p>
+            <div className="max-w-md w-full mx-4">
+              <div className="glass rounded-3xl p-8 text-center backdrop-blur-xl border border-white/10 shadow-2xl">
+                <div className="mb-6">
+                  <h3 className="text-lg font-bold text-white mb-2">Сообщений пока нет...</h3>
+                  <p className="text-sm text-zinc-400">Отправьте сообщение или нажмите на приветствие ниже.</p>
+                </div>
+
+                <div className="flex items-center justify-center gap-4 mt-6">
+                  <button
+                    onClick={() => {
+                      const socket = getSocket();
+                      if (socket && activeChat) {
+                        socket.emit('send_message', {
+                          chatId: activeChat,
+                          content: '👋',
+                          type: 'text',
+                        });
+                      }
+                    }}
+                    className="group relative w-16 h-16 rounded-2xl bg-gradient-to-br from-vortex-500/20 to-purple-600/20 hover:from-vortex-500/30 hover:to-purple-600/30 border border-vortex-500/30 hover:border-vortex-500/50 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:rotate-6"
+                  >
+                    <span className="text-3xl group-hover:scale-125 transition-transform duration-300">👋</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const socket = getSocket();
+                      if (socket && activeChat) {
+                        socket.emit('send_message', {
+                          chatId: activeChat,
+                          content: '👍',
+                          type: 'text',
+                        });
+                      }
+                    }}
+                    className="group relative w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-600/20 hover:from-blue-500/30 hover:to-cyan-600/30 border border-blue-500/30 hover:border-blue-500/50 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:-rotate-6"
+                  >
+                    <span className="text-3xl group-hover:scale-125 transition-transform duration-300">👍</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const socket = getSocket();
+                      if (socket && activeChat) {
+                        socket.emit('send_message', {
+                          chatId: activeChat,
+                          content: '❤️',
+                          type: 'text',
+                        });
+                      }
+                    }}
+                    className="group relative w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500/20 to-pink-600/20 hover:from-red-500/30 hover:to-pink-600/30 border border-red-500/30 hover:border-red-500/50 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:rotate-6"
+                  >
+                    <span className="text-3xl group-hover:scale-125 transition-transform duration-300">❤️</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="space-y-1 max-w-3xl mx-auto">
