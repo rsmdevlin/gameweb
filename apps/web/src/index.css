@@ -112,12 +112,79 @@
   color: #71717a !important;
 }
 
+[data-theme="light"] .text-zinc-600 {
+  color: #52525b !important;
+}
+
 [data-theme="light"] .bubble-received {
   color: #0a0a0a !important;
 }
 
 [data-theme="light"] .bubble-sent {
   color: #ffffff !important;
+}
+
+/* Фоны в светлой теме */
+[data-theme="light"] .bg-surface {
+  background-color: #ffffff !important;
+}
+
+[data-theme="light"] .bg-surface-secondary {
+  background-color: #f8f9fa !important;
+}
+
+[data-theme="light"] .bg-surface-tertiary {
+  background-color: #e9ecef !important;
+}
+
+[data-theme="light"] .bg-surface-hover {
+  background-color: #dee2e6 !important;
+}
+
+/* Границы в светлой теме */
+[data-theme="light"] .border-border {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Inputs в светлой теме */
+[data-theme="light"] input,
+[data-theme="light"] textarea {
+  background-color: #ffffff !important;
+  color: #0a0a0a !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #71717a !important;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] textarea:focus {
+  border-color: #5b5fc7 !important;
+}
+
+/* Модалки в светлой теме */
+[data-theme="light"] .fixed.inset-0.bg-black\/60 {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Sidebar в светлой теме */
+[data-theme="light"] .bg-accent\/15 {
+  background-color: rgba(91, 95, 199, 0.1) !important;
+}
+
+/* Кнопки в светлой теме */
+[data-theme="light"] button:hover {
+  opacity: 0.9;
+}
+
+/* Gradient text в светлой теме */
+[data-theme="light"] .gradient-text {
+  background: linear-gradient(135deg, #5b5fc7, #7579d9, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 * {
