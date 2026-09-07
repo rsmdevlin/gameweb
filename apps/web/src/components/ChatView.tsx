@@ -922,11 +922,10 @@ export default function ChatView({
                 const isMine = group.senderId === user?.id;
 
                 return (
-                  <div key={`group-${groupIndex}-${group.senderId}`} className="relative">
+                  <div key={`group-${groupIndex}-${group.senderId}`} className="relative min-h-[50px]">
                     {group.messages.map((msg, msgIndex) => {
                       const isGroupStart = msgIndex === 0;
                       const isGroupEnd = msgIndex === group.messages.length - 1;
-                      const showAvatar = isGroupStart;
 
                       return (
                         <div
@@ -939,7 +938,7 @@ export default function ChatView({
                           <MessageBubble
                             message={msg}
                             isMine={isMine}
-                            showAvatar={showAvatar}
+                            showAvatar={isGroupStart}
                             isGroupStart={isGroupStart}
                             isGroupEnd={isGroupEnd}
                             onViewProfile={(userId) => setProfileUserId(userId)}
