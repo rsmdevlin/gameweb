@@ -30,6 +30,8 @@ import type { Message, MediaItem, Reaction, ChatMember } from '../lib/types';
 import ImageLightbox from './ImageLightbox';
 import ReactionDetailsModal from './ReactionDetailsModal';
 import ReactionButton from './ReactionButton';
+import AnimatedWaveEmoji from './AnimatedWaveEmoji';
+import AnimatedSmileEmoji from './AnimatedSmileEmoji';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -778,9 +780,20 @@ function MessageBubble({
             {/* Текст */}
             {message.content && (
               <div className="text-content clearfix with-meta relative">
-                <p className="text-sm whitespace-pre-wrap break-words leading-relaxed pr-16">
-                  {renderFormattedText(message.content)}
-                </p>
+                {/* Проверяем если это специальный анимированный стикер */}
+                {message.content.trim() === '👋' ? (
+                  <div className="flex items-center justify-center py-2">
+                    <AnimatedWaveEmoji size={120} />
+                  </div>
+                ) : message.content.trim() === '😊' ? (
+                  <div className="flex items-center justify-center py-2">
+                    <AnimatedSmileEmoji size={120} />
+                  </div>
+                ) : (
+                  <p className="text-sm whitespace-pre-wrap break-words leading-relaxed pr-16">
+                    {renderFormattedText(message.content)}
+                  </p>
+                )}
 
                 {/* Время и индикатор - всегда справа внизу текста */}
                 <span className={`absolute bottom-0 right-0 text-[10px] flex items-center gap-0.5 ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
