@@ -1008,8 +1008,9 @@ export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
           onClose={() => setShowAccountSwitcher(false)}
           onAddAccount={() => {
             setShowAccountSwitcher(false);
-            // TODO: Navigate to auth page to add new account
-            alert('Функция добавления нового аккаунта будет реализована в следующем обновлении');
+            onClose();
+            // Выходим из текущего аккаунта и переходим на страницу входа
+            logout();
           }}
         />
       )}
