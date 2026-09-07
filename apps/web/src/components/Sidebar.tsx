@@ -162,7 +162,7 @@ export default function Sidebar() {
         )}
 
         {/* Список чатов */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
           {filteredChats.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-zinc-500 gap-3 px-6">
               <MessageSquare size={40} className="opacity-30" />

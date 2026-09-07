@@ -205,3 +205,20 @@ model Friendship {
 
   @@unique([userId, friendId])
 }
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  token        String   @unique
+  deviceId     String   // Уникальный идентификатор устройства/браузера
+  deviceName   String?  // Название устройства (опционально)
+  ipAddress    String?
+  userAgent    String?  @db.Text
+  lastActivity DateTime @default(now())
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
+
+  @@index([userId])
+  @@index([deviceId])
+  @@index([expiresAt])
+}

@@ -24,6 +24,11 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
   const [showNightModeModal, setShowNightModeModal] = useState(false);
   const [showTextSizeModal, setShowTextSizeModal] = useState(false);
   const [showRadiusModal, setShowRadiusModal] = useState(false);
+  const [showChatThemesModal, setShowChatThemesModal] = useState(false);
+  const [showWallpapersModal, setShowWallpapersModal] = useState(false);
+  const [showColorsModal, setShowColorsModal] = useState(false);
+  const [selectedChatTheme, setSelectedChatTheme] = useState('classic');
+  const [selectedAccentColor, setSelectedAccentColor] = useState('#6366f1');
 
   const nightModeOptions = [
     { id: 'system', label: 'Системная', icon: Monitor, desc: 'Следовать настройкам системы' },
@@ -61,7 +66,7 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
         {/* Темы для чатов */}
         <div className="px-4 py-1 mb-2">
           <button
-            onClick={() => {/* TODO: открыть выбор темы чата */}}
+            onClick={() => setShowChatThemesModal(true)}
             className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl bg-surface-tertiary/50 hover:bg-surface-hover transition-colors group"
           >
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center">
@@ -69,7 +74,7 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
             </div>
             <div className="flex-1 min-w-0 text-left">
               <p className="text-sm font-medium text-zinc-200">Темы для чатов</p>
-              <p className="text-xs text-zinc-500">Выберите стиль оформления</p>
+              <p className="text-xs text-zinc-500 capitalize">{selectedChatTheme}</p>
             </div>
           </button>
         </div>
@@ -77,7 +82,7 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
         {/* Обои для чатов */}
         <div className="px-4 py-1 mb-2">
           <button
-            onClick={() => {/* TODO: открыть выбор обоев */}}
+            onClick={() => setShowWallpapersModal(true)}
             className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl bg-surface-tertiary/50 hover:bg-surface-hover transition-colors group"
           >
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
@@ -93,10 +98,13 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
         {/* Персональные цвета */}
         <div className="px-4 py-1 mb-2">
           <button
-            onClick={() => {/* TODO: открыть выбор цветов */}}
+            onClick={() => setShowColorsModal(true)}
             className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl bg-surface-tertiary/50 hover:bg-surface-hover transition-colors group"
           >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center shadow-lg"
+              style={{ backgroundColor: selectedAccentColor }}
+            >
               <Sparkles size={18} className="text-white" />
             </div>
             <div className="flex-1 min-w-0 text-left">
@@ -367,6 +375,181 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
                   style={{ borderRadius: `${messageRadius}px` }}
                 >
                   <p className="text-sm">Отлично, спасибо!</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Chat Themes Modal */}
+      {showChatThemesModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowChatThemesModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-surface-secondary rounded-2xl border border-border shadow-2xl max-w-lg w-full overflow-hidden"
+          >
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-base font-semibold text-white">Темы для чатов</h3>
+              <p className="text-xs text-zinc-500 mt-1">Выберите тему оформления</p>
+            </div>
+            <div className="p-4 grid grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto">
+              {[
+                { id: 'classic', name: 'Classic', preview: 'bg-surface' },
+                { id: 'midnight', name: 'Midnight', preview: 'chat-theme-midnight' },
+                { id: 'ocean', name: 'Ocean', preview: 'chat-theme-ocean' },
+                { id: 'forest', name: 'Forest', preview: 'chat-theme-forest' },
+                { id: 'sunset', name: 'Sunset', preview: 'chat-theme-sunset' },
+                { id: 'neon', name: 'Neon', preview: 'chat-theme-neon' },
+                { id: 'aurora', name: 'Aurora', preview: 'chat-theme-aurora' },
+                { id: 'cyber', name: 'Cyber', preview: 'chat-theme-cyber' },
+                { id: 'glass', name: 'Glass', preview: 'chat-theme-glass' },
+                { id: 'void', name: 'Void', preview: 'chat-theme-void' },
+              ].map((theme) => (
+                <button
+                  key={theme.id}
+                  onClick={() => setSelectedChatTheme(theme.id)}
+                  className={`relative overflow-hidden rounded-xl transition-all ${
+                    selectedChatTheme === theme.id
+                      ? 'ring-2 ring-vortex-500 scale-[1.02]'
+                      : 'hover:scale-[1.02]'
+                  }`}
+                >
+                  <div className={`${theme.preview} h-24 w-full`} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-3">
+                    <p className="text-sm font-medium text-white">{theme.name}</p>
+                    {selectedChatTheme === theme.id && (
+                      <Check size={16} className="absolute top-2 right-2 text-vortex-400" />
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Wallpapers Modal */}
+      {showWallpapersModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowWallpapersModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-surface-secondary rounded-2xl border border-border shadow-2xl max-w-lg w-full overflow-hidden"
+          >
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-base font-semibold text-white">Обои для чатов</h3>
+              <p className="text-xs text-zinc-500 mt-1">Выберите или загрузите обои</p>
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-3 gap-3 mb-4 max-h-[50vh] overflow-y-auto">
+                {[
+                  { id: 'none', name: 'Без обоев', color: 'bg-surface' },
+                  { id: 'gradient1', name: 'Gradient 1', color: 'bg-gradient-to-br from-blue-500 to-purple-600' },
+                  { id: 'gradient2', name: 'Gradient 2', color: 'bg-gradient-to-br from-pink-500 to-orange-500' },
+                  { id: 'gradient3', name: 'Gradient 3', color: 'bg-gradient-to-br from-green-500 to-teal-600' },
+                  { id: 'pattern1', name: 'Pattern 1', color: 'bg-zinc-900' },
+                  { id: 'pattern2', name: 'Pattern 2', color: 'bg-zinc-800' },
+                ].map((wallpaper) => (
+                  <button
+                    key={wallpaper.id}
+                    className={`relative overflow-hidden rounded-xl h-24 transition-all hover:scale-[1.05] ${wallpaper.color}`}
+                  >
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <p className="text-xs font-medium text-white drop-shadow-lg">{wallpaper.name}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <button className="w-full py-3 px-4 bg-vortex-500 hover:bg-vortex-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                <Wallpaper size={16} />
+                Загрузить свои обои
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Personal Colors Modal */}
+      {showColorsModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowColorsModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-surface-secondary rounded-2xl border border-border shadow-2xl max-w-sm w-full overflow-hidden"
+          >
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-base font-semibold text-white">Персональные цвета</h3>
+              <p className="text-xs text-zinc-500 mt-1">Выберите акцентный цвет</p>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-5 gap-3 mb-6">
+                {[
+                  '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#ef4444',
+                  '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e',
+                  '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6',
+                ].map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setSelectedAccentColor(color)}
+                    className={`w-10 h-10 rounded-full transition-all hover:scale-110 ${
+                      selectedAccentColor === color ? 'ring-2 ring-white ring-offset-2 ring-offset-surface-secondary' : ''
+                    }`}
+                    style={{ backgroundColor: color }}
+                  >
+                    {selectedAccentColor === color && <Check size={16} className="text-white mx-auto" />}
+                  </button>
+                ))}
+              </div>
+              <div className="mb-6">
+                <label className="text-xs text-zinc-500 mb-2 block">Свой цвет:</label>
+                <input
+                  type="color"
+                  value={selectedAccentColor}
+                  onChange={(e) => setSelectedAccentColor(e.target.value)}
+                  className="w-full h-12 rounded-lg border border-border bg-surface cursor-pointer"
+                />
+              </div>
+              <div className="bg-surface-tertiary rounded-xl p-4 border border-border">
+                <p className="text-xs text-zinc-500 mb-3">Предпросмотр:</p>
+                <div className="space-y-2">
+                  <div
+                    className="px-4 py-2 rounded-lg text-white text-sm font-medium"
+                    style={{ backgroundColor: selectedAccentColor }}
+                  >
+                    Кнопка
+                  </div>
+                  <div
+                    className="px-4 py-3 rounded-lg bg-surface-tertiary border"
+                    style={{ borderColor: selectedAccentColor }}
+                  >
+                    <p className="text-sm text-white">Сообщение с акцентом</p>
+                  </div>
                 </div>
               </div>
             </div>
