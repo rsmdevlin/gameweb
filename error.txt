@@ -1,15 +1,6 @@
-
-Search logs
-
-
-Sep 7, 3:16 AM - 3:18 AM
-GMT+2
-
-
-
 ==> Downloading cache...
 ==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 5f94ebcf86a8f6cdf81316b6d032e5c69e22c73d in branch master
+==> Checking out commit df1f9245e2e0f14353029dfa933b85aa0694c25c in branch master
 ==> Downloaded 293MB in 2s. Extraction took 4s.
 ==> Using Node.js version 24.14.1 (default)
 ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
@@ -27,9 +18,16 @@ Run `npm audit` for details.
 > tsc
 > @vortex/web@1.0.0 build
 > tsc -b && vite build
-src/components/ChatView.tsx(241,4): error TS1128: Declaration or statement expected.
-src/components/ChatView.tsx(241,28): error TS1005: ';' expected.
-src/components/ChatView.tsx(967,1): error TS1128: Declaration or statement expected.
+src/components/MessageBubble.tsx(622,24): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/MessageBubble.tsx(623,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/components/MessageBubble.tsx(627,13): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/MessageBubble.tsx(627,17): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/MessageBubble.tsx(694,13): error TS17015: Expected corresponding closing tag for JSX fragment.
+src/components/MessageBubble.tsx(715,9): error TS1128: Declaration or statement expected.
+src/components/MessageBubble.tsx(733,7): error TS1128: Declaration or statement expected.
+src/components/MessageBubble.tsx(865,5): error TS1128: Declaration or statement expected.
+src/components/MessageBubble.tsx(865,7): error TS1109: Expression expected.
+src/components/MessageBubble.tsx(866,3): error TS1109: Expression expected.
 npm error Lifecycle script `build` failed with error:
 npm error code 1
 npm error path /opt/render/project/src/apps/web

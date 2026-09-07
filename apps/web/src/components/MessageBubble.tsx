@@ -617,14 +617,6 @@ function MessageBubble({
                 </div>
               );
             })()}
-                          <Check size={13} className="ml-0.5" />
-                        )
-                      )}
-                    </span>
-                  </div>
-                </div>
-              );
-            })()}
 
             {/* Файлы */}
             {hasFile &&
