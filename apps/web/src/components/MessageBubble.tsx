@@ -37,6 +37,8 @@ interface MessageBubbleProps {
   message: Message;
   isMine: boolean;
   showAvatar: boolean;
+  isGroupStart?: boolean;
+  isGroupEnd?: boolean;
   onViewProfile?: (userId: string) => void;
   selectionMode?: boolean;
   isSelected?: boolean;
@@ -49,6 +51,8 @@ function MessageBubble({
   message,
   isMine,
   showAvatar,
+  isGroupStart = true,
+  isGroupEnd = true,
   onViewProfile,
   selectionMode,
   isSelected,
@@ -530,20 +534,24 @@ function MessageBubble({
           </div>
         )}
 
-        {/* Аватар (чужие) - sticky */}
+        {/* Аватар (чужие) - floating/sticky */}
         {!isMine && (
-          <div className="w-8 flex-shrink-0 mr-2 self-end sticky top-2">
+          <div className="w-8 flex-shrink-0 mr-2 self-end">
             {showAvatar ? (
-              <button onClick={() => onViewProfile?.(message.senderId)}>
-                {senderAvatar ? (
-                  <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover" />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold">
-                    {senderName[0]?.toUpperCase() || '?'}
-                  </div>
-                )}
-              </button>
-            ) : <div className="w-8 h-8" />}
+              <div className="sticky top-16 z-10">
+                <button onClick={() => onViewProfile?.(message.senderId)}>
+                  {senderAvatar ? (
+                    <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold">
+                      {senderName[0]?.toUpperCase() || '?'}
+                    </div>
+                  )}
+                </button>
+              </div>
+            ) : (
+              <div className="w-8 h-8" />
+            )}
           </div>
         )}
 

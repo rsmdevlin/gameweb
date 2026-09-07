@@ -883,26 +883,25 @@ export default function ChatView({
                     </div>
                   )}
 
-                  {/* Группа сообщений с floating avatar */}
-                  <div className={isGroupStart ? 'relative' : ''}>
-                    <div
-                      id={`msg-${msg.id}`}
-                      data-message-id={msg.id}
-                      data-sender-id={msg.senderId}
-                      className="transition-colors duration-500"
-                    >
-                      <MessageBubble
-                        message={msg}
-                        isMine={msg.senderId === user?.id}
-                        showAvatar={showAvatar}
-                        onViewProfile={(userId) => setProfileUserId(userId)}
-                        selectionMode={selectionMode}
-                        isSelected={selectedMessages.has(msg.id)}
-                        onToggleSelect={handleToggleSelect}
-                        onStartSelectionMode={handleStartSelection}
-                        onPlayAudio={handlePlayAudio}
-                      />
-                    </div>
+                  <div
+                    id={`msg-${msg.id}`}
+                    data-message-id={msg.id}
+                    data-sender-id={msg.senderId}
+                    className="transition-colors duration-500"
+                  >
+                    <MessageBubble
+                      message={msg}
+                      isMine={msg.senderId === user?.id}
+                      showAvatar={showAvatar}
+                      isGroupStart={isGroupStart}
+                      isGroupEnd={isGroupEnd}
+                      onViewProfile={(userId) => setProfileUserId(userId)}
+                      selectionMode={selectionMode}
+                      isSelected={selectedMessages.has(msg.id)}
+                      onToggleSelect={handleToggleSelect}
+                      onStartSelectionMode={handleStartSelection}
+                      onPlayAudio={handlePlayAudio}
+                    />
                   </div>
                 </div>
               );
