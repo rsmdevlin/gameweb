@@ -202,11 +202,41 @@ export default function ChatView({
     }
   }, [chatMessages.length, user?.id, scrollToBottom]);
 
-  // Read receipts — debounced via ref to avoid excessive emits
+  // Read receipts — Intersection Observer для прочтения по скроллу
   const sentReadIdsRef = useRef<Set<string>>(new Set());
   useEffect(() => {
     if (!activeChat || !user?.id) return;
     // Reset tracked IDs when switching chats
+    sentReadIdsRef.current.clear();
+
+    // Intersection Observer для отслеживания видимых сообщений
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const socket = getSocket();
+        if (!socket || !activeChat) return;
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const messageId = entry.target.getAttribute('data-message-id');
+            const senderId = entry.target.getAttribute('data-sender-id');
+
+            // Прочитать сообщение если оно не моё и ещё не отправили read receipt
+            if (messageId && senderId && senderId !== user.id && !sentReadIdsRef.current.has(messageId)) {
+              socket.emit('read_message', { messageId, chatId: activeChat });
+              sentReadIdsRef.current.add(messageId);
+            }
+          }
+        });
+      },
+      { threshold: 0.5 } // Сообщение видно хотя бы на 50%
+    );
+
+    // Наблюдать за всеми сообщениями
+    const messageElements = document.querySelectorAll('[data-message-id]');
+    messageElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [activeChat, user?.id, chatMessages.length]);
     sentReadIdsRef.current.clear();
   }, [activeChat, user?.id]);
 
@@ -814,13 +844,21 @@ export default function ChatView({
           <div className="space-y-1 max-w-3xl mx-auto">
             {chatMessages.map((msg, i) => {
               const prevMsg = i > 0 ? chatMessages[i - 1] : null;
-              const showAvatar = !prevMsg || prevMsg.senderId !== msg.senderId;
+              const nextMsg = i < chatMessages.length - 1 ? chatMessages[i + 1] : null;
+              // Показывать аватарку только если следующее сообщение от другого человека (последнее в серии)
+              const showAvatar = !nextMsg || nextMsg.senderId !== msg.senderId;
               const showDate =
                 !prevMsg ||
                 new Date(msg.createdAt).toDateString() !== new Date(prevMsg.createdAt).toDateString();
 
               return (
-                <div key={msg.id} id={`msg-${msg.id}`} className="transition-colors duration-500">
+                <div
+                  key={msg.id}
+                  id={`msg-${msg.id}`}
+                  data-message-id={msg.id}
+                  data-sender-id={msg.senderId}
+                  className="transition-colors duration-500"
+                >
                   {showDate && (
                     <div className="flex justify-center my-4">
                       <span className="px-3 py-1 rounded-full text-xs text-zinc-400 glass">
