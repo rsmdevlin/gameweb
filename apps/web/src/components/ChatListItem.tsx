@@ -12,6 +12,8 @@ import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
 import type { Chat } from '../lib/types';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 interface ChatListItemProps {
   chat: Chat;
   isActive: boolean;
@@ -76,10 +78,14 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
     if (lastMessage.media && lastMessage.media.length > 0) {
       const media = lastMessage.media[0];
       if (media.type === 'image') {
-        return { type: 'image', url: media.thumbnail || media.url, text: t('photo') };
+        const mediaUrl = media.url?.startsWith('http') ? media.url : `${API_URL}${media.url}`;
+        const thumbnailUrl = media.thumbnail ? (media.thumbnail.startsWith('http') ? media.thumbnail : `${API_URL}${media.thumbnail}`) : mediaUrl;
+        return { type: 'image', url: thumbnailUrl, text: t('photo') };
       }
       if (media.type === 'video') {
-        return { type: 'video', url: media.thumbnail || media.url, text: t('video') };
+        const mediaUrl = media.url?.startsWith('http') ? media.url : `${API_URL}${media.url}`;
+        const thumbnailUrl = media.thumbnail ? (media.thumbnail.startsWith('http') ? media.thumbnail : `${API_URL}${media.thumbnail}`) : mediaUrl;
+        return { type: 'video', url: thumbnailUrl, text: t('video') };
       }
       if (media.type === 'file') {
         return { type: 'icon', icon: FileText, text: media.filename || t('file') };
@@ -199,7 +205,7 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
                   <span className="text-xs text-zinc-500">{timeStr}</span>
                 </div>
               )}
-              {chat.unreadCount > 0 && !isActive && (
+              {chat.unreadCount > 0 && !isActive && !isMine && (
                 <span className="min-w-[20px] h-[20px] px-1.5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white font-semibold shadow-sm">
                   {chat.unreadCount > 99 ? '99+' : chat.unreadCount}
                 </span>
@@ -209,7 +215,7 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
           <div className="flex items-center gap-2 min-w-0">
             {/* Media thumbnail preview */}
             {!isTyping && !draft && messagePreview.type === 'image' && (
-              <div className="flex-shrink-0 w-10 h-10 rounded-md overflow-hidden bg-surface-tertiary">
+              <div className="flex-shrink-0 w-8 h-8 rounded overflow-hidden bg-surface-tertiary">
                 <img
                   src={messagePreview.url}
                   alt=""
@@ -218,14 +224,14 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
               </div>
             )}
             {!isTyping && !draft && messagePreview.type === 'video' && (
-              <div className="flex-shrink-0 w-10 h-10 rounded-md overflow-hidden bg-surface-tertiary relative">
+              <div className="flex-shrink-0 w-8 h-8 rounded overflow-hidden bg-surface-tertiary relative">
                 <img
                   src={messagePreview.url}
                   alt=""
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <Video size={16} className="text-white" />
+                  <Video size={12} className="text-white" />
                 </div>
               </div>
             )}
