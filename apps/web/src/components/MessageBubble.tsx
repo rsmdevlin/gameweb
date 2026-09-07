@@ -534,16 +534,16 @@ function MessageBubble({
           </div>
         )}
 
-        {/* Аватар (чужие) - floating/sticky */}
+        {/* Аватар (чужие) - floating/sticky через всю группу */}
         {!isMine && (
           <div className="w-8 flex-shrink-0 mr-2 self-end">
             {showAvatar ? (
-              <div className="sticky top-16 z-10">
-                <button onClick={() => onViewProfile?.(message.senderId)}>
+              <div className="sticky top-[4.5rem]">
+                <button onClick={() => onViewProfile?.(message.senderId)} className="relative z-10">
                   {senderAvatar ? (
-                    <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover" />
+                    <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover shadow-lg" />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold shadow-lg">
                       {senderName[0]?.toUpperCase() || '?'}
                     </div>
                   )}

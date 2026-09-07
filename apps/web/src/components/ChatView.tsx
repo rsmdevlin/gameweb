@@ -857,55 +857,98 @@ export default function ChatView({
           </div>
         ) : (
           <div className="space-y-1 max-w-3xl mx-auto">
-            {chatMessages.map((msg, i) => {
-              const prevMsg = i > 0 ? chatMessages[i - 1] : null;
-              const nextMsg = i < chatMessages.length - 1 ? chatMessages[i + 1] : null;
+            {(() => {
+              // Группируем сообщения по отправителю для floating avatars
+              const messageGroups: Array<{ senderId: string; messages: Message[]; showDate?: { date: string; beforeIndex: number } }> = [];
+              let currentGroup: Message[] = [];
+              let currentSenderId: string | null = null;
 
-              // Начало новой группы сообщений от одного отправителя
-              const isGroupStart = !prevMsg || prevMsg.senderId !== msg.senderId;
-              const isGroupEnd = !nextMsg || nextMsg.senderId !== msg.senderId;
+              chatMessages.forEach((msg, i) => {
+                const prevMsg = i > 0 ? chatMessages[i - 1] : null;
+                const showDate = !prevMsg || new Date(msg.createdAt).toDateString() !== new Date(prevMsg.createdAt).toDateString();
 
-              const showAvatar = isGroupStart;
-              const showDate =
-                !prevMsg ||
-                new Date(msg.createdAt).toDateString() !== new Date(prevMsg.createdAt).toDateString();
+                // Если дата изменилась или отправитель другой - новая группа
+                if (msg.senderId !== currentSenderId || showDate) {
+                  if (currentGroup.length > 0) {
+                    messageGroups.push({ senderId: currentSenderId!, messages: currentGroup });
+                  }
+                  currentGroup = [msg];
+                  currentSenderId = msg.senderId;
 
-              return (
-                <div key={msg.id}>
-                  {showDate && (
-                    <div className="flex justify-center my-4">
-                      <span className="px-3 py-1 rounded-full text-xs text-zinc-400 glass">
-                        {new Date(msg.createdAt).toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
+                  if (showDate) {
+                    messageGroups.push({
+                      senderId: 'DATE_SEPARATOR',
+                      messages: [],
+                      showDate: {
+                        date: new Date(msg.createdAt).toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
                           day: 'numeric',
                           month: 'long',
-                        })}
+                        }),
+                        beforeIndex: i
+                      }
+                    });
+                  }
+                } else {
+                  currentGroup.push(msg);
+                }
+              });
+
+              // Добавляем последнюю группу
+              if (currentGroup.length > 0) {
+                messageGroups.push({ senderId: currentSenderId!, messages: currentGroup });
+              }
+
+              // Рендерим группы
+              return messageGroups.map((group, groupIndex) => {
+                // Рендер разделителя даты
+                if (group.senderId === 'DATE_SEPARATOR' && group.showDate) {
+                  return (
+                    <div key={`date-${group.showDate.beforeIndex}`} className="flex justify-center my-4">
+                      <span className="px-3 py-1 rounded-full text-xs text-zinc-400 glass">
+                        {group.showDate.date}
                       </span>
                     </div>
-                  )}
+                  );
+                }
 
-                  <div
-                    id={`msg-${msg.id}`}
-                    data-message-id={msg.id}
-                    data-sender-id={msg.senderId}
-                    className="transition-colors duration-500"
-                  >
-                    <MessageBubble
-                      message={msg}
-                      isMine={msg.senderId === user?.id}
-                      showAvatar={showAvatar}
-                      isGroupStart={isGroupStart}
-                      isGroupEnd={isGroupEnd}
-                      onViewProfile={(userId) => setProfileUserId(userId)}
-                      selectionMode={selectionMode}
-                      isSelected={selectedMessages.has(msg.id)}
-                      onToggleSelect={handleToggleSelect}
-                      onStartSelectionMode={handleStartSelection}
-                      onPlayAudio={handlePlayAudio}
-                    />
+                // Рендер группы сообщений с floating avatar
+                const isMine = group.senderId === user?.id;
+
+                return (
+                  <div key={`group-${groupIndex}-${group.senderId}`} className="relative">
+                    {group.messages.map((msg, msgIndex) => {
+                      const isGroupStart = msgIndex === 0;
+                      const isGroupEnd = msgIndex === group.messages.length - 1;
+                      const showAvatar = isGroupStart;
+
+                      return (
+                        <div
+                          key={msg.id}
+                          id={`msg-${msg.id}`}
+                          data-message-id={msg.id}
+                          data-sender-id={msg.senderId}
+                          className="transition-colors duration-500"
+                        >
+                          <MessageBubble
+                            message={msg}
+                            isMine={isMine}
+                            showAvatar={showAvatar}
+                            isGroupStart={isGroupStart}
+                            isGroupEnd={isGroupEnd}
+                            onViewProfile={(userId) => setProfileUserId(userId)}
+                            selectionMode={selectionMode}
+                            isSelected={selectedMessages.has(msg.id)}
+                            onToggleSelect={handleToggleSelect}
+                            onStartSelectionMode={handleStartSelection}
+                            onPlayAudio={handlePlayAudio}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
-              );
-            })}
+                );
+              });
+            })()}
             <div ref={messagesEndRef} className="h-4" /> {/* Empty spacer for the bottom scroll boundary */}
           </div>
         )}
