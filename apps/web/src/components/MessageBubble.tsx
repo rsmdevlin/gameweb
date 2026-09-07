@@ -626,7 +626,10 @@ function MessageBubble({
                     </div>
                     {/* Кнопка открыть плеер */}
                     <button
-                      onClick={() => onPlayAudio?.(message.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPlayAudio?.(message.id);
+                      }}
                       className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/10 hover:bg-white/20' : 'bg-surface-tertiary hover:bg-surface-hover'
                         } transition-colors`}
                       title="Открыть плеер"

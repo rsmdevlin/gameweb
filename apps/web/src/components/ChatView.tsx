@@ -843,8 +843,9 @@ export default function ChatView({
             {chatMessages.map((msg, i) => {
               const prevMsg = i > 0 ? chatMessages[i - 1] : null;
               const nextMsg = i < chatMessages.length - 1 ? chatMessages[i + 1] : null;
-              // Показывать аватарку только если следующее сообщение от другого человека (последнее в серии)
-              const showAvatar = !nextMsg || nextMsg.senderId !== msg.senderId;
+              // Показывать аватарку на первом сообщении в серии (sticky будет следовать до последнего)
+              const showAvatar = !prevMsg || prevMsg.senderId !== msg.senderId;
+              const isLastInSeries = !nextMsg || nextMsg.senderId !== msg.senderId;
               const showDate =
                 !prevMsg ||
                 new Date(msg.createdAt).toDateString() !== new Date(prevMsg.createdAt).toDateString();
