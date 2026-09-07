@@ -28,6 +28,7 @@ import { getMediaUrl } from '../lib/mediaUrl';
 import { useLongPress } from '../hooks/useLongPress';
 import type { Message, MediaItem, Reaction, ChatMember } from '../lib/types';
 import ImageLightbox from './ImageLightbox';
+import ReactionDetailsModal from './ReactionDetailsModal';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -68,6 +69,7 @@ function MessageBubble({
   const audioRef = useRef<HTMLAudioElement>(null);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const [quotedText, setQuotedText] = useState<string | null>(null);
+  const [reactionDetails, setReactionDetails] = useState<{ emoji: string; users: any[] } | null>(null);
 
   // Прочитано
   const isRead = message.readBy?.some((r) => r.userId !== user?.id);
@@ -338,13 +340,18 @@ function MessageBubble({
   const hasVideo = media.some((m) => m.type === 'video');
 
   // Группировка реакций
-  const reactionGroups: Record<string, { count: number; users: string[]; isMine: boolean }> = {};
+  const reactionGroups: Record<string, { count: number; users: Array<{ userId: string; displayName: string; username: string; avatar?: string }>; isMine: boolean }> = {};
   (message.reactions || []).forEach((r) => {
     if (!reactionGroups[r.emoji]) {
       reactionGroups[r.emoji] = { count: 0, users: [], isMine: false };
     }
     reactionGroups[r.emoji].count++;
-    reactionGroups[r.emoji].users.push(r.user?.displayName || r.user?.username || '');
+    reactionGroups[r.emoji].users.push({
+      userId: r.userId,
+      displayName: r.user?.displayName || '',
+      username: r.user?.username || '',
+      avatar: r.user?.avatar,
+    });
     if (r.userId === user?.id) reactionGroups[r.emoji].isMine = true;
   });
 
@@ -685,23 +692,51 @@ function MessageBubble({
             )}
           </div>
 
-          {/* Реакции */}
+          {/* Реакции - в стиле медиа */}
           {Object.keys(reactionGroups).length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-1 mx-1">
-              {Object.entries(reactionGroups).map(([emoji, data]) => (
-                <button
-                  key={emoji}
-                  onClick={() => handleReaction(emoji)}
-                  className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-colors ${data.isMine
-                    ? 'bg-vortex-500/30 border border-vortex-500/50'
-                    : 'bg-surface-tertiary border border-border hover:border-zinc-600'
+            <div className={`flex justify-end px-3 py-1 ${hasImage || hasVideo ? '-mt-6 relative z-10' : 'mt-1'}`}>
+              <div className="flex flex-wrap gap-1.5 bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm">
+                {Object.entries(reactionGroups).map(([emoji, data]) => (
+                  <button
+                    key={emoji}
+                    onClick={() => handleReaction(emoji)}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setReactionDetails({ emoji, users: data.users });
+                    }}
+                    {...useLongPress({
+                      onLongPress: () => {
+                        setReactionDetails({ emoji, users: data.users });
+                      },
+                      delay: 500,
+                      moveThreshold: 10,
+                    })}
+                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs transition-all ${
+                      data.isMine
+                        ? 'bg-vortex-500/40 border border-vortex-500/60'
+                        : 'bg-white/10 border border-white/20 hover:bg-white/20'
                     }`}
-                  title={data.users.join(', ')}
-                >
-                  <span>{emoji}</span>
-                  <span className="text-zinc-400">{data.count}</span>
-                </button>
-              ))}
+                    title={data.users.map(u => u.displayName || u.username).join(', ')}
+                  >
+                    <span>{emoji}</span>
+                    {data.count > 1 && (
+                      <span className="text-white/80 text-[10px] font-medium">{data.count}</span>
+                    )}
+                  </button>
+                ))}
+                {/* Время и прочтение рядом с реакциями */}
+                <span className="text-[10px] text-white/70 flex items-center gap-1 px-1">
+                  {timeStr}
+                  {isMine && (
+                    isRead ? (
+                      <CheckCheck size={11} className="text-sky-300" />
+                    ) : (
+                      <Check size={11} />
+                    )
+                  )}
+                </span>
+              </div>
             </div>
           )}
         </div>
@@ -852,6 +887,17 @@ function MessageBubble({
       <AnimatePresence>
         {lightboxUrl && (
           <ImageLightbox url={lightboxUrl} onClose={() => setLightboxUrl(null)} />
+        )}
+      </AnimatePresence>
+
+      {/* Reaction Details Modal */}
+      <AnimatePresence>
+        {reactionDetails && (
+          <ReactionDetailsModal
+            emoji={reactionDetails.emoji}
+            users={reactionDetails.users}
+            onClose={() => setReactionDetails(null)}
+          />
         )}
       </AnimatePresence>
     </>
