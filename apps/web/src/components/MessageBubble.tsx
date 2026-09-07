@@ -693,9 +693,9 @@ function MessageBubble({
             )}
           </div>
 
-          {/* Реакции - под сообщением как в Telegram */}
+          {/* Реакции - как в Telegram (справа/слева снизу сообщения) */}
           {Object.keys(reactionGroups).length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-1 px-3">
+            <div className={`flex items-center gap-0.5 mt-1 ${isMine ? 'justify-start' : 'justify-end'}`}>
               {Object.entries(reactionGroups).map(([emoji, data]) => (
                 <button
                   key={emoji}
@@ -705,35 +705,38 @@ function MessageBubble({
                     e.stopPropagation();
                     setReactionDetails({ emoji, users: data.users });
                   }}
-                  className={`flex items-center gap-1.5 px-2 py-1 rounded-full transition-all ${
-                    data.isMine
-                      ? 'bg-vortex-500/20 border-2 border-vortex-500/50'
-                      : 'bg-surface-tertiary border-2 border-border hover:border-zinc-600'
+                  className={`relative flex items-center transition-all hover:scale-105 ${
+                    data.isMine ? 'opacity-100' : 'opacity-90 hover:opacity-100'
                   }`}
+                  title={data.users.map(u => u.displayName || u.username).join(', ')}
                 >
-                  <span className="text-base">{emoji}</span>
-                  {/* Аватарки пользователей */}
-                  <div className="flex -space-x-1.5">
+                  {/* Аватарки перекрываются */}
+                  <div className="flex -space-x-2">
                     {data.users.slice(0, 3).map((u, i) => (
                       u.avatar ? (
                         <img
                           key={i}
                           src={getMediaUrl(u.avatar)}
                           alt=""
-                          className="w-5 h-5 rounded-full object-cover border-2 border-surface"
+                          className="w-6 h-6 rounded-full object-cover border-2 border-surface"
                         />
                       ) : (
                         <div
                           key={i}
-                          className="w-5 h-5 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[9px] font-semibold border-2 border-surface"
+                          className="w-6 h-6 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-semibold border-2 border-surface"
                         >
                           {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
                         </div>
                       )
                     ))}
                   </div>
+                  {/* Эмодзи поверх аватарки */}
+                  <div className="absolute -top-1 -right-1 bg-surface rounded-full w-5 h-5 flex items-center justify-center border-2 border-surface">
+                    <span className="text-xs">{emoji}</span>
+                  </div>
+                  {/* Счетчик если больше 3 */}
                   {data.count > 3 && (
-                    <span className="text-xs text-zinc-400 ml-0.5">+{data.count - 3}</span>
+                    <span className="ml-1 text-[10px] text-zinc-400 font-medium">+{data.count - 3}</span>
                   )}
                 </button>
               ))}
