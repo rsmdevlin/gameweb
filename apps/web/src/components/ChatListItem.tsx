@@ -52,29 +52,52 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
   const isTyping = typingInChat.length > 0;
 
   const lastMessage = chat.messages?.[0];
-  const lastMessageText = lastMessage
-    ? lastMessage.isDeleted
-      ? t('messageDeleted')
-      : lastMessage.type === 'voice'
-        ? t('voice')
-        : lastMessage.type === 'file' || lastMessage.type === 'image' || lastMessage.type === 'video'
-          ? lastMessage.media?.[0]?.type === 'image'
-            ? t('photo')
-            : lastMessage.media?.[0]?.type === 'video'
-              ? t('video')
-              : t('file')
-          : lastMessage.content || ''
-    : '';
-
-  const previewText = stripMarkdown(lastMessageText);
 
   const isMine = lastMessage?.senderId === user?.id;
 
-  // Галочки прочтения
-  const isRead = lastMessage?.readBy?.some((r) => r.userId !== user?.id);
+  // Sender name for groups (show who sent the message)
+  const senderName = chat.type === 'group' && lastMessage && !lastMessage.isDeleted
+    ? isMine
+      ? 'Вы'
+      : chat.members.find(m => m.user.id === lastMessage.senderId)?.user.displayName?.split(' ')[0] ||
+        chat.members.find(m => m.user.id === lastMessage.senderId)?.user.username ||
+        'User'
+    : null;
 
+  // Message preview text/icon
+  const getMessagePreview = () => {
+    if (!lastMessage) return '';
+    if (lastMessage.isDeleted) return t('messageDeleted');
+
+    if (lastMessage.type === 'voice') {
+      return <><Mic size={14} className="inline-block mr-1 flex-shrink-0" />{t('voice')}</>;
+    }
+
+    if (lastMessage.media && lastMessage.media.length > 0) {
+      const media = lastMessage.media[0];
+      if (media.type === 'image') {
+        return <><Image size={14} className="inline-block mr-1 flex-shrink-0" />{t('photo')}</>;
+      }
+      if (media.type === 'video') {
+        return <><Video size={14} className="inline-block mr-1 flex-shrink-0" />{t('video')}</>;
+      }
+      if (media.type === 'file') {
+        return <><FileText size={14} className="inline-block mr-1 flex-shrink-0" />{media.filename || t('file')}</>;
+      }
+    }
+
+    return stripMarkdown(lastMessage.content || '');
+  };
+
+  const messagePreview = getMessagePreview();
+
+  // Галочки прочтения: две галочки если хоть кто-то кроме меня прочитал
+  const isRead = lastMessage?.readBy?.some((r) => r.userId !== user?.id);
+  const isSent = !!lastMessage; // Показываем одну галочку если сообщение отправлено
+
+  // Time in HH:MM format instead of "около часа назад"
   const timeStr = lastMessage
-    ? formatDistanceToNow(new Date(lastMessage.createdAt), { addSuffix: false, locale: lang === 'ru' ? ru : enUS })
+    ? new Date(lastMessage.createdAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
     : '';
 
   const handleClick = () => {
@@ -156,33 +179,58 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
 
         {/* Инфо */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 min-w-0">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-1.5 min-w-0 flex-1">
               {isPinned && <Pin size={12} className="text-vortex-400 flex-shrink-0 rotate-45" />}
               <span className="text-sm font-medium text-white truncate">{chatName}</span>
             </div>
-            {timeStr && <span className="text-xs text-zinc-500 flex-shrink-0 ml-2">{timeStr}</span>}
-          </div>
-          <div className="flex items-center justify-between mt-0.5">
-            <div className="flex items-center gap-1 min-w-0 flex-1">
-              {isMine && lastMessage && !lastMessage.isDeleted && (
-                <span className="flex-shrink-0">
-                  {isRead ? (
-                    <CheckCheck size={14} className="text-vortex-400" />
-                  ) : (
-                    <Check size={14} className="text-zinc-500" />
+            <div className="flex flex-col items-end gap-0.5 flex-shrink-0 ml-2">
+              {timeStr && (
+                <div className="flex items-center gap-1">
+                  {isMine && lastMessage && !lastMessage.isDeleted && (
+                    <span className="flex-shrink-0">
+                      {isRead ? (
+                        <CheckCheck size={14} className="text-vortex-400" />
+                      ) : (
+                        <Check size={14} className="text-zinc-500" />
+                      )}
+                    </span>
                   )}
+                  <span className="text-xs text-zinc-500">{timeStr}</span>
+                </div>
+              )}
+              {chat.unreadCount > 0 && !isActive && (
+                <span className="min-w-[18px] h-[18px] px-1.5 rounded-full bg-zinc-600 flex items-center justify-center text-[10px] text-white font-medium">
+                  {chat.unreadCount > 99 ? '99+' : chat.unreadCount}
                 </span>
               )}
-              <p className={`text-xs truncate ${isTyping ? 'text-vortex-400 font-medium' : draft ? 'text-red-400' : 'text-zinc-400'}`}>
-                {isTyping ? t('typing') : draft ? <><span className="font-medium">{t('draft')} </span>{stripMarkdown(draft)}</> : previewText}
-              </p>
             </div>
-            {chat.unreadCount > 0 && !isActive && (
-              <span className="ml-2 flex-shrink-0 min-w-[20px] h-5 px-1.5 rounded-full bg-accent flex items-center justify-center text-[11px] text-white font-medium">
-                {chat.unreadCount}
-              </span>
-            )}
+          </div>
+          <div className="flex items-center gap-1 min-w-0">
+            <p className={`text-xs truncate ${isTyping ? 'text-vortex-400 font-medium' : draft ? 'text-red-400' : 'text-zinc-400'}`}>
+              {isTyping ? (
+                <>
+                  {chat.type === 'group' && typingInChat[0] && (
+                    <span className="font-medium">
+                      {chat.members.find(m => m.user.id === typingInChat[0].userId)?.user.displayName?.split(' ')[0] ||
+                       chat.members.find(m => m.user.id === typingInChat[0].userId)?.user.username ||
+                       'User'}{' '}
+                    </span>
+                  )}
+                  {t('typing')}
+                </>
+              ) : draft ? (
+                <>
+                  <span className="font-medium text-red-400">{t('draft')}: </span>
+                  {stripMarkdown(draft)}
+                </>
+              ) : (
+                <>
+                  {senderName && <span className="font-medium text-white">{senderName}: </span>}
+                  {messagePreview}
+                </>
+              )}
+            </p>
           </div>
         </div>
       </button>
