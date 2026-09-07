@@ -64,29 +64,29 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
         'User'
     : null;
 
-  // Message preview text/icon
+  // Message preview with media thumbnail
   const getMessagePreview = () => {
-    if (!lastMessage) return '';
-    if (lastMessage.isDeleted) return t('messageDeleted');
+    if (!lastMessage) return { type: 'text', content: '' };
+    if (lastMessage.isDeleted) return { type: 'text', content: t('messageDeleted') };
 
     if (lastMessage.type === 'voice') {
-      return <><Mic size={14} className="inline-block mr-1 flex-shrink-0" />{t('voice')}</>;
+      return { type: 'icon', icon: Mic, text: t('voice') };
     }
 
     if (lastMessage.media && lastMessage.media.length > 0) {
       const media = lastMessage.media[0];
       if (media.type === 'image') {
-        return <><Image size={14} className="inline-block mr-1 flex-shrink-0" />{t('photo')}</>;
+        return { type: 'image', url: media.thumbnail || media.url, text: t('photo') };
       }
       if (media.type === 'video') {
-        return <><Video size={14} className="inline-block mr-1 flex-shrink-0" />{t('video')}</>;
+        return { type: 'video', url: media.thumbnail || media.url, text: t('video') };
       }
       if (media.type === 'file') {
-        return <><FileText size={14} className="inline-block mr-1 flex-shrink-0" />{media.filename || t('file')}</>;
+        return { type: 'icon', icon: FileText, text: media.filename || t('file') };
       }
     }
 
-    return stripMarkdown(lastMessage.content || '');
+    return { type: 'text', content: stripMarkdown(lastMessage.content || '') };
   };
 
   const messagePreview = getMessagePreview();
@@ -190,9 +190,9 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
                   {isMine && lastMessage && !lastMessage.isDeleted && (
                     <span className="flex-shrink-0">
                       {isRead ? (
-                        <CheckCheck size={14} className="text-vortex-400" />
+                        <CheckCheck size={14} className="text-blue-500" />
                       ) : (
-                        <Check size={14} className="text-zinc-500" />
+                        <Check size={14} className="text-blue-500" />
                       )}
                     </span>
                   )}
