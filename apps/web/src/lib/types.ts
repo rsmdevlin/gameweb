@@ -94,6 +94,10 @@ export interface Chat {
   members: ChatMember[];
   messages: Message[];
   unreadCount: number;
+  description?: string | null;
+  inviteLink?: string | null;
+  whoCanAddMembers?: string;
+  whoCanSendMessages?: string;
   pinnedMessages?: Array<{
     id: string;
     message: Message;
