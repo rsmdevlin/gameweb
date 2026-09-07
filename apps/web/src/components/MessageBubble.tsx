@@ -538,20 +538,16 @@ function MessageBubble({
         {!isMine && (
           <div className="w-8 flex-shrink-0 mr-2">
             {showAvatar ? (
-              <div className="sticky bottom-24 z-20">
-                <div className="relative">
-                  {/* Темный фон за sticky аватаркой */}
-                  <div className="absolute -inset-2 bg-gradient-to-b from-transparent via-zinc-950/80 to-zinc-950/95 rounded-xl blur-sm -z-10" />
-                  <button onClick={() => onViewProfile?.(message.senderId)} className="block relative">
-                    {senderAvatar ? (
-                      <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover shadow-lg ring-2 ring-vortex-500/20" />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold shadow-lg ring-2 ring-vortex-500/20">
-                        {senderName[0]?.toUpperCase() || '?'}
-                      </div>
-                    )}
-                  </button>
-                </div>
+              <div className="sticky top-0 z-20">
+                <button onClick={() => onViewProfile?.(message.senderId)} className="block">
+                  {senderAvatar ? (
+                    <img src={getMediaUrl(senderAvatar)} alt="" className="w-8 h-8 rounded-full object-cover shadow-lg ring-2 ring-vortex-500/20" />
+                  ) : (
+                    <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${getUserColor(message.senderId)} flex items-center justify-center text-white text-xs font-semibold shadow-lg ring-2 ring-vortex-500/20`}>
+                      {senderName[0]?.toUpperCase() || '?'}
+                    </div>
+                  )}
+                </button>
               </div>
             ) : (
               <div className="w-8 h-8" />
