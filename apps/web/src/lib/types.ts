@@ -48,7 +48,7 @@ export interface Reaction {
   id: string;
   emoji: string;
   userId: string;
-  user: { id: string; username: string; displayName: string };
+  user: { id: string; username: string; displayName: string; avatar?: string };
 }
 
 export interface MessageSender {

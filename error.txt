@@ -1,42 +1,30 @@
-Как это работает
-Когда пользователь ставит реакцию, она отображается внизу сообщения. Если несколько человек выбрали одну и ту же эмодзи, рядом появляется счётчик, показывающий количество таких реакций. 
-
-Изменить или удалить свою реакцию можно так:
-Чтобы убрать свою реакцию, достаточно нажать на неё один раз.
-Чтобы заменить свою реакцию на другую, достаточно выбрать новый эмодзи — старая автоматически исчезнет.
- 
-В личных чатах реакции включены по умолчанию и их нельзя отключить. В группах и каналах администратор (владелец или администратор с правами) может разрешить или запретить реакции, а также выбрать, какие именно эмодзи будут доступны пользователям. 
-
-Когда на ваше сообщение ставят реакцию, в чате появляется значок уведомления (например, сердечко), который висит до тех пор, пока вы не откроете диалог. 
-
-Кастомные — пользовательские эмодзи, которые могут создавать только подписчики Telegram Premium с помощью специального бота (например, Stickers). Для этого нужно загрузить изображение в формате PNG или WEBP размером 100×100 пикселей. 
-
-Платные (Star Reactions) — реакции в виде звёздочек, при отправке которых пользователь платит внутренней валютой Telegram — «Звездами». Их включение — отдельная настройка в канале. 
-
-Ограничения для пользователей
-Бесплатные пользователи могут поставить только одну реакцию на одно сообщение.
-Подписчики Premium могут ставить до трёх разных реакций и использовать расширенный набор эмодзи, включая кастомные.
- 
-ppc.world
-skillbox.ru
-Как посмотреть, кто поставил реакцию
-В личных чатах и группах можно увидеть аватар пользователя, поставившего реакцию. Для этого нужно зажать реакцию на телефоне или кликнуть по ней правой кнопкой мыши на компьютере. 
-perfluence.net
-blackriver.agency
-В каналах отображается только количество реакций и список разрешённых эмодзи — имена пользователей скрыты. 
-ppc.world
-perfluence.net
-Настройка реакций в канале
-Чтобы включить реакции в канале, нужно:
-Открыть канал и нажать на его название.
-Выбрать «Управление каналом» (три точки → «Управление каналом»).
-Найти раздел «Реакции» и выбрать режим: «Все реакции», «Только выбранные» (откроется список эмодзи для выбора) или «Без реакций».
- 
-ppc.world
-commyx.com
-Также в этом разделе можно отдельно включить платные реакции (Star Reactions). 
-ppc.world
-commyx.com
-Зачем это нужно
-Реакции помогают быстро понять, какой контент вызвал интерес, не требуя развёрнутого ответа. Для авторов каналов это инструмент аналитики: реакции показывают вовлечённость аудитории и помогают планировать контент. Алгоритм рекомендаций Telegram также учитывает количество и скорость реакций при ранжировании постов. 
-ppc.world
+==> Downloading cache...
+==> Cloning from https://github.com/rsmdevlin/gameweb
+==> Checking out commit 702f4a3ee753dd0087c153087530b44e192e1e58 in branch master
+==> Downloaded 293MB in 2s. Extraction took 5s.
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'npm install && npm run build'...
+up to date, audited 273 packages in 2s
+43 packages are looking for funding
+  run `npm fund` for details
+24 vulnerabilities (3 low, 4 moderate, 17 high)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> build
+> npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma && npx prisma db push --schema=./apps/server/prisma/schema.prisma --skip-generate
+> @vortex/server@1.0.0 build
+> tsc
+> @vortex/web@1.0.0 build
+> tsc -b && vite build
+src/components/MessageBubble.tsx(353,23): error TS2339: Property 'avatar' does not exist on type '{ id: string; username: string; displayName: string; }'.
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /opt/render/project/src/apps/web
+npm error workspace @vortex/web@1.0.0
+npm error location /opt/render/project/src/apps/web
+npm error command failed
+npm error command sh -c tsc -b && vite build
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
