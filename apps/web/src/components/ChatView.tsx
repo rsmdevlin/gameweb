@@ -38,6 +38,8 @@ import ConfirmModal from './ConfirmModal';
 import Avatar from './Avatar';
 import AudioMiniPlayer from './AudioMiniPlayer';
 import AudioPlaylistModal from './AudioPlaylistModal';
+import AnimatedWaveEmoji from './AnimatedWaveEmoji';
+import AnimatedSmileEmoji from './AnimatedSmileEmoji';
 import { useThemeStore } from '../stores/themeStore';
 
 export default function ChatView({
@@ -873,7 +875,7 @@ export default function ChatView({
                     <p className="text-sm text-zinc-300 drop-shadow">Отправьте сообщение или нажмите на приветствие ниже.</p>
                   </div>
 
-                  <div className="flex items-center justify-center gap-4 mt-6">
+                  <div className="flex items-center justify-center gap-6 mt-6">
                     <button
                       onClick={() => {
                         const socket = getSocket();
@@ -885,9 +887,9 @@ export default function ChatView({
                           });
                         }
                       }}
-                      className="group relative w-20 h-20 rounded-2xl bg-gradient-to-br from-vortex-500/40 to-purple-600/40 backdrop-blur-md hover:from-vortex-500/60 hover:to-purple-600/60 border-2 border-vortex-400/50 hover:border-vortex-400/80 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:rotate-6 shadow-xl hover:shadow-vortex-500/50"
+                      className="group relative w-24 h-24 rounded-2xl bg-gradient-to-br from-vortex-500/40 to-purple-600/40 backdrop-blur-md hover:from-vortex-500/60 hover:to-purple-600/60 border-2 border-vortex-400/50 hover:border-vortex-400/80 transition-all duration-300 flex items-center justify-center hover:scale-110 shadow-xl hover:shadow-vortex-500/50"
                     >
-                      <span className="text-4xl group-hover:scale-125 transition-transform duration-300 filter drop-shadow-lg">👋</span>
+                      <AnimatedWaveEmoji size={56} />
                     </button>
 
                     <button
@@ -901,9 +903,9 @@ export default function ChatView({
                           });
                         }
                       }}
-                      className="group relative w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500/40 to-orange-600/40 backdrop-blur-md hover:from-amber-500/60 hover:to-orange-600/60 border-2 border-amber-400/50 hover:border-amber-400/80 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:-rotate-6 shadow-xl hover:shadow-amber-500/50"
+                      className="group relative w-24 h-24 rounded-2xl bg-gradient-to-br from-amber-500/40 to-orange-600/40 backdrop-blur-md hover:from-amber-500/60 hover:to-orange-600/60 border-2 border-amber-400/50 hover:border-amber-400/80 transition-all duration-300 flex items-center justify-center hover:scale-110 shadow-xl hover:shadow-amber-500/50"
                     >
-                      <span className="text-4xl group-hover:scale-125 transition-transform duration-300 filter drop-shadow-lg">😊</span>
+                      <AnimatedSmileEmoji size={56} />
                     </button>
                   </div>
                 </div>
