@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Check, X } from 'lucide-react';
 import { useAccountStore } from '../stores/accountStore';
 import { useAuthStore } from '../stores/authStore';
+import { getMediaUrl } from '../lib/mediaUrl';
 
 interface AccountSwitcherProps {
   onClose: () => void;
@@ -65,7 +66,7 @@ export default function AccountSwitcher({ onClose, onAddAccount }: AccountSwitch
                 {/* Avatar */}
                 {account.avatar ? (
                   <img
-                    src={`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/media/${account.avatar}`}
+                    src={getMediaUrl(account.avatar)}
                     alt=""
                     className="w-12 h-12 rounded-full object-cover"
                   />
