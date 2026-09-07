@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "dev": "concurrently -k -n server,web -c \"#6366f1\",\"#8b5cf6\" \"npm run dev -w apps/server\" \"npm run dev -w apps/web\"",
-    "build": "npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma && npx prisma db push --schema=./apps/server/prisma/schema.prisma --skip-generate",
+    "build": "npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma && npx prisma db push --schema=./apps/server/prisma/schema.prisma --skip-generate --accept-data-loss",
     "db:push": "npm run db:push -w apps/server",
     "db:seed": "npm run db:seed -w apps/server",
     "setup": "npm install && npm run db:push && npm run db:seed",
