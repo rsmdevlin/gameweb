@@ -41,6 +41,9 @@ export default function GroupSettings({ chat, onClose }: GroupSettingsProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<UserPresence[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [groupDescription, setGroupDescription] = useState(chat.description || '');
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [inviteLink, setInviteLink] = useState(chat.inviteLink || '');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -83,6 +86,35 @@ export default function GroupSettings({ chat, onClose }: GroupSettingsProps) {
       console.error(e);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleSaveDescription = async () => {
+    try {
+      setIsSaving(true);
+      const updatedChat = await api.updateGroup(chat.id, { description: groupDescription.trim() });
+      updateChat(updatedChat);
+      setIsEditingDescription(false);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleGenerateInviteLink = async () => {
+    try {
+      const { inviteLink: newLink } = await api.generateInviteLink(chat.id);
+      setInviteLink(newLink);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const copyInviteLink = () => {
+    if (inviteLink) {
+      navigator.clipboard.writeText(`${window.location.origin}/invite/${inviteLink}`);
+      alert('Ссылка скопирована!');
     }
   };
 

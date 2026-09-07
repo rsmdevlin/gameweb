@@ -169,10 +169,22 @@ class ApiClient {
   }
 
   // \u0413\u0440\u0443\u043f\u043f\u044b
-  async updateGroup(chatId: string, data: { name?: string }) {
+  async updateGroup(chatId: string, data: { name?: string; description?: string; whoCanAddMembers?: string; whoCanSendMessages?: string }) {
     return this.request<Chat>(`/chats/${chatId}`, {
       method: 'PUT',
       body: JSON.stringify(data),
+    });
+  }
+
+  async generateInviteLink(chatId: string) {
+    return this.request<{ inviteLink: string; chat: Chat }>(`/chats/${chatId}/invite-link`, {
+      method: 'POST',
+    });
+  }
+
+  async joinGroupByInvite(inviteLink: string) {
+    return this.request<{ chat: Chat }>(`/chats/join/${inviteLink}`, {
+      method: 'POST',
     });
   }
 

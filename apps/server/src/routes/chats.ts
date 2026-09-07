@@ -290,7 +290,7 @@ router.get('/:id', async (req: AuthRequest, res) => {
 router.put('/:id', async (req: AuthRequest, res) => {
   try {
     const chatId = String(req.params.id);
-    const { name } = req.body;
+    const { name, description, whoCanAddMembers, whoCanSendMessages } = req.body;
 
     const member = await prisma.chatMember.findUnique({
       where: { chatId_userId: { chatId, userId: req.userId! } },
@@ -301,9 +301,19 @@ router.put('/:id', async (req: AuthRequest, res) => {
       return;
     }
 
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (description !== undefined) updateData.description = description;
+    if (whoCanAddMembers && ['admins', 'all'].includes(whoCanAddMembers)) {
+      updateData.whoCanAddMembers = whoCanAddMembers;
+    }
+    if (whoCanSendMessages && ['admins', 'all'].includes(whoCanSendMessages)) {
+      updateData.whoCanSendMessages = whoCanSendMessages;
+    }
+
     const chat = await prisma.chat.update({
       where: { id: chatId },
-      data: { name },
+      data: updateData,
       include: {
         members: { include: { user: { select: USER_SELECT } } },
         messages: {
@@ -616,6 +626,94 @@ router.post('/:id/pin', async (req: AuthRequest, res) => {
   } catch (error) {
     console.error('Pin chat error:', error);
     res.status(500).json({ error: 'Ошибка закрепления чата' });
+  }
+});
+
+// Генерация ссылки-приглашения в группу
+router.post('/:id/invite-link', async (req: AuthRequest, res) => {
+  try {
+    const chatId = String(req.params.id);
+
+    const member = await prisma.chatMember.findUnique({
+      where: { chatId_userId: { chatId, userId: req.userId! } },
+    });
+
+    if (!member || member.role !== 'admin') {
+      res.status(403).json({ error: 'Только администратор может создавать ссылку-приглашение' });
+      return;
+    }
+
+    // Генерируем уникальную ссылку
+    const inviteCode = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+    const chat = await prisma.chat.update({
+      where: { id: chatId },
+      data: { inviteLink: inviteCode },
+      include: {
+        members: { include: { user: { select: CHAT_USER_SELECT } } },
+        messages: true,
+      },
+    });
+
+    res.json({ inviteLink: inviteCode, chat });
+  } catch (error) {
+    console.error('Generate invite link error:', error);
+    res.status(500).json({ error: 'Ошибка генерации ссылки' });
+  }
+});
+
+// Присоединиться к группе по ссылке-приглашению
+router.post('/join/:inviteLink', async (req: AuthRequest, res) => {
+  try {
+    const { inviteLink } = req.params;
+
+    const chat = await prisma.chat.findUnique({
+      where: { inviteLink },
+      include: {
+        members: { include: { user: { select: CHAT_USER_SELECT } } },
+      },
+    });
+
+    if (!chat) {
+      res.status(404).json({ error: 'Неверная ссылка-приглашение' });
+      return;
+    }
+
+    // Проверяем не состоит ли пользователь уже в группе
+    const existingMember = chat.members.find(m => m.userId === req.userId);
+    if (existingMember) {
+      res.status(400).json({ error: 'Вы уже состоите в этой группе' });
+      return;
+    }
+
+    // Добавляем пользователя в группу
+    await prisma.chatMember.create({
+      data: {
+        chatId: chat.id,
+        userId: req.userId!,
+        role: 'member',
+      },
+    });
+
+    const updatedChat = await prisma.chat.findUnique({
+      where: { id: chat.id },
+      include: {
+        members: { include: { user: { select: CHAT_USER_SELECT } } },
+        messages: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+          include: {
+            sender: { select: { id: true, username: true, displayName: true } },
+            readBy: { select: { userId: true } },
+          },
+        },
+      },
+    });
+
+    res.json({ chat: updatedChat });
+  } catch (error) {
+    console.error('Join group error:', error);
+    res.status(500).json({ error: 'Ошибка присоединения к группе' });
   }
 });
 

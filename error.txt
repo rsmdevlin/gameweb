@@ -1,2 +1,44 @@
-<div id="message-7881" class="shown open Message message-list-item first-in-group allow-selection last-in-group last-in-list" data-message-id="7881"><div class="bottom-marker" data-message-id="7881" data-should-update-views="false"></div><div class="message-select-control"></div><div class="message-content-wrapper can-select-text"><div class="message-content peer-color-6 no-text media has-reactions has-outside-reactions has-shadow has-appendix no-footer has-appendix-thumb" dir="auto" style="width: 347px; --appendix-bg: rgba(207,218,238,255);" data-has-custom-appendix=""><div class="content-inner" dir="auto"><div class="media-inner interactive" style="height: 260px;"><img src="blob:https://ton.org/90ab0a26-1b78-4a99-ad18-21d410ea5b16" class="full-media" alt="" draggable="true"><canvas class="thumbnail opacity-transition slow not-open not-shown" width="40" height="30"></canvas></div></div><span class="MessageMeta" dir="ltr" data-ignore-on-paste="true"><span class="message-time">17:00</span></span><div class="message-action-buttons"></div><svg width="9" height="20" class="svg-appendix"><defs><filter x="-50%" y="-14.7%" width="200%" height="141.2%" filterUnits="objectBoundingBox" id="messageAppendix"><feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.0621962482 0 0 0 0 0.138574144 0 0 0 0 0.185037364 0 0 0 0.15 0" in="shadowBlurOuter1"></feColorMatrix></filter></defs><g fill="none" fill-rule="evenodd"><path d="M3 17h6V0c-.193 2.84-.876 5.767-2.05 8.782-.904 2.325-2.446 4.485-4.625 6.48A1 1 0 003 17z" fill="#000" filter="url(#messageAppendix)"></path><path d="M3 17h6V0c-.193 2.84-.876 5.767-2.05 8.782-.904 2.325-2.446 4.485-4.625 6.48A1 1 0 003 17z" fill="FFF" class="corner"></path></g></svg><div class="quick-reaction"><img class="ReactionStaticEmoji opacity-transition slow open shown" src="blob:https://ton.org/e4815faa-d8dd-495d-a93f-90d2fa1836ad" alt="Red Heart" draggable="false" style="width: 28px; height: 28px;"></div></div><div class="Reactions is-outside" dir="ltr" style="max-width: 383px;"><button type="button" class="Button gXO57D98 message-reaction tiny primary"><div class="O9uCTt5C lFjoRm_p"><img class="ReactionStaticEmoji opacity-transition slow open shown opacity-transition fast open shown" src="blob:https://ton.org/e4815faa-d8dd-495d-a93f-90d2fa1836ad" alt="Red Heart" draggable="false" style="width: 20px; height: 20px;"></div><div class="kXs18Nmi" dir="ltr" style="--_size: 24px;"><div class="Avatar XND8fhC1 peer-color-6" data-peer-id="6091955295" style="--_size: 24px;"><div class="inner"><img src="blob:https://ton.org/e9892c4a-41ff-437f-91c6-45d6999141a4" class="Avatar__media avatar-media opacity-transition slow open shown" alt="Marf" decoding="async" draggable="false"></div></div></div></button></div></div></div>
-<div class="Reactions is-outside" dir="ltr" style="max-width: 383px;"><button type="button" class="Button gXO57D98 message-reaction tiny primary"><div class="O9uCTt5C lFjoRm_p"><img class="ReactionStaticEmoji opacity-transition slow open shown opacity-transition fast open shown" src="blob:https://ton.org/e4815faa-d8dd-495d-a93f-90d2fa1836ad" alt="Red Heart" draggable="false" style="width: 20px; height: 20px;"></div><div class="kXs18Nmi" dir="ltr" style="--_size: 24px;"><div class="Avatar XND8fhC1 peer-color-6" data-peer-id="6091955295" style="--_size: 24px;"><div class="inner"><img src="blob:https://ton.org/e9892c4a-41ff-437f-91c6-45d6999141a4" class="Avatar__media avatar-media opacity-transition slow open shown" alt="Marf" decoding="async" draggable="false"></div></div></div></button></div>
+==> Downloading cache...
+==> Cloning from https://github.com/rsmdevlin/gameweb
+==> Checking out commit 5f01998dfa393b728d83b697c6e0f076464808a8 in branch master
+==> Downloaded 294MB in 2s. Extraction took 4s.
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'npm install && npm run build'...
+up to date, audited 273 packages in 2s
+43 packages are looking for funding
+  run `npm fund` for details
+24 vulnerabilities (3 low, 4 moderate, 17 high)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> build
+> npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma && npx prisma db push --schema=./apps/server/prisma/schema.prisma --skip-generate
+> @vortex/server@1.0.0 build
+> tsc
+> @vortex/web@1.0.0 build
+> tsc -b && vite build
+vite v6.4.1 building for production...
+transforming...
+✓ 2890 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.79 kB │ gzip:   0.43 kB
+dist/assets/index-B4QXlvCC.css    119.77 kB │ gzip:  16.85 kB
+dist/assets/index-Btkdk73n.js   1,262.78 kB │ gzip: 321.32 kB
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.33s
+Prisma schema loaded from apps/server/prisma/schema.prisma
+✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 87ms
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+Prisma schema loaded from apps/server/prisma/schema.prisma
+Datasource "db": MySQL database "gs348298" at "80.242.59.112:3306"
+⚠️  There might be data loss when applying the changes:
+  • A unique constraint covering the columns `[inviteLink]` on the table `Chat` will be added. If there are existing duplicate values, this will fail.
+Error: Use the --accept-data-loss flag to ignore the data loss warnings like prisma db push --accept-data-loss
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
