@@ -920,82 +920,38 @@ export default function ChatView({
 
                 // Рендер группы сообщений с floating avatar
                 const isMine = group.senderId === user?.id;
-                const firstMsg = group.messages[0];
-                const sender = firstMsg?.sender;
-                const senderAvatar = sender?.avatar;
-                const senderName = sender?.displayName || sender?.username || 'Unknown';
-
-                // Цвет для аватарки без фото
-                const getUserColor = (userId: string) => {
-                  const colors = [
-                    'from-red-500 to-pink-600',
-                    'from-orange-500 to-amber-600',
-                    'from-yellow-500 to-orange-600',
-                    'from-green-500 to-emerald-600',
-                    'from-teal-500 to-cyan-600',
-                    'from-blue-500 to-indigo-600',
-                    'from-purple-500 to-violet-600',
-                    'from-pink-500 to-rose-600',
-                    'from-indigo-500 to-purple-600',
-                  ];
-                  let hash = 0;
-                  for (let i = 0; i < userId.length; i++) {
-                    hash = userId.charCodeAt(i) + ((hash << 5) - hash);
-                  }
-                  const index = Math.abs(hash) % colors.length;
-                  return colors[index];
-                };
 
                 return (
-                  <div key={`group-${groupIndex}-${group.senderId}`} className="relative flex">
-                    {/* Floating avatar для всей группы */}
-                    {!isMine && (
-                      <div className="w-8 flex-shrink-0 mr-2">
-                        <div className="sticky top-0 z-20">
-                          <button onClick={() => setProfileUserId(group.senderId)} className="block">
-                            {senderAvatar ? (
-                              <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/media/${senderAvatar}`} alt="" className="w-8 h-8 rounded-full object-cover shadow-lg ring-2 ring-vortex-500/20" />
-                            ) : (
-                              <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${getUserColor(group.senderId)} flex items-center justify-center text-white text-xs font-semibold shadow-lg ring-2 ring-vortex-500/20`}>
-                                {senderName[0]?.toUpperCase() || '?'}
-                              </div>
-                            )}
-                          </button>
+                  <div key={`group-${groupIndex}-${group.senderId}`} className="relative">
+                    {group.messages.map((msg, msgIndex) => {
+                      const isGroupStart = msgIndex === 0;
+                      const isGroupEnd = msgIndex === group.messages.length - 1;
+                      const showAvatar = isGroupStart;
+
+                      return (
+                        <div
+                          key={msg.id}
+                          id={`msg-${msg.id}`}
+                          data-message-id={msg.id}
+                          data-sender-id={msg.senderId}
+                          className="transition-colors duration-500"
+                        >
+                          <MessageBubble
+                            message={msg}
+                            isMine={isMine}
+                            showAvatar={showAvatar}
+                            isGroupStart={isGroupStart}
+                            isGroupEnd={isGroupEnd}
+                            onViewProfile={(userId) => setProfileUserId(userId)}
+                            selectionMode={selectionMode}
+                            isSelected={selectedMessages.has(msg.id)}
+                            onToggleSelect={handleToggleSelect}
+                            onStartSelectionMode={handleStartSelection}
+                            onPlayAudio={handlePlayAudio}
+                          />
                         </div>
-                      </div>
-                    )}
-
-                    {/* Колонка сообщений */}
-                    <div className="flex-1">
-                      {group.messages.map((msg, msgIndex) => {
-                        const isGroupStart = msgIndex === 0;
-                        const isGroupEnd = msgIndex === group.messages.length - 1;
-
-                        return (
-                          <div
-                            key={msg.id}
-                            id={`msg-${msg.id}`}
-                            data-message-id={msg.id}
-                            data-sender-id={msg.senderId}
-                            className="transition-colors duration-500"
-                          >
-                            <MessageBubble
-                              message={msg}
-                              isMine={isMine}
-                              showAvatar={false}
-                              isGroupStart={isGroupStart}
-                              isGroupEnd={isGroupEnd}
-                              onViewProfile={(userId) => setProfileUserId(userId)}
-                              selectionMode={selectionMode}
-                              isSelected={selectedMessages.has(msg.id)}
-                              onToggleSelect={handleToggleSelect}
-                              onStartSelectionMode={handleStartSelection}
-                              onPlayAudio={handlePlayAudio}
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
+                      );
+                    })}
                   </div>
                 );
               });
