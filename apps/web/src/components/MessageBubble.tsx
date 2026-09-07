@@ -29,6 +29,7 @@ import { useLongPress } from '../hooks/useLongPress';
 import type { Message, MediaItem, Reaction, ChatMember } from '../lib/types';
 import ImageLightbox from './ImageLightbox';
 import ReactionDetailsModal from './ReactionDetailsModal';
+import ReactionButton from './ReactionButton';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -675,70 +676,61 @@ function MessageBubble({
               </div>
             )}
 
-            {/* Время для медиа без текста */}
+            {/* Время для медиа без текста + реакции */}
             {!message.content && (hasImage || hasVideo) && (
               <div className={`flex justify-end px-3 py-1 ${hasImage ? '-mt-8 relative z-10' : ''}`}>
-                <span className="text-[10px] text-white/70 bg-black/40 px-2 py-0.5 rounded-full flex items-center gap-1 backdrop-blur-sm">
-                  {timeStr}
-                  {isMine && (
-                    isRead ? (
-                      <CheckCheck size={13} className="text-sky-300" />
-                    ) : (
-                      <Check size={13} />
-                    )
+                <div className="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm">
+                  {/* Реакции */}
+                  {Object.keys(reactionGroups).length > 0 && (
+                    <>
+                      {Object.entries(reactionGroups).map(([emoji, data]) => (
+                        <ReactionButton
+                          key={emoji}
+                          emoji={emoji}
+                          count={data.count}
+                          isMine={data.isMine}
+                          users={data.users}
+                          onReact={handleReaction}
+                          onShowDetails={(e, u) => setReactionDetails({ emoji: e, users: u })}
+                        />
+                      ))}
+                      <div className="w-px h-3 bg-white/20" />
+                    </>
                   )}
-                </span>
+                  {/* Время и прочтение */}
+                  <span className="text-[10px] text-white/70 flex items-center gap-1">
+                    {timeStr}
+                    {isMine && (
+                      isRead ? (
+                        <CheckCheck size={11} className="text-sky-300" />
+                      ) : (
+                        <Check size={11} />
+                      )
+                    )}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Реакции для текстовых сообщений */}
+            {message.content && Object.keys(reactionGroups).length > 0 && (
+              <div className="flex justify-end mt-1">
+                <div className="flex items-center gap-1.5 bg-surface-tertiary/50 px-2 py-0.5 rounded-full">
+                  {Object.entries(reactionGroups).map(([emoji, data]) => (
+                    <ReactionButton
+                      key={emoji}
+                      emoji={emoji}
+                      count={data.count}
+                      isMine={data.isMine}
+                      users={data.users}
+                      onReact={handleReaction}
+                      onShowDetails={(e, u) => setReactionDetails({ emoji: e, users: u })}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </div>
-
-          {/* Реакции - в стиле медиа */}
-          {Object.keys(reactionGroups).length > 0 && (
-            <div className={`flex justify-end px-3 py-1 ${hasImage || hasVideo ? '-mt-6 relative z-10' : 'mt-1'}`}>
-              <div className="flex flex-wrap gap-1.5 bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm">
-                {Object.entries(reactionGroups).map(([emoji, data]) => (
-                  <button
-                    key={emoji}
-                    onClick={() => handleReaction(emoji)}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setReactionDetails({ emoji, users: data.users });
-                    }}
-                    {...useLongPress({
-                      onLongPress: () => {
-                        setReactionDetails({ emoji, users: data.users });
-                      },
-                      delay: 500,
-                      moveThreshold: 10,
-                    })}
-                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs transition-all ${
-                      data.isMine
-                        ? 'bg-vortex-500/40 border border-vortex-500/60'
-                        : 'bg-white/10 border border-white/20 hover:bg-white/20'
-                    }`}
-                    title={data.users.map(u => u.displayName || u.username).join(', ')}
-                  >
-                    <span>{emoji}</span>
-                    {data.count > 1 && (
-                      <span className="text-white/80 text-[10px] font-medium">{data.count}</span>
-                    )}
-                  </button>
-                ))}
-                {/* Время и прочтение рядом с реакциями */}
-                <span className="text-[10px] text-white/70 flex items-center gap-1 px-1">
-                  {timeStr}
-                  {isMine && (
-                    isRead ? (
-                      <CheckCheck size={11} className="text-sky-300" />
-                    ) : (
-                      <Check size={11} />
-                    )
-                  )}
-                </span>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Аватар (свои) */}

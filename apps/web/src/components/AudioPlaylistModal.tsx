@@ -101,10 +101,10 @@ export default function AudioPlaylistModal({ onClose, onContextMenu }: AudioPlay
       dragElastic={{ top: 0, bottom: 0.5 }}
       onDragEnd={handleDragEnd}
       initial={{ y: '100%' }}
-      animate={{ y: '50%' }}
+      animate={{ y: 0 }}
       exit={{ y: '100%' }}
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-      className="fixed inset-0 z-50 pointer-events-none flex items-end"
+      className="fixed inset-0 z-50 flex items-end pointer-events-none"
     >
       <div className="w-full max-w-2xl mx-auto h-1/2 bg-surface rounded-t-3xl shadow-2xl border-t border-l border-r border-border flex flex-col pointer-events-auto">
         {/* Drag handle */}

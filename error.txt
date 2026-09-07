@@ -1,30 +1,11 @@
-==> Downloading cache...
-==> Cloning from https://github.com/rsmdevlin/gameweb
-==> Checking out commit 702f4a3ee753dd0087c153087530b44e192e1e58 in branch master
-==> Downloaded 293MB in 2s. Extraction took 5s.
-==> Using Node.js version 24.14.1 (default)
-==> Docs on specifying a Node.js version: https://render.com/docs/node-version
-==> Running build command 'npm install && npm run build'...
-up to date, audited 273 packages in 2s
-43 packages are looking for funding
-  run `npm fund` for details
-24 vulnerabilities (3 low, 4 moderate, 17 high)
-To address all issues, run:
-  npm audit fix
-Run `npm audit` for details.
-> build
-> npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma && npx prisma db push --schema=./apps/server/prisma/schema.prisma --skip-generate
-> @vortex/server@1.0.0 build
-> tsc
-> @vortex/web@1.0.0 build
-> tsc -b && vite build
-src/components/MessageBubble.tsx(353,23): error TS2339: Property 'avatar' does not exist on type '{ id: string; username: string; displayName: string; }'.
-npm error Lifecycle script `build` failed with error:
-npm error code 1
-npm error path /opt/render/project/src/apps/web
-npm error workspace @vortex/web@1.0.0
-npm error location /opt/render/project/src/apps/web
-npm error command failed
-npm error command sh -c tsc -b && vite build
-==> Build failed 😞
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+Uncaught Error: Minified React error #300; visit https://react.dev/errors/300 for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at h0 (index-C8W62cti.js:48:48384)
+    at Ac (index-C8W62cti.js:48:48273)
+    at Qc (index-C8W62cti.js:48:71064)
+    at ov (index-C8W62cti.js:48:68466)
+    at pv (index-C8W62cti.js:48:83878)
+    at Yv (index-C8W62cti.js:48:117235)
+    at Mx (index-C8W62cti.js:48:116279)
+    at bu (index-C8W62cti.js:48:116109)
+    at Uv (index-C8W62cti.js:48:112892)
+    at og (index-C8W62cti.js:48:124838)
