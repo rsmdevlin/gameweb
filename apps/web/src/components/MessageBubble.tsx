@@ -557,7 +557,7 @@ function MessageBubble({
 
             {/* Изображения */}
             {hasImage && (
-              <div className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''} ${!message.content ? 'rounded-[1.25rem]' : ''} bg-black/40 overflow-hidden relative`}>
+              <div className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''} ${!message.content ? 'rounded-[1.25rem]' : ''} bg-black/40 overflow-hidden`}>
                 {media
                   .filter((m) => m.type === 'image')
                   .map((m) => {
@@ -572,100 +572,86 @@ function MessageBubble({
                       />
                     );
                   })}
-
-                {/* Реакции для медиа */}
-                {!message.content && <ReactionsBlock />}
               </div>
             )}
 
             {/* Видео */}
-            {hasVideo && (
-              <div className="relative">
-                {media
-                  .filter((m) => m.type === 'video')
-                  .map((m) => {
-                    const videoUrl = getMediaUrl(m.url);
-                    return (
-                      <div key={m.id} className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''}`}>
-                        <video
-                          src={videoUrl}
-                          controls
-                          className="max-w-full max-h-80 rounded-lg"
-                        />
-                      </div>
-                    );
-                  })}
-
-                {/* Реакции для видео */}
-                {!message.content && <ReactionsBlock />}
-              </div>
-            )}
+            {hasVideo &&
+              media
+                .filter((m) => m.type === 'video')
+                .map((m) => {
+                  const videoUrl = getMediaUrl(m.url);
+                  return (
+                    <div key={m.id} className={`${message.content ? 'mb-2 -mx-3 -mt-2' : ''}`}>
+                      <video
+                        src={videoUrl}
+                        controls
+                        className="max-w-full max-h-80 rounded-lg"
+                      />
+                    </div>
+                  );
+                })}
 
             {/* Голосовое */}
             {hasVoice && (() => {
               const voiceMedia = media.find((m) => m.type === 'voice');
               const voiceUrl = getMediaUrl(voiceMedia?.url);
               return (
-                <div>
-                  <div className="flex items-center gap-3 min-w-[200px]">
-                    <audio
-                      ref={audioRef}
-                      src={voiceUrl}
-                      preload="auto"
-                      onError={(e) => console.error('Audio load error:', e)}
-                    />
-                    <button
-                      onClick={toggleAudio}
-                      className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
-                        } transition-colors`}
+                <div className="flex items-center gap-3 min-w-[200px]">
+                  <audio
+                    ref={audioRef}
+                    src={voiceUrl}
+                    preload="auto"
+                    onError={(e) => console.error('Audio load error:', e)}
+                  />
+                  <button
+                    onClick={toggleAudio}
+                    className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
+                      } transition-colors`}
+                  >
+                    {isPlaying ? (
+                      <Pause size={16} className={isMine ? 'text-white' : 'text-vortex-400'} />
+                    ) : (
+                      <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
+                    )}
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    {/* Waveform visualization */}
+                    <div
+                      className="flex items-end gap-[2px] h-6 cursor-pointer"
+                      onClick={(e) => {
+                        const audio = audioRef.current;
+                        if (!audio || !audio.duration) return;
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const pct = (e.clientX - rect.left) / rect.width;
+                        audio.currentTime = pct * audio.duration;
+                        setAudioProgress(pct * 100);
+                        if (!isPlaying) toggleAudio();
+                      }}
                     >
-                      {isPlaying ? (
-                        <Pause size={16} className={isMine ? 'text-white' : 'text-vortex-400'} />
-                      ) : (
-                        <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
-                      )}
-                    </button>
-                    <div className="flex-1 min-w-0">
-                      {/* Waveform visualization */}
-                      <div
-                        className="flex items-end gap-[2px] h-6 cursor-pointer"
-                        onClick={(e) => {
-                          const audio = audioRef.current;
-                          if (!audio || !audio.duration) return;
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          const pct = (e.clientX - rect.left) / rect.width;
-                          audio.currentTime = pct * audio.duration;
-                          setAudioProgress(pct * 100);
-                          if (!isPlaying) toggleAudio();
-                        }}
-                      >
-                        {(waveformBars || Array(28).fill(0.5)).map((val, i) => {
-                          const barHeight = Math.max(10, val * 100);
-                          const progress = audioProgress / 100;
-                          const barProgress = i / 28;
-                          const isActive = barProgress < progress;
-                          return (
-                            <div
-                              key={i}
-                              className={`flex-1 rounded-full transition-colors duration-150 ${isActive
-                                ? isMine ? 'bg-white/80' : 'bg-vortex-400'
-                                : isMine ? 'bg-white/20' : 'bg-white/10'
-                                }`}
-                              style={{ height: `${barHeight}%` }}
-                            />
-                          );
-                        })}
-                      </div>
-                      <span className={`text-xs mt-0.5 block ${isMine ? 'text-white/60' : 'text-zinc-500'}`}>
-                        {isPlaying
-                          ? formatDuration(audioRef.current?.currentTime || 0)
-                          : formatDuration(audioDuration || voiceMedia?.duration || 0)}
-                      </span>
+                      {(waveformBars || Array(28).fill(0.5)).map((val, i) => {
+                        const barHeight = Math.max(10, val * 100);
+                        const progress = audioProgress / 100;
+                        const barProgress = i / 28;
+                        const isActive = barProgress < progress;
+                        return (
+                          <div
+                            key={i}
+                            className={`flex-1 rounded-full transition-colors duration-150 ${isActive
+                              ? isMine ? 'bg-white/80' : 'bg-vortex-400'
+                              : isMine ? 'bg-white/20' : 'bg-white/10'
+                              }`}
+                            style={{ height: `${barHeight}%` }}
+                          />
+                        );
+                      })}
                     </div>
+                    <span className={`text-xs mt-0.5 block ${isMine ? 'text-white/60' : 'text-zinc-500'}`}>
+                      {isPlaying
+                        ? formatDuration(audioRef.current?.currentTime || 0)
+                        : formatDuration(audioDuration || voiceMedia?.duration || 0)}
+                    </span>
                   </div>
-
-                  {/* Реакции для голосовых */}
-                  <ReactionsBlock />
                 </div>
               );
             })()}
@@ -674,52 +660,47 @@ function MessageBubble({
             {hasAudio && (() => {
               const audioMedia = media.find((m) => m.type === 'audio');
               return (
-                <div>
-                  <div className="min-w-[220px]">
-                    {audioMedia?.filename && (
-                      <div className="flex items-center gap-2 mb-2">
-                        <Volume2 size={14} className={isMine ? 'text-white/60' : 'text-vortex-400'} />
-                        <span className={`text-xs truncate ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>{audioMedia.filename}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onPlayAudio?.(message.id);
-                        }}
-                        className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
-                          } transition-colors`}
-                      >
-                        <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
-                      </button>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>
-                            {audioMedia?.duration ? formatDuration(audioMedia.duration) : '--:--'}
-                          </span>
-                        </div>
-                      </div>
+                <div className="min-w-[220px]">
+                  {audioMedia?.filename && (
+                    <div className="flex items-center gap-2 mb-2">
+                      <Volume2 size={14} className={isMine ? 'text-white/60' : 'text-vortex-400'} />
+                      <span className={`text-xs truncate ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>{audioMedia.filename}</span>
                     </div>
-                    {/* Время и прочтение для аудио */}
-                    <div className="flex justify-end mt-1">
-                      <span className={`text-[10px] flex items-center gap-0.5 ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
-                        {message.isEdited && <span>{t('edited')}</span>}
-                        {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
-                        {timeStr}
-                        {isMine && !message.scheduledAt && (
-                          isRead ? (
-                            <CheckCheck size={13} className="text-sky-300 ml-0.5" />
-                          ) : (
-                            <Check size={13} className="ml-0.5" />
-                          )
-                        )}
-                      </span>
+                  )}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPlayAudio?.(message.id);
+                      }}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
+                        } transition-colors`}
+                    >
+                      <Play size={16} className={`${isMine ? 'text-white' : 'text-vortex-400'} ml-0.5`} />
+                    </button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>
+                          {audioMedia?.duration ? formatDuration(audioMedia.duration) : '--:--'}
+                        </span>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Реакции для аудио */}
-                  <ReactionsBlock />
+                  {/* Время и прочтение для аудио */}
+                  <div className="flex justify-end mt-1">
+                    <span className={`text-[10px] flex items-center gap-0.5 ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
+                      {message.isEdited && <span>{t('edited')}</span>}
+                      {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
+                      {timeStr}
+                      {isMine && !message.scheduledAt && (
+                        isRead ? (
+                          <CheckCheck size={13} className="text-sky-300 ml-0.5" />
+                        ) : (
+                          <Check size={13} className="ml-0.5" />
+                        )
+                      )}
+                    </span>
+                  </div>
                 </div>
               );
             })()}
@@ -795,6 +776,12 @@ function MessageBubble({
             )}
           </div>
 
+          {/* Реакции снаружи для медиа без текста (как в Telegram) */}
+          {!message.content && (hasImage || hasVideo || hasVoice || hasAudio) && Object.keys(reactionGroups).length > 0 && (
+            <div className="mt-1">
+              <ReactionsBlock />
+            </div>
+          )}
         </div>
 
         {/* Аватар (свои) */}
