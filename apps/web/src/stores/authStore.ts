@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { api } from '../lib/api';
 import { connectSocket, disconnectSocket } from '../lib/socket';
+import { useAccountStore } from './accountStore';
 import type { User } from '../lib/types';
 
 interface AuthState {
@@ -29,6 +30,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       api.setToken(token);
       connectSocket(token);
       set({ token, user, isLoading: false });
+
+      // Добавляем аккаунт в список мультиаккаунтов
+      const accountStore = useAccountStore.getState();
+      accountStore.addAccount({
+        id: user.id,
+        token,
+        username: user.username,
+        displayName: user.displayName,
+        avatar: user.avatar,
+        lastActive: new Date().toISOString(),
+      });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       set({ error: msg, isLoading: false });
@@ -44,6 +56,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       api.setToken(token);
       connectSocket(token);
       set({ token, user, isLoading: false });
+
+      // Добавляем аккаунт в список мультиаккаунтов
+      const accountStore = useAccountStore.getState();
+      accountStore.addAccount({
+        id: user.id,
+        token,
+        username: user.username,
+        displayName: user.displayName,
+        avatar: user.avatar,
+        lastActive: new Date().toISOString(),
+      });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       set({ error: msg, isLoading: false });

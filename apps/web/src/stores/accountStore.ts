@@ -64,7 +64,23 @@ export const useAccountStore = create<AccountStore>()(
       },
 
       switchAccount: (accountId) => {
+        const state = get();
+        const account = state.accounts.find((a) => a.id === accountId);
+        if (!account) return;
+
+        // Сохраняем выбранный аккаунт
         set({ currentAccountId: accountId });
+
+        // Обновляем токен в localStorage
+        localStorage.setItem('vortex_token', account.token);
+
+        // Обновляем lastActive
+        set((state) => ({
+          accounts: state.accounts.map((a) =>
+            a.id === accountId ? { ...a, lastActive: new Date().toISOString() } : a
+          ),
+        }));
+
         // Reload page to reinitialize with new token
         window.location.reload();
       },
