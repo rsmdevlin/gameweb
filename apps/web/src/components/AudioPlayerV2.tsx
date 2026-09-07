@@ -32,7 +32,7 @@ export default function AudioPlayerV2({
 }: AudioPlayerV2Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true); // Autoplay on mount
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
@@ -47,13 +47,18 @@ export default function AudioPlayerV2({
     const audio = audioRef.current;
     if (!audio || !currentTrack) return;
 
+    console.log('[AudioPlayerV2] Loading track:', currentTrack.url);
     audio.src = currentTrack.url;
     audio.playbackRate = playbackRate;
+    audio.load(); // Force load
 
     if (isPlaying) {
-      audio.play().catch(() => setIsPlaying(false));
+      audio.play().catch((err) => {
+        console.error('[AudioPlayerV2] Play failed:', err);
+        setIsPlaying(false);
+      });
     }
-  }, [currentIndex, currentTrack]);
+  }, [currentIndex, currentTrack, playbackRate]);
 
   // Update current time
   useEffect(() => {
@@ -68,6 +73,7 @@ export default function AudioPlayerV2({
 
     const updateDuration = () => {
       setDuration(audio.duration);
+      console.log('[AudioPlayerV2] Duration loaded:', audio.duration);
     };
 
     const handleEnded = () => {
@@ -80,14 +86,27 @@ export default function AudioPlayerV2({
       }
     };
 
+    const handleError = (e: Event) => {
+      console.error('[AudioPlayerV2] Audio error:', e);
+      setIsPlaying(false);
+    };
+
+    const handleCanPlay = () => {
+      console.log('[AudioPlayerV2] Can play');
+    };
+
     audio.addEventListener('timeupdate', updateTime);
     audio.addEventListener('loadedmetadata', updateDuration);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+    audio.addEventListener('canplay', handleCanPlay);
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime);
       audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('canplay', handleCanPlay);
     };
   }, [currentIndex, playlist.length, isDragging]);
 

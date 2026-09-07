@@ -580,7 +580,7 @@ function MessageBubble({
                       <span className={`text-xs truncate ${isMine ? 'text-white/70' : 'text-zinc-400'}`}>{audioMedia.filename}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 mb-1">
                     <button
                       onClick={() => onPlayAudio?.(message.id)}
                       className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isMine ? 'bg-white/20 hover:bg-white/30' : 'bg-vortex-500/20 hover:bg-vortex-500/30'
@@ -595,6 +595,21 @@ function MessageBubble({
                         </span>
                       </div>
                     </div>
+                  </div>
+                  {/* Время и прочтение для аудио */}
+                  <div className="flex justify-end">
+                    <span className={`text-[10px] flex items-center gap-0.5 ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
+                      {message.isEdited && <span>{t('edited')}</span>}
+                      {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
+                      {timeStr}
+                      {isMine && !message.scheduledAt && (
+                        isRead ? (
+                          <CheckCheck size={13} className="text-sky-300 ml-0.5" />
+                        ) : (
+                          <Check size={13} className="ml-0.5" />
+                        )
+                      )}
+                    </span>
                   </div>
                 </div>
               );
