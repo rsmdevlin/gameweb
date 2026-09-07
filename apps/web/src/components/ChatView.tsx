@@ -237,8 +237,6 @@ export default function ChatView({
 
     return () => observer.disconnect();
   }, [activeChat, user?.id, chatMessages.length]);
-    sentReadIdsRef.current.clear();
-  }, [activeChat, user?.id]);
 
   useEffect(() => {
     if (!activeChat || !user?.id) return;

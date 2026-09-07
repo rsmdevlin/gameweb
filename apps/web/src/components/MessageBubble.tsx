@@ -409,9 +409,9 @@ function MessageBubble({
           </div>
         )}
 
-        {/* Аватар (чужие) */}
+        {/* Аватар (чужие) - sticky */}
         {!isMine && (
-          <div className="w-8 flex-shrink-0 mr-2 self-end">
+          <div className="w-8 flex-shrink-0 mr-2 self-end sticky top-2">
             {showAvatar ? (
               <button onClick={() => onViewProfile?.(message.senderId)}>
                 {senderAvatar ? (
@@ -422,7 +422,7 @@ function MessageBubble({
                   </div>
                 )}
               </button>
-            ) : null}
+            ) : <div className="w-8 h-8" />}
           </div>
         )}
 
