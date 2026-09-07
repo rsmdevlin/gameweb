@@ -855,54 +855,38 @@ export default function ChatView({
           </div>
         ) : chatMessages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <div className="max-w-md w-full mx-4">
-              <div className="relative rounded-3xl p-8 text-center overflow-hidden">
-                {/* Multi-layer blur background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-surface-secondary/80 via-surface-secondary/60 to-surface-tertiary/80 backdrop-blur-2xl rounded-3xl" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-vortex-500/10 via-transparent to-purple-500/10 rounded-3xl" />
-                <div className="absolute inset-0 border border-white/20 rounded-3xl" />
+            <div className="max-w-sm w-full mx-4">
+              <div className="text-center">
+                {/* Random animated emoji */}
+                {(() => {
+                  const emojis = [
+                    { component: <AnimatedWaveEmoji size={140} />, text: '👋' },
+                    { component: <AnimatedSmileEmoji size={140} />, text: '😊' },
+                  ];
+                  const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
-                {/* Content */}
-                <div className="relative z-10">
-                  <div className="mb-6">
-                    <h3 className="text-lg font-bold text-white mb-2 drop-shadow-lg">Сообщений пока нет...</h3>
-                    <p className="text-sm text-zinc-300 drop-shadow">Отправьте сообщение или нажмите на приветствие ниже.</p>
-                  </div>
-
-                  <div className="flex items-center justify-center gap-6 mt-6">
+                  return (
                     <button
                       onClick={() => {
                         const socket = getSocket();
                         if (socket && activeChat) {
                           socket.emit('send_message', {
                             chatId: activeChat,
-                            content: '👋',
+                            content: randomEmoji.text,
                             type: 'text',
                           });
                         }
                       }}
-                      className="group relative w-24 h-24 rounded-2xl bg-gradient-to-br from-vortex-500/40 to-purple-600/40 backdrop-blur-md hover:from-vortex-500/60 hover:to-purple-600/60 border-2 border-vortex-400/50 hover:border-vortex-400/80 transition-all duration-300 flex items-center justify-center hover:scale-110 shadow-xl hover:shadow-vortex-500/50"
+                      className="group inline-flex items-center justify-center mb-8 hover:scale-105 transition-transform duration-300"
                     >
-                      <AnimatedWaveEmoji size={56} />
+                      {randomEmoji.component}
                     </button>
+                  );
+                })()}
 
-                    <button
-                      onClick={() => {
-                        const socket = getSocket();
-                        if (socket && activeChat) {
-                          socket.emit('send_message', {
-                            chatId: activeChat,
-                            content: '😊',
-                            type: 'text',
-                          });
-                        }
-                      }}
-                      className="group relative w-24 h-24 rounded-2xl bg-gradient-to-br from-amber-500/40 to-orange-600/40 backdrop-blur-md hover:from-amber-500/60 hover:to-orange-600/60 border-2 border-amber-400/50 hover:border-amber-400/80 transition-all duration-300 flex items-center justify-center hover:scale-110 shadow-xl hover:shadow-amber-500/50"
-                    >
-                      <AnimatedSmileEmoji size={56} />
-                    </button>
-                  </div>
-                </div>
+                {/* Text */}
+                <h3 className="text-base font-normal text-zinc-400 mb-1">Сообщений пока нет...</h3>
+                <p className="text-sm text-zinc-500">Отправьте сообщение или нажмите на стикер выше</p>
               </div>
             </div>
           </div>
