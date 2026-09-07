@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, X, SkipBack, SkipForward, Volume2, ChevronDown, ChevronUp, MoreVertical, Bookmark, MessageSquare, Trash2 } from 'lucide-react';
-import { getMediaUrl } from '../lib/mediaUrl';
 import { useLongPress } from '../hooks/useLongPress';
 
 interface AudioTrack {
@@ -48,7 +47,7 @@ export default function AudioPlayerV2({
     const audio = audioRef.current;
     if (!audio || !currentTrack) return;
 
-    audio.src = getMediaUrl(currentTrack.url);
+    audio.src = currentTrack.url;
     audio.playbackRate = playbackRate;
 
     if (isPlaying) {

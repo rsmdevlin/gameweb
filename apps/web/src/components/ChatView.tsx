@@ -257,7 +257,7 @@ export default function ChatView({
 
     const playlist = audioMessages.map((m) => ({
       id: m.id,
-      url: m.media![0].url,
+      url: getMediaUrl(m.media![0].url),
       title: m.media![0].filename || 'Audio',
       duration: m.media![0].duration,
       messageId: m.id,
