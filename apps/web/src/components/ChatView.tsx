@@ -80,7 +80,7 @@ export default function ChatView({
   const [activeGroupCallParticipants, setActiveGroupCallParticipants] = useState<string[]>([]);
 
   // Audio player state
-  const [audioPlaylist, setAudioPlaylist] = useState<Array<{ id: string; url: string; title: string; duration?: number }>>([]);
+  const [audioPlaylist, setAudioPlaylist] = useState<Array<{ id: string; url: string; title: string; duration?: number; messageId: string; senderId?: string; canDelete?: boolean }>>([]);
   const [audioPlayerVisible, setAudioPlayerVisible] = useState(false);
   const [audioInitialIndex, setAudioInitialIndex] = useState(0);
 
@@ -262,7 +262,7 @@ export default function ChatView({
       duration: m.media![0].duration,
       messageId: m.id,
       senderId: m.senderId,
-      canDelete: m.senderId === user?.id || (chat?.type === 'group' && chatMembers.find(cm => cm.userId === user?.id)?.role === 'admin'),
+      canDelete: m.senderId === user?.id || (chat?.type === 'group' && chat?.members?.find(cm => cm.userId === user?.id)?.role === 'admin'),
     }));
 
     const initialIndex = playlist.findIndex((p) => p.id === messageId);
@@ -946,12 +946,15 @@ export default function ChatView({
             }
           }}
           onSaveToFavorites={async (messageId) => {
-            // Forward to favorites chat
+            // Forward to favorites chat via socket
+            const socket = getSocket();
             const favChat = chats.find(c => c.type === 'favorites');
-            if (favChat) {
+            if (socket && favChat) {
               try {
-                await api.forwardMessages([messageId], favChat.id);
-                // Show success notification
+                socket.emit('forward_messages', {
+                  messageIds: [messageId],
+                  targetChatId: favChat.id,
+                });
                 alert('Сохранено в Избранное');
               } catch (e) {
                 console.error('Failed to save to favorites:', e);

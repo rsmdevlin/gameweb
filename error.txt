@@ -1,27 +1,34 @@
-	
-Key Name
-Date Created
-API Key
-API Secret
-Status
- 
-Root
-Root
-
-Sep 07, 2026
-551852942354546
-
-Gh4bTjzwWoZtz9S0ecX8Ma9c6l4
-
-
-Active	
-
-Product Environment
-Cloud name
-hpqscnau
-
-Folder mode
-Dynamic folders
-
-
-Go to API Keys
+\==> Downloading cache...
+==> Cloning from https://github.com/rsmdevlin/gameweb
+==> Checking out commit 0453499bcf2eb78b8ef3385b0433f820370b604b in branch master
+==> Downloaded 293MB in 2s. Extraction took 4s.
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'npm install && npm run build'...
+up to date, audited 273 packages in 2s
+43 packages are looking for funding
+  run `npm fund` for details
+24 vulnerabilities (3 low, 4 moderate, 17 high)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> build
+> npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma && npx prisma db push --schema=./apps/server/prisma/schema.prisma --skip-generate
+> @vortex/server@1.0.0 build
+> tsc
+> @vortex/web@1.0.0 build
+> tsc -b && vite build
+src/components/ChatView.tsx(265,72): error TS2304: Cannot find name 'chatMembers'.
+src/components/ChatView.tsx(933,11): error TS2322: Type '{ id: string; url: string; title: string; duration?: number; }[]' is not assignable to type 'AudioTrack[]'.
+  Property 'messageId' is missing in type '{ id: string; url: string; title: string; duration?: number; }' but required in type 'AudioTrack'.
+src/components/ChatView.tsx(953,27): error TS2339: Property 'forwardMessages' does not exist on type 'ApiClient'.
+src/components/ChatView.tsx(969,63): error TS2339: Property 'messageId' does not exist on type '{ id: string; url: string; title: string; duration?: number; }'.
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /opt/render/project/src/apps/web
+npm error workspace @vortex/web@1.0.0
+npm error location /opt/render/project/src/apps/web
+npm error command failed
+npm error command sh -c tsc -b && vite build
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
