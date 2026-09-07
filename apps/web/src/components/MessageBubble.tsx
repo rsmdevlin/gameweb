@@ -656,23 +656,82 @@ function MessageBubble({
 
             {/* Текст */}
             {message.content && (
-              <div className="flex items-end gap-2">
-                <p className="text-sm whitespace-pre-wrap break-words flex-1 leading-relaxed">
-                  {renderFormattedText(message.content)}
-                </p>
-                <span className={`text-[10px] flex-shrink-0 flex items-center gap-0.5 self-end ${isMine ? 'text-white/50' : 'text-zinc-500'
-                  }`}>
-                  {message.isEdited && <span>{t('edited')}</span>}
-                  {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
-                  {timeStr}
-                  {isMine && !message.scheduledAt && (
-                    isRead ? (
-                      <CheckCheck size={13} className="text-sky-300 ml-0.5" />
-                    ) : (
-                      <Check size={13} className="ml-0.5" />
-                    )
-                  )}
-                </span>
+              <div className="text-content clearfix with-meta">
+                <div className="flex items-end gap-2">
+                  <p className="text-sm whitespace-pre-wrap break-words flex-1 leading-relaxed">
+                    {renderFormattedText(message.content)}
+                  </p>
+                  <span className={`text-[10px] flex-shrink-0 flex items-center gap-0.5 self-end ${isMine ? 'text-white/50' : 'text-zinc-500'}`}>
+                    {message.isEdited && <span>{t('edited')}</span>}
+                    {message.scheduledAt && <Clock size={11} className="text-amber-400 mr-0.5" />}
+                    {timeStr}
+                    {isMine && !message.scheduledAt && (
+                      isRead ? (
+                        <CheckCheck size={13} className="text-sky-300 ml-0.5" />
+                      ) : (
+                        <Check size={13} className="ml-0.5" />
+                      )
+                    )}
+                  </span>
+                </div>
+
+                {/* Реакции - отдельный блок внутри message-content */}
+                {Object.keys(reactionGroups).length > 0 && (
+                  <div className="Reactions flex items-center gap-0.5 mt-1" dir="ltr">
+                    {Object.entries(reactionGroups).map(([emoji, data]) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => handleReaction(emoji)}
+                        onContextMenu={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setReactionDetails({ emoji, users: data.users });
+                        }}
+                        className={`message-reaction flex items-center h-[30px] rounded-[1.75rem] gap-0.5 transition-all hover:scale-105 ${
+                          data.isMine
+                            ? 'bg-white/75 text-zinc-900'
+                            : 'bg-white/10 text-white hover:bg-white/20'
+                        }`}
+                        style={{ padding: '0 0.375rem 0 0.25rem' }}
+                        title={data.users.map(u => u.displayName || u.username).join(', ')}
+                      >
+                        {/* Эмодзи */}
+                        <div className="flex items-center justify-center" style={{ width: '20px', height: '20px' }}>
+                          <span className="text-[20px] leading-none">{emoji}</span>
+                        </div>
+
+                        {/* Аватарки с перекрытием */}
+                        <div className="flex items-center" style={{ marginLeft: '2px' }}>
+                          {data.users.slice(0, 3).map((u, i) => (
+                            u.avatar ? (
+                              <img
+                                key={i}
+                                src={getMediaUrl(u.avatar)}
+                                alt=""
+                                className="w-6 h-6 rounded-full object-cover border-2 border-surface"
+                                style={{ marginLeft: i > 0 ? '-8px' : '0' }}
+                              />
+                            ) : (
+                              <div
+                                key={i}
+                                className="w-6 h-6 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-semibold border-2 border-surface"
+                                style={{ marginLeft: i > 0 ? '-8px' : '0' }}
+                              >
+                                {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
+                              </div>
+                            )
+                          ))}
+                        </div>
+
+                        {/* Счетчик если больше 3 */}
+                        {data.count > 3 && (
+                          <span className="text-[10px] font-medium ml-1">+{data.count - 3}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -693,55 +752,6 @@ function MessageBubble({
             )}
           </div>
 
-          {/* Реакции - как в Telegram (справа/слева снизу сообщения) */}
-          {Object.keys(reactionGroups).length > 0 && (
-            <div className={`flex items-center gap-0.5 mt-1 ${isMine ? 'justify-start' : 'justify-end'}`}>
-              {Object.entries(reactionGroups).map(([emoji, data]) => (
-                <button
-                  key={emoji}
-                  onClick={() => handleReaction(emoji)}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setReactionDetails({ emoji, users: data.users });
-                  }}
-                  className={`relative flex items-center transition-all hover:scale-105 ${
-                    data.isMine ? 'opacity-100' : 'opacity-90 hover:opacity-100'
-                  }`}
-                  title={data.users.map(u => u.displayName || u.username).join(', ')}
-                >
-                  {/* Аватарки перекрываются */}
-                  <div className="flex -space-x-2">
-                    {data.users.slice(0, 3).map((u, i) => (
-                      u.avatar ? (
-                        <img
-                          key={i}
-                          src={getMediaUrl(u.avatar)}
-                          alt=""
-                          className="w-6 h-6 rounded-full object-cover border-2 border-surface"
-                        />
-                      ) : (
-                        <div
-                          key={i}
-                          className="w-6 h-6 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-semibold border-2 border-surface"
-                        >
-                          {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
-                        </div>
-                      )
-                    ))}
-                  </div>
-                  {/* Эмодзи поверх аватарки */}
-                  <div className="absolute -top-1 -right-1 bg-surface rounded-full w-5 h-5 flex items-center justify-center border-2 border-surface">
-                    <span className="text-xs">{emoji}</span>
-                  </div>
-                  {/* Счетчик если больше 3 */}
-                  {data.count > 3 && (
-                    <span className="ml-1 text-[10px] text-zinc-400 font-medium">+{data.count - 3}</span>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Аватар (свои) */}
