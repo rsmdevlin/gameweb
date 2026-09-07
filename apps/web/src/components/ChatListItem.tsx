@@ -200,14 +200,40 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
                 </div>
               )}
               {chat.unreadCount > 0 && !isActive && (
-                <span className="min-w-[18px] h-[18px] px-1.5 rounded-full bg-zinc-600 flex items-center justify-center text-[10px] text-white font-medium">
+                <span className="min-w-[20px] h-[20px] px-1.5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white font-semibold shadow-sm">
                   {chat.unreadCount > 99 ? '99+' : chat.unreadCount}
                 </span>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-1 min-w-0">
-            <p className={`text-xs truncate ${isTyping ? 'text-vortex-400 font-medium' : draft ? 'text-red-400' : 'text-zinc-400'}`}>
+          <div className="flex items-center gap-2 min-w-0">
+            {/* Media thumbnail preview */}
+            {!isTyping && !draft && messagePreview.type === 'image' && (
+              <div className="flex-shrink-0 w-10 h-10 rounded-md overflow-hidden bg-surface-tertiary">
+                <img
+                  src={messagePreview.url}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            {!isTyping && !draft && messagePreview.type === 'video' && (
+              <div className="flex-shrink-0 w-10 h-10 rounded-md overflow-hidden bg-surface-tertiary relative">
+                <img
+                  src={messagePreview.url}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <Video size={16} className="text-white" />
+                </div>
+              </div>
+            )}
+            {!isTyping && !draft && messagePreview.type === 'icon' && (
+              <messagePreview.icon size={14} className="flex-shrink-0 text-zinc-500" />
+            )}
+
+            <p className={`text-xs truncate flex-1 min-w-0 ${isTyping ? 'text-vortex-400 font-medium' : draft ? 'text-red-400' : 'text-zinc-400'}`}>
               {isTyping ? (
                 <>
                   {chat.type === 'group' && typingInChat[0] && (
@@ -227,7 +253,9 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
               ) : (
                 <>
                   {senderName && <span className="font-medium text-white">{senderName}: </span>}
-                  {messagePreview}
+                  {messagePreview.type === 'text' && messagePreview.content}
+                  {(messagePreview.type === 'image' || messagePreview.type === 'video') && messagePreview.text}
+                  {messagePreview.type === 'icon' && messagePreview.text}
                 </>
               )}
             </p>
