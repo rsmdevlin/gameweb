@@ -340,18 +340,52 @@ function MessageBubble({
   const hasFile = media.some((m) => m.type !== 'image' && m.type !== 'voice' && m.type !== 'video' && m.type !== 'audio');
   const hasVideo = media.some((m) => m.type === 'video');
 
-  // Группировка реакций
-  const reactionGroups: Record<string, { count: number; users: Array<{ userId: string; displayName: string; username: string; avatar?: string }>; isMine: boolean }> = {};
+  // Функция для генерации цвета фона на основе userId
+  const getUserColor = (userId: string) => {
+    const colors = [
+      'from-red-500 to-pink-600',
+      'from-orange-500 to-amber-600',
+      'from-yellow-500 to-orange-600',
+      'from-green-500 to-emerald-600',
+      'from-teal-500 to-cyan-600',
+      'from-blue-500 to-indigo-600',
+      'from-purple-500 to-violet-600',
+      'from-pink-500 to-rose-600',
+      'from-vortex-500 to-purple-600',
+    ];
+    // Хэш из userId для стабильного цвета
+    let hash = 0;
+    for (let i = 0; i < userId.length; i++) {
+      hash = userId.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % colors.length;
+    return colors[index];
+  };
+
+  // Получаем текущий чат и его members для полной инфы о юзерах
+  const currentChat = chats.find(c => c.id === message.chatId);
+  const chatMembers = currentChat?.members || [];
+
+  // Группировка реакций с полной инфой о юзерах из members
+  const reactionGroups: Record<string, { count: number; users: Array<{ userId: string; displayName: string; username: string; avatar?: string | null; colorClass: string }>; isMine: boolean }> = {};
   (message.reactions || []).forEach((r) => {
     if (!reactionGroups[r.emoji]) {
       reactionGroups[r.emoji] = { count: 0, users: [], isMine: false };
     }
     reactionGroups[r.emoji].count++;
+
+    // Ищем полную инфу о юзере в members
+    const memberInfo = chatMembers.find(m => m.userId === r.userId);
+    const userAvatar = memberInfo?.user?.avatar || r.user?.avatar || null;
+    const userDisplayName = memberInfo?.user?.displayName || r.user?.displayName || '';
+    const userUsername = memberInfo?.user?.username || r.user?.username || '';
+
     reactionGroups[r.emoji].users.push({
       userId: r.userId,
-      displayName: r.user?.displayName || '',
-      username: r.user?.username || '',
-      avatar: r.user?.avatar,
+      displayName: userDisplayName,
+      username: userUsername,
+      avatar: userAvatar,
+      colorClass: getUserColor(r.userId),
     });
     if (r.userId === user?.id) reactionGroups[r.emoji].isMine = true;
   });
@@ -416,7 +450,7 @@ function MessageBubble({
                 ) : (
                   <div
                     key={i}
-                    className="w-6 h-6 rounded-full bg-gradient-to-br from-vortex-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-semibold border-2 border-surface"
+                    className={`w-6 h-6 rounded-full bg-gradient-to-br ${u.colorClass} flex items-center justify-center text-white text-[10px] font-semibold border-2 border-surface`}
                     style={{ marginLeft: i > 0 ? '-8px' : '0' }}
                   >
                     {(u.displayName || u.username)[0]?.toUpperCase() || '?'}
