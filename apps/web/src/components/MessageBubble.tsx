@@ -226,17 +226,23 @@ function MessageBubble({
       // Убираем существующую реакцию
       socket.emit('remove_reaction', { messageId: message.id, chatId: message.chatId, emoji });
     } else {
-      // Проверяем лимит перед добавлением новой реакции
+      // Если достигнут лимит - заменяем старую реакцию на новую (для обычных пользователей)
       if (myReactions.length >= reactionLimit) {
-        // Если достигнут лимит, показываем уведомление
-        alert(isPremium
-          ? `Вы можете поставить максимум ${reactionLimit} реакции на сообщение`
-          : 'Вы можете поставить только 1 реакцию. Купите Basa Premium для 3 реакций!'
-        );
-        setShowContext(false);
-        return;
+        if (reactionLimit === 1) {
+          // Для обычных пользователей (лимит 1) - просто заменяем
+          const oldEmoji = myReactions[0].emoji;
+          socket.emit('remove_reaction', { messageId: message.id, chatId: message.chatId, emoji: oldEmoji });
+          socket.emit('add_reaction', { messageId: message.id, chatId: message.chatId, emoji });
+        } else {
+          // Для премиум (лимит 3) - показываем уведомление
+          alert(`Вы можете поставить максимум ${reactionLimit} реакции на сообщение`);
+          setShowContext(false);
+          return;
+        }
+      } else {
+        // Есть место - просто добавляем
+        socket.emit('add_reaction', { messageId: message.id, chatId: message.chatId, emoji });
       }
-      socket.emit('add_reaction', { messageId: message.id, chatId: message.chatId, emoji });
     }
     setShowContext(false);
   };
