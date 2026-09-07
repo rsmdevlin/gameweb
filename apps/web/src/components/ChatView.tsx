@@ -52,6 +52,7 @@ export default function ChatView({
   const { user } = useAuthStore();
   const { t, lang } = useLang();
   const { chatTheme } = useThemeStore();
+  const { isVisible: audioPlayerVisible } = useAudioPlayerStore();
   const {
     activeChat,
     chats,
@@ -442,7 +443,7 @@ export default function ChatView({
     <div
       ref={chatViewRef}
       onMouseMove={handleMouseMove}
-      className={`flex-1 flex flex-col h-full rounded-3xl overflow-hidden shadow-[0_0_120px_-20px_rgba(0,0,0,0.5)] border border-border/50 relative z-0 chat-theme-${chatTheme} transition-colors duration-500`}
+      className={`flex-1 flex flex-col h-full rounded-3xl overflow-hidden shadow-[0_0_120px_-20px_rgba(0,0,0,0.5)] border border-border/50 relative z-0 chat-theme-${chatTheme} transition-colors duration-500 ${audioPlayerVisible ? 'pb-20' : ''}`}
     >
       {/* Шапка чата */}
       {selectionMode ? (
