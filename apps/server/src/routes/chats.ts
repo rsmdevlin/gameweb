@@ -665,7 +665,7 @@ router.post('/:id/invite-link', async (req: AuthRequest, res) => {
 // Присоединиться к группе по ссылке-приглашению
 router.post('/join/:inviteLink', async (req: AuthRequest, res) => {
   try {
-    const { inviteLink } = req.params;
+    const inviteLink = typeof req.params.inviteLink === 'string' ? req.params.inviteLink : req.params.inviteLink[0];
 
     const chat = await prisma.chat.findUnique({
       where: { inviteLink },

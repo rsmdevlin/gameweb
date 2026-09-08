@@ -17,6 +17,16 @@ export interface User extends UserPresence {
   birthday: string | null;
   createdAt: string;
   hideStoryViews?: boolean;
+  // Appearance settings
+  appTheme?: string;
+  nightMode?: string;
+  nightStartTime?: string;
+  nightEndTime?: string;
+  textSize?: number;
+  messageRadius?: number;
+  chatTheme?: string;
+  chatWallpaper?: string | null;
+  accentColor?: string;
 }
 
 // ─── Chat types ────────────────────────────────────────────────────────

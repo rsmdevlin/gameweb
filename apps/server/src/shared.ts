@@ -19,6 +19,16 @@ export const USER_SELECT = {
   lastSeen: true,
   createdAt: true,
   hideStoryViews: true,
+  // Настройки оформления
+  appTheme: true,
+  nightMode: true,
+  nightStartTime: true,
+  nightEndTime: true,
+  textSize: true,
+  messageRadius: true,
+  chatTheme: true,
+  chatWallpaper: true,
+  accentColor: true,
 } as const;
 
 /** Compact user fields for message sender / forwarded-from */

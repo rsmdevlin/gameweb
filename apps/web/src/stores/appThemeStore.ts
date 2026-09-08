@@ -144,6 +144,15 @@ export const useAppThemeStore = create<ThemeState>()((set, get) => ({
   loadFromUser: (user) => {
     if (!user) return;
 
+    console.log('[AppTheme] Loading from user:', {
+      appTheme: user.appTheme,
+      textSize: user.textSize,
+      messageRadius: user.messageRadius,
+      chatTheme: user.chatTheme,
+      chatWallpaper: user.chatWallpaper,
+      accentColor: user.accentColor,
+    });
+
     const newState: any = {};
     if (user.appTheme) newState.appTheme = user.appTheme;
     if (user.nightMode) newState.nightMode = user.nightMode;
@@ -167,6 +176,13 @@ export const useAppThemeStore = create<ThemeState>()((set, get) => ({
     document.documentElement.style.setProperty('--text-scale', state.textSize.toString());
     document.documentElement.style.setProperty('--message-radius', `${state.messageRadius}px`);
     document.documentElement.style.setProperty('--accent-color', state.accentColor);
+
+    console.log('[AppTheme] Applied to DOM:', {
+      theme: document.documentElement.getAttribute('data-theme'),
+      textScale: document.documentElement.style.getPropertyValue('--text-scale'),
+      messageRadius: document.documentElement.style.getPropertyValue('--message-radius'),
+      accentColor: document.documentElement.style.getPropertyValue('--accent-color'),
+    });
   },
 
   syncWithAPI: async () => {
