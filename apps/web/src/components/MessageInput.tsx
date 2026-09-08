@@ -521,7 +521,14 @@ export default function MessageInput({ chatId }: MessageInputProps) {
 
   return (
     <div
-      className="z-10 px-6 pt-2 pb-6 flex-shrink-0 bg-transparent relative"
+      className="absolute left-0 right-0 bottom-0 z-50 px-6 pt-2 pb-6"
+      style={{
+        background: 'transparent',
+        backdropFilter: 'none',
+        WebkitBackdropFilter: 'none',
+        border: 'none',
+        boxShadow: 'none',
+      }}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -636,7 +643,7 @@ export default function MessageInput({ chatId }: MessageInputProps) {
 
       {/* Recording UI */}
       {isRecording ? (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 max-w-3xl mx-auto">
           <button
             onClick={cancelRecording}
             className="p-2 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
@@ -664,12 +671,56 @@ export default function MessageInput({ chatId }: MessageInputProps) {
           </button>
         </div>
       ) : (
-        <div className="flex items-end gap-1.5 bg-white/[0.04] backdrop-blur-[40px] rounded-[2rem] border border-white/[0.08] p-2 w-full max-w-3xl mx-auto transition-all duration-300 hover:bg-white/[0.06] focus-within:bg-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.3)] focus-within:shadow-[0_8px_40px_rgba(99,102,241,0.15)] focus-within:border-vortex-500/30 group">
+        <div
+          className="flex items-end gap-1.5 rounded-[24px] p-2 w-full max-w-3xl mx-auto group"
+          style={{
+            background: 'rgba(255,255,255,0.075)',
+            backdropFilter: 'blur(28px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(28px) saturate(180%)',
+            border: '1px solid rgba(255,255,255,0.14)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.28), 0 1px 0 rgba(255,255,255,0.12) inset, 0 -1px 0 rgba(255,255,255,0.04) inset',
+            transition: 'background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease',
+          }}
+          onFocus={(e) => {
+            const el = e.currentTarget;
+            el.style.background = 'rgba(255,255,255,0.095)';
+            el.style.borderColor = 'rgba(255,255,255,0.19)';
+            el.style.boxShadow = '0 12px 40px rgba(0,0,0,0.32), 0 1px 0 rgba(255,255,255,0.15) inset';
+          }}
+          onBlur={(e) => {
+            const el = e.currentTarget;
+            el.style.background = 'rgba(255,255,255,0.075)';
+            el.style.borderColor = 'rgba(255,255,255,0.14)';
+            el.style.boxShadow = '0 8px 32px rgba(0,0,0,0.28), 0 1px 0 rgba(255,255,255,0.12) inset, 0 -1px 0 rgba(255,255,255,0.04) inset';
+          }}
+        >
           {/* Attach */}
           <div className="relative mb-0.5 ml-1 flex-shrink-0 self-center">
             <button
               onClick={() => setShowAttachMenu(!showAttachMenu)}
-              className="p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors group-focus-within:text-white/70"
+              className="p-2 rounded-full transition-all"
+              style={{
+                background: 'rgba(255,255,255,0.055)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                color: 'rgba(255,255,255,0.58)',
+                transition: 'all 0.18s cubic-bezier(0.22,1,0.36,1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.11)';
+                e.currentTarget.style.transform = 'scale(1.04)';
+                e.currentTarget.style.color = 'rgba(255,255,255,0.95)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.055)';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.color = 'rgba(255,255,255,0.58)';
+              }}
+              onMouseDown={(e) => {
+                e.currentTarget.style.transform = 'scale(0.96)';
+              }}
+              onMouseUp={(e) => {
+                e.currentTarget.style.transform = 'scale(1.04)';
+              }}
             >
               <Paperclip size={20} />
             </button>
@@ -781,7 +832,15 @@ export default function MessageInput({ chatId }: MessageInputProps) {
               onContextMenu={handleInputContextMenu}
               placeholder={attachment ? t('addCaption') : t('message')}
               rows={1}
-              className="w-full resize-none bg-transparent text-[16px] text-white placeholder-white/40 leading-relaxed py-2.5 px-2 border-none focus:ring-0 max-h-[150px] outline-none"
+              className="w-full resize-none text-[16px] leading-relaxed py-2.5 px-2 border-none focus:ring-0 max-h-[150px] outline-none"
+              style={{
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                boxShadow: 'none',
+                color: 'rgba(255,255,255,0.96)',
+                caretColor: '#0a84ff',
+              }}
             />
           </div>
 
@@ -789,7 +848,29 @@ export default function MessageInput({ chatId }: MessageInputProps) {
           <div className="relative mb-0.5 flex-shrink-0 self-center">
             <button
               onClick={() => setShowEmoji(!showEmoji)}
-              className="p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-2 rounded-full transition-all"
+              style={{
+                background: 'rgba(255,255,255,0.055)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                color: 'rgba(255,255,255,0.58)',
+                transition: 'all 0.18s cubic-bezier(0.22,1,0.36,1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.11)';
+                e.currentTarget.style.transform = 'scale(1.04)';
+                e.currentTarget.style.color = 'rgba(255,255,255,0.95)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.055)';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.color = 'rgba(255,255,255,0.58)';
+              }}
+              onMouseDown={(e) => {
+                e.currentTarget.style.transform = 'scale(0.96)';
+              }}
+              onMouseUp={(e) => {
+                e.currentTarget.style.transform = 'scale(1.04)';
+              }}
             >
               <Smile size={20} />
             </button>
@@ -840,7 +921,33 @@ export default function MessageInput({ chatId }: MessageInputProps) {
                     setShowSchedule(true);
                   }}
                   disabled={isSending}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-accent hover:bg-accent-hover transition-colors text-white disabled:opacity-50 shadow-md transform hover:scale-105"
+                  className="w-10 h-10 flex items-center justify-center rounded-full text-white disabled:opacity-50 transition-all"
+                  style={{
+                    background: 'rgba(10,132,255,0.82)',
+                    border: '1px solid rgba(255,255,255,0.18)',
+                    boxShadow: '0 4px 14px rgba(10,132,255,0.28), 0 1px 0 rgba(255,255,255,0.22) inset',
+                    transition: 'all 0.18s cubic-bezier(0.22,1,0.36,1)',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSending) {
+                      e.currentTarget.style.background = 'rgba(10,132,255,0.95)';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(10,132,255,0.82)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                  onMouseDown={(e) => {
+                    if (!isSending) {
+                      e.currentTarget.style.transform = 'scale(0.96)';
+                    }
+                  }}
+                  onMouseUp={(e) => {
+                    if (!isSending) {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }
+                  }}
                 >
                   <Send size={16} className="translate-x-[1px] translate-y-[1px]" />
                 </button>
@@ -956,7 +1063,27 @@ export default function MessageInput({ chatId }: MessageInputProps) {
             ) : (
               <button
                 onClick={startRecording}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-all shadow-md transform hover:scale-105"
+                className="w-10 h-10 flex items-center justify-center rounded-full text-white transition-all"
+                style={{
+                  background: 'rgba(10,132,255,0.82)',
+                  border: '1px solid rgba(255,255,255,0.18)',
+                  boxShadow: '0 4px 14px rgba(10,132,255,0.28), 0 1px 0 rgba(255,255,255,0.22) inset',
+                  transition: 'all 0.18s cubic-bezier(0.22,1,0.36,1)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(10,132,255,0.95)';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(10,132,255,0.82)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+                onMouseDown={(e) => {
+                  e.currentTarget.style.transform = 'scale(0.96)';
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
               >
                 <Mic size={18} />
               </button>

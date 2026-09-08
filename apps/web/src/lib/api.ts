@@ -110,6 +110,9 @@ class ApiClient {
     nightEndTime?: string;
     textSize?: number;
     messageRadius?: number;
+    chatTheme?: string;
+    chatWallpaper?: string | null;
+    accentColor?: string;
   }) {
     return this.request<User>('/users/appearance', {
       method: 'PUT',

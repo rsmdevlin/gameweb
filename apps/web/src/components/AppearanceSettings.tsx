@@ -19,6 +19,12 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
     setTextSize,
     messageRadius,
     setMessageRadius,
+    chatTheme,
+    setChatTheme,
+    chatWallpaper,
+    setChatWallpaper,
+    accentColor,
+    setAccentColor,
   } = useAppThemeStore();
 
   const [showNightModeModal, setShowNightModeModal] = useState(false);
@@ -27,8 +33,6 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
   const [showChatThemesModal, setShowChatThemesModal] = useState(false);
   const [showWallpapersModal, setShowWallpapersModal] = useState(false);
   const [showColorsModal, setShowColorsModal] = useState(false);
-  const [selectedChatTheme, setSelectedChatTheme] = useState('classic');
-  const [selectedAccentColor, setSelectedAccentColor] = useState('#6366f1');
 
   const nightModeOptions = [
     { id: 'system', label: 'Системная', icon: Monitor, desc: 'Следовать настройкам системы' },
@@ -74,7 +78,7 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
             </div>
             <div className="flex-1 min-w-0 text-left">
               <p className="text-sm font-medium text-zinc-200">Темы для чатов</p>
-              <p className="text-xs text-zinc-500 capitalize">{selectedChatTheme}</p>
+              <p className="text-xs text-zinc-500 capitalize">{chatTheme}</p>
             </div>
           </button>
         </div>
@@ -90,7 +94,7 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
             </div>
             <div className="flex-1 min-w-0 text-left">
               <p className="text-sm font-medium text-zinc-200">Обои для чатов</p>
-              <p className="text-xs text-zinc-500">Фон чата</p>
+              <p className="text-xs text-zinc-500">{chatWallpaper ? 'Установлены' : 'Не установлены'}</p>
             </div>
           </button>
         </div>
@@ -103,7 +107,7 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
           >
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center shadow-lg"
-              style={{ backgroundColor: selectedAccentColor }}
+              style={{ backgroundColor: accentColor }}
             >
               <Sparkles size={18} className="text-white" />
             </div>
@@ -417,9 +421,12 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
               ].map((theme) => (
                 <button
                   key={theme.id}
-                  onClick={() => setSelectedChatTheme(theme.id)}
+                  onClick={() => {
+                    setChatTheme(theme.id);
+                    setShowChatThemesModal(false);
+                  }}
                   className={`relative overflow-hidden rounded-xl transition-all ${
-                    selectedChatTheme === theme.id
+                    chatTheme === theme.id
                       ? 'ring-2 ring-vortex-500 scale-[1.02]'
                       : 'hover:scale-[1.02]'
                   }`}
@@ -427,7 +434,7 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
                   <div className={`${theme.preview} h-24 w-full`} />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-3">
                     <p className="text-sm font-medium text-white">{theme.name}</p>
-                    {selectedChatTheme === theme.id && (
+                    {chatTheme === theme.id && (
                       <Check size={16} className="absolute top-2 right-2 text-vortex-400" />
                     )}
                   </div>
@@ -516,13 +523,13 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
                 ].map((color) => (
                   <button
                     key={color}
-                    onClick={() => setSelectedAccentColor(color)}
+                    onClick={() => setAccentColor(color)}
                     className={`w-10 h-10 rounded-full transition-all hover:scale-110 ${
-                      selectedAccentColor === color ? 'ring-2 ring-white ring-offset-2 ring-offset-surface-secondary' : ''
+                      accentColor === color ? 'ring-2 ring-white ring-offset-2 ring-offset-surface-secondary' : ''
                     }`}
                     style={{ backgroundColor: color }}
                   >
-                    {selectedAccentColor === color && <Check size={16} className="text-white mx-auto" />}
+                    {accentColor === color && <Check size={16} className="text-white mx-auto" />}
                   </button>
                 ))}
               </div>
@@ -530,8 +537,8 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
                 <label className="text-xs text-zinc-500 mb-2 block">Свой цвет:</label>
                 <input
                   type="color"
-                  value={selectedAccentColor}
-                  onChange={(e) => setSelectedAccentColor(e.target.value)}
+                  value={accentColor}
+                  onChange={(e) => setAccentColor(e.target.value)}
                   className="w-full h-12 rounded-lg border border-border bg-surface cursor-pointer"
                 />
               </div>
@@ -540,13 +547,13 @@ export default function AppearanceSettings({ onBack }: AppearanceSettingsProps) 
                 <div className="space-y-2">
                   <div
                     className="px-4 py-2 rounded-lg text-white text-sm font-medium"
-                    style={{ backgroundColor: selectedAccentColor }}
+                    style={{ backgroundColor: accentColor }}
                   >
                     Кнопка
                   </div>
                   <div
                     className="px-4 py-3 rounded-lg bg-surface-tertiary border"
-                    style={{ borderColor: selectedAccentColor }}
+                    style={{ borderColor: accentColor }}
                   >
                     <p className="text-sm text-white">Сообщение с акцентом</p>
                   </div>

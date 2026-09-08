@@ -247,7 +247,7 @@ router.put('/settings', async (req: AuthRequest, res) => {
 // Обновить настройки оформления
 router.put('/appearance', async (req: AuthRequest, res) => {
   try {
-    const { appTheme, nightMode, nightStartTime, nightEndTime, textSize, messageRadius } = req.body;
+    const { appTheme, nightMode, nightStartTime, nightEndTime, textSize, messageRadius, chatTheme, chatWallpaper, accentColor } = req.body;
 
     const updateData: Record<string, any> = {};
     if (appTheme && ['light', 'dark'].includes(appTheme)) updateData.appTheme = appTheme;
@@ -256,6 +256,9 @@ router.put('/appearance', async (req: AuthRequest, res) => {
     if (nightEndTime && typeof nightEndTime === 'string') updateData.nightEndTime = nightEndTime;
     if (typeof textSize === 'number' && textSize >= 0.8 && textSize <= 1.2) updateData.textSize = textSize;
     if (typeof messageRadius === 'number' && messageRadius >= 0 && messageRadius <= 24) updateData.messageRadius = messageRadius;
+    if (chatTheme && typeof chatTheme === 'string') updateData.chatTheme = chatTheme;
+    if (chatWallpaper !== undefined) updateData.chatWallpaper = chatWallpaper; // null is valid
+    if (accentColor && typeof accentColor === 'string') updateData.accentColor = accentColor;
 
     const user = await prisma.user.update({
       where: { id: req.userId },

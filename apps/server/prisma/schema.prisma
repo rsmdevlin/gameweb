@@ -31,6 +31,11 @@ model User {
   textSize         Float   @default(1.0) // 0.8 - 1.2
   messageRadius    Int     @default(16) // 0 - 24
 
+  // Темы, обои, цвета
+  chatTheme        String  @default("classic") // classic, midnight, ocean, forest, sunset, neon, aurora, cyber, glass, void
+  chatWallpaper    String? // URL обоев или null
+  accentColor      String  @default("#6366f1") // Персональный акцентный цвет
+
   messages    Message[]
   chatMembers ChatMember[]
   reactions   Reaction[]

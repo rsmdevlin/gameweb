@@ -40,7 +40,7 @@ import AudioMiniPlayer from './AudioMiniPlayer';
 import AudioPlaylistModal from './AudioPlaylistModal';
 import AnimatedWaveEmoji from './AnimatedWaveEmoji';
 import AnimatedSmileEmoji from './AnimatedSmileEmoji';
-import { useThemeStore } from '../stores/themeStore';
+import { useAppThemeStore } from '../stores/appThemeStore';
 
 export default function ChatView({
   onStartCall,
@@ -55,7 +55,7 @@ export default function ChatView({
 }) {
   const { user } = useAuthStore();
   const { t, lang } = useLang();
-  const { chatTheme } = useThemeStore();
+  const { chatTheme, chatWallpaper, accentColor } = useAppThemeStore();
   const { isVisible: audioPlayerVisible } = useAudioPlayerStore();
   const {
     activeChat,
@@ -450,6 +450,12 @@ export default function ChatView({
       ref={chatViewRef}
       onMouseMove={handleMouseMove}
       className={`flex-1 flex flex-col h-full rounded-3xl overflow-hidden shadow-[0_0_120px_-20px_rgba(0,0,0,0.5)] border border-border/50 relative z-0 chat-theme-${chatTheme} transition-colors duration-500`}
+      style={{
+        backgroundImage: chatWallpaper ? `url(${chatWallpaper})` : undefined,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
       {/* Шапка чата */}
       {selectionMode ? (
@@ -847,7 +853,7 @@ export default function ChatView({
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className={`flex-1 overflow-y-auto px-6 pt-6 pb-2 relative z-10 ${!scrollReady && !isLoadingMessages && chatMessages.length > 0 ? 'invisible' : ''}`}
+        className={`flex-1 overflow-y-auto px-6 pt-6 pb-32 relative z-10 ${!scrollReady && !isLoadingMessages && chatMessages.length > 0 ? 'invisible' : ''}`}
       >
         {isLoadingMessages ? (
           <div className="flex justify-center py-8">

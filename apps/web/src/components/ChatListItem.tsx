@@ -90,9 +90,16 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
       if (media.type === 'file') {
         return { type: 'icon', icon: FileText, text: media.filename || t('file') };
       }
+      if (media.type === 'audio') {
+        return { type: 'icon', icon: Music, text: t('audio') };
+      }
     }
 
-    return { type: 'text', content: stripMarkdown(lastMessage.content || '') };
+    if (lastMessage.content) {
+      return { type: 'text', content: stripMarkdown(lastMessage.content) };
+    }
+
+    return { type: 'text', content: '' };
   };
 
   const messagePreview = getMessagePreview();

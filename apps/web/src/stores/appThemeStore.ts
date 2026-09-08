@@ -28,6 +28,18 @@ interface ThemeState {
   messageRadius: number;
   setMessageRadius: (radius: number) => void;
 
+  // Тема чата
+  chatTheme: string;
+  setChatTheme: (theme: string) => void;
+
+  // Обои чата
+  chatWallpaper: string | null;
+  setChatWallpaper: (wallpaper: string | null) => void;
+
+  // Акцентный цвет
+  accentColor: string;
+  setAccentColor: (color: string) => void;
+
   // Применение темы к DOM
   applyTheme: () => void;
 
@@ -47,6 +59,9 @@ export const useAppThemeStore = create<ThemeState>()((set, get) => ({
   },
   textSize: 1.0,
   messageRadius: 16,
+  chatTheme: 'classic',
+  chatWallpaper: null,
+  accentColor: '#6366f1',
 
   setAppTheme: (theme) => {
     set({ appTheme: theme });
@@ -77,6 +92,22 @@ export const useAppThemeStore = create<ThemeState>()((set, get) => ({
     const clampedRadius = Math.max(0, Math.min(24, radius));
     set({ messageRadius: clampedRadius });
     document.documentElement.style.setProperty('--message-radius', `${clampedRadius}px`);
+    get().syncWithAPI();
+  },
+
+  setChatTheme: (theme) => {
+    set({ chatTheme: theme });
+    get().syncWithAPI();
+  },
+
+  setChatWallpaper: (wallpaper) => {
+    set({ chatWallpaper: wallpaper });
+    get().syncWithAPI();
+  },
+
+  setAccentColor: (color) => {
+    set({ accentColor: color });
+    document.documentElement.style.setProperty('--accent-color', color);
     get().syncWithAPI();
   },
 
@@ -124,6 +155,9 @@ export const useAppThemeStore = create<ThemeState>()((set, get) => ({
     }
     if (typeof user.textSize === 'number') newState.textSize = user.textSize;
     if (typeof user.messageRadius === 'number') newState.messageRadius = user.messageRadius;
+    if (user.chatTheme) newState.chatTheme = user.chatTheme;
+    if (user.chatWallpaper !== undefined) newState.chatWallpaper = user.chatWallpaper;
+    if (user.accentColor) newState.accentColor = user.accentColor;
 
     set(newState);
 
@@ -132,6 +166,7 @@ export const useAppThemeStore = create<ThemeState>()((set, get) => ({
     state.applyTheme();
     document.documentElement.style.setProperty('--text-scale', state.textSize.toString());
     document.documentElement.style.setProperty('--message-radius', `${state.messageRadius}px`);
+    document.documentElement.style.setProperty('--accent-color', state.accentColor);
   },
 
   syncWithAPI: async () => {
@@ -144,6 +179,9 @@ export const useAppThemeStore = create<ThemeState>()((set, get) => ({
         nightEndTime: state.nightModeSchedule.endTime,
         textSize: state.textSize,
         messageRadius: state.messageRadius,
+        chatTheme: state.chatTheme,
+        chatWallpaper: state.chatWallpaper,
+        accentColor: state.accentColor,
       });
     } catch (error) {
       console.error('Failed to sync appearance settings:', error);

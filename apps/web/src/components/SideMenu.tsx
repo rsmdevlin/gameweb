@@ -35,7 +35,7 @@ import { useChatStore } from '../stores/chatStore';
 import { api } from '../lib/api';
 import { getSocket } from '../lib/socket';
 import { useLang } from '../lib/i18n';
-import { useThemeStore, ChatTheme } from '../stores/themeStore';
+import { useAppThemeStore } from '../stores/appThemeStore';
 import DatePicker from './DatePicker';
 import AccountSwitcher from './AccountSwitcher';
 import AppearanceSettings from './AppearanceSettings';
@@ -51,7 +51,7 @@ interface SideMenuProps {
 export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
   const { user, updateUser, logout } = useAuthStore();
   const { clearStore } = useChatStore();
-  const { chatTheme, setChatTheme } = useThemeStore();
+  const { chatTheme, setChatTheme } = useAppThemeStore();
   const { t, lang, setLang } = useLang();
 
   const [view, setView] = useState<SideView>('main');
