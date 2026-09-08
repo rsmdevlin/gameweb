@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru, enUS } from 'date-fns/locale';
-import { Check, CheckCheck, Image, FileText, Mic, Video, Pin, Trash2, Bookmark } from 'lucide-react';
+import { Check, CheckCheck, Image, FileText, Mic, Video, Pin, Trash2, Bookmark, Music } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useChatStore } from '../stores/chatStore';
 import { useLang } from '../lib/i18n';
@@ -91,7 +91,7 @@ function ChatListItem({ chat, isActive }: ChatListItemProps) {
         return { type: 'icon', icon: FileText, text: media.filename || t('file') };
       }
       if (media.type === 'audio') {
-        return { type: 'icon', icon: Music, text: t('audio') };
+        return { type: 'icon', icon: Music, text: t('file') };
       }
     }
 

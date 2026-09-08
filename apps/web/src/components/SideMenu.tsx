@@ -74,7 +74,7 @@ export default function SideMenu({ isOpen, onClose }: SideMenuProps) {
   const [friendSearchLoading, setFriendSearchLoading] = useState(false);
   const [showAccountSwitcher, setShowAccountSwitcher] = useState(false);
 
-  const themeCards: { id: ChatTheme; color: string; accent: string; name: string; nameEn: string; desc: string; descEn: string; animated?: boolean; gradient?: string }[] = [
+  const themeCards: { id: string; color: string; accent: string; name: string; nameEn: string; desc: string; descEn: string; animated?: boolean; gradient?: string }[] = [
     { id: 'midnight', color: '#0f0f13', accent: '#6366f1', name: 'Полночь', nameEn: 'Midnight', desc: 'Тёмная тема с мягкими акцентами', descEn: 'Dark theme with soft accents' },
     { id: 'ocean', color: '#0b172a', accent: '#3b82f6', name: 'Океан', nameEn: 'Ocean', desc: 'Глубокий синий с прохладными тонами', descEn: 'Deep blue with cool tones' },
     { id: 'forest', color: '#0f1c15', accent: '#10b981', name: 'Лес', nameEn: 'Forest', desc: 'Природный зелёный и спокойствие', descEn: 'Natural green and serenity' },

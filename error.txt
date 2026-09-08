@@ -1,1 +1,32 @@
-mysql://gs348298:eKDxA99Mc2sf@80.242.59.112:3306/gs348298
+==> Downloading cache...
+==> Cloning from https://github.com/rsmdevlin/gameweb
+==> Checking out commit ac1c1f4c3a447cf390170e19f9d494b6d58ff229 in branch master
+==> Downloaded 294MB in 1s. Extraction took 5s.
+==> Using Node.js version 24.14.1 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Running build command 'npm install && npm run build'...
+up to date, audited 273 packages in 2s
+43 packages are looking for funding
+  run `npm fund` for details
+24 vulnerabilities (3 low, 4 moderate, 17 high)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> build
+> npm run build -w apps/server && npm run build -w apps/web && npx prisma generate --schema=./apps/server/prisma/schema.prisma && npx prisma db push --schema=./apps/server/prisma/schema.prisma --skip-generate --accept-data-loss
+> @vortex/server@1.0.0 build
+> tsc
+> @vortex/web@1.0.0 build
+> tsc -b && vite build
+src/components/ChatListItem.tsx(94,38): error TS2552: Cannot find name 'Music'. Did you mean 'Mic'?
+src/components/ChatListItem.tsx(94,53): error TS2345: Argument of type '"audio"' is not assignable to parameter of type '"voice" | "video" | "delete" | "error" | "file" | "media" | "username" | "scheduled" | "login" | "register" | "logout" | "birthday" | "hideStoryViews" | "online" | "members" | ... 211 more ... | "justNow"'.
+src/components/SideMenu.tsx(77,27): error TS2304: Cannot find name 'ChatTheme'.
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /opt/render/project/src/apps/web
+npm error workspace @vortex/web@1.0.0
+npm error location /opt/render/project/src/apps/web
+npm error command failed
+npm error command sh -c tsc -b && vite build
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
